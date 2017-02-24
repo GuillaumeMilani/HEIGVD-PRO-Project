@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<project name="PRO" company="" manager="" phase="" project-start="20170222T000000Z" mrproject-version="2" calendar="1">
+  <properties/>
+  <phases>
+    <phase name="D&#xE9;finition du projet"/>
+    <phase name="D&#xE9;veloppement"/>
+    <phase name="Documentation"/>
+  </phases>
+  <calendars>
+    <day-types>
+      <day-type id="0" name="Working" description="A default working day"/>
+      <day-type id="1" name="Nonworking" description="A default non working day"/>
+      <day-type id="2" name="Use base" description="Use day from base calendar"/>
+    </day-types>
+    <calendar id="1" name="Default">
+      <default-week mon="0" tue="0" wed="0" thu="0" fri="0" sat="1" sun="1"/>
+      <overridden-day-types>
+        <overridden-day-type id="0">
+          <interval start="0800" end="1200"/>
+          <interval start="1300" end="1700"/>
+        </overridden-day-type>
+      </overridden-day-types>
+      <days/>
+    </calendar>
+  </calendars>
+  <tasks>
+    <task id="1" name="Envoi proposition de projet" note="18h00&#10;1 page max par proposition&#10;Max 2 propositions de projets&#10;D&#xE9;finir la proposition pr&#xE9;f&#xE9;r&#xE9;e&#10;" work="0" start="20170224T000000Z" end="20170224T000000Z" work-start="20170224T080000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
+      <constraint type="must-start-on" time="20170224T000000Z"/>
+    </task>
+    <task id="2" name="Cahier des charges" note="" work="86400" start="20170224T000000Z" end="20170227T170000Z" work-start="20170224T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="1" type="FS"/>
+      </predecessors>
+      <task id="3" name="Probl&#xE9;matique" note="" work="28800" start="20170224T000000Z" end="20170224T170000Z" work-start="20170224T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+      <task id="4" name="Cas d'utilisation" note="" work="28800" start="20170224T170000Z" end="20170227T170000Z" work-start="20170227T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="3" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="5" name="Planning" note="" work="28800" start="20170224T000000Z" end="20170224T170000Z" work-start="20170224T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+    </task>
+    <task id="6" name="Rendu cahier des charges" note="" work="0" start="20170308T000000Z" end="20170308T000000Z" work-start="20170308T080000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
+      <constraint type="must-start-on" time="20170308T000000Z"/>
+      <predecessors>
+        <predecessor id="1" predecessor-id="2" type="FS"/>
+      </predecessors>
+    </task>
+    <task id="7" name="Base de donn&#xE9;es" note="" work="28800" start="20170222T000000Z" end="20170222T170000Z" work-start="20170222T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+    <task id="8" name="Rendu final" note="" work="0" start="20170531T000000Z" end="20170531T000000Z" work-start="20170531T080000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
+      <constraint type="must-start-on" time="20170531T000000Z"/>
+    </task>
+  </tasks>
+  <resource-groups/>
+  <resources>
+    <resource id="1" name="Guillaume" short-name="" type="1" units="0" email="" note="" std-rate="0"/>
+  </resources>
+  <allocations/>
+</project>

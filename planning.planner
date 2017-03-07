@@ -27,17 +27,23 @@
     <task id="1" name="Envoi proposition de projet" note="18h00&#10;1 page max par proposition&#10;Max 2 propositions de projets&#10;D&#xE9;finir la proposition pr&#xE9;f&#xE9;r&#xE9;e&#10;" work="0" start="20170224T000000Z" end="20170224T000000Z" work-start="20170224T080000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
       <constraint type="must-start-on" time="20170224T000000Z"/>
     </task>
-    <task id="2" name="Cahier des charges" note="" work="86400" start="20170224T000000Z" end="20170227T170000Z" work-start="20170224T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+    <task id="2" name="Cahier des charges" note="" work="72000" start="20170301T000000Z" end="20170307T170000Z" work-start="20170301T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
       <predecessors>
         <predecessor id="1" predecessor-id="1" type="FS"/>
       </predecessors>
-      <task id="3" name="Probl&#xE9;matique" note="" work="28800" start="20170224T000000Z" end="20170224T170000Z" work-start="20170224T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
-      <task id="4" name="Cas d'utilisation" note="" work="28800" start="20170224T170000Z" end="20170227T170000Z" work-start="20170227T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="3" name="Probl&#xE9;matique" note="" work="28800" duration="57600" start="20170301T000000Z" end="20170302T170000Z" work-start="20170301T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <constraint type="must-start-on" time="20170301T000000Z"/>
+      </task>
+      <task id="4" name="Cas d'utilisation" note="" work="28800" duration="86400" start="20170302T170000Z" end="20170307T170000Z" work-start="20170303T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
         <predecessors>
           <predecessor id="1" predecessor-id="3" type="FS"/>
         </predecessors>
       </task>
-      <task id="5" name="Planning" note="" work="28800" start="20170224T000000Z" end="20170224T170000Z" work-start="20170224T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+      <task id="5" name="Planning" note="" work="14400" duration="86400" start="20170302T170000Z" end="20170307T170000Z" work-start="20170303T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <predecessors>
+          <predecessor id="1" predecessor-id="3" type="FS"/>
+        </predecessors>
+      </task>
     </task>
     <task id="6" name="Rendu cahier des charges" note="" work="0" start="20170308T000000Z" end="20170308T000000Z" work-start="20170308T080000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
       <constraint type="must-start-on" time="20170308T000000Z"/>
@@ -45,14 +51,253 @@
         <predecessor id="1" predecessor-id="2" type="FS"/>
       </predecessors>
     </task>
-    <task id="7" name="Base de donn&#xE9;es" note="" work="28800" start="20170222T000000Z" end="20170222T170000Z" work-start="20170222T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
-    <task id="8" name="Rendu final" note="" work="0" start="20170531T000000Z" end="20170531T000000Z" work-start="20170531T080000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
+    <task id="7" name="Pr&#xE9;paration" note="" work="158400" start="20170307T170000Z" end="20170317T170000Z" work-start="20170308T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="8" name="Formation JavaFX" note="Time period available for JavaFX learning.&#10;" work="144000" duration="230400" start="20170308T000000Z" end="20170317T170000Z" work-start="20170308T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <constraint type="must-start-on" time="20170308T000000Z"/>
+      </task>
+      <task id="9" name="Environnement de d&#xE9;veloppement" note="" work="14400" duration="144000" start="20170307T170000Z" end="20170314T170000Z" work-start="20170308T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <predecessors>
+          <predecessor id="1" predecessor-id="5" type="FS"/>
+        </predecessors>
+      </task>
+    </task>
+    <task id="10" name="Ajustements cahier des charges et planning" note="" work="28800" duration="57600" start="20170315T000000Z" end="20170316T170000Z" work-start="20170315T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+      <constraint type="must-start-on" time="20170315T000000Z"/>
+    </task>
+    <task id="11" name="Mod&#xE9;lisation" note="" work="86400" start="20170307T170000Z" end="20170317T170000Z" work-start="20170308T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="12" name="Structure g&#xE9;n&#xE9;rale" note="" work="28800" duration="86400" start="20170307T170000Z" end="20170310T170000Z" work-start="20170308T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <predecessors>
+          <predecessor id="1" predecessor-id="5" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="13" name="Diagramme de classes" note="" work="57600" duration="144000" start="20170310T170000Z" end="20170317T170000Z" work-start="20170313T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <predecessors>
+          <predecessor id="1" predecessor-id="12" type="FS"/>
+        </predecessors>
+      </task>
+    </task>
+    <task id="14" name="Cadre de travail" note="" work="309600" start="20170320T000000Z" end="20170407T170000Z" work-start="20170320T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="15" name="Interface de l'application" note="" work="57600" duration="144000" start="20170320T000000Z" end="20170324T170000Z" work-start="20170320T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <constraint type="must-start-on" time="20170320T000000Z"/>
+      </task>
+      <task id="16" name="Navigation dans l'interface" note="" work="57600" start="20170324T170000Z" end="20170331T170000Z" work-start="20170327T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="15" type="FS"/>
+        </predecessors>
+        <task id="17" name="Zoom" note="" work="28800" duration="144000" start="20170324T170000Z" end="20170331T170000Z" work-start="20170327T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration"/>
+        <task id="18" name="D&#xE9;placement" note="" work="28800" duration="144000" start="20170324T170000Z" end="20170331T170000Z" work-start="20170327T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration"/>
+      </task>
+      <task id="19" name="Gestion des couleurs" note="" work="43200" start="20170324T170000Z" end="20170407T170000Z" work-start="20170327T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="15" type="FS"/>
+        </predecessors>
+        <task id="20" name="Librairie de couleurs" note="" work="21600" duration="144000" start="20170324T170000Z" end="20170331T170000Z" work-start="20170327T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+          <predecessors>
+            <predecessor id="1" predecessor-id="15" type="FS"/>
+          </predecessors>
+        </task>
+        <task id="21" name="S&#xE9;lection sp&#xE9;cifique des couleurs" note="" work="21600" duration="144000" start="20170331T170000Z" end="20170407T170000Z" work-start="20170403T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+          <predecessors>
+            <predecessor id="1" predecessor-id="20" type="FS"/>
+            <predecessor id="1" predecessor-id="15" type="FS"/>
+          </predecessors>
+        </task>
+      </task>
+      <task id="22" name="Copier-coller d'&#xE9;l&#xE9;ments de l'image" note="" work="36000" duration="144000" start="20170324T170000Z" end="20170331T170000Z" work-start="20170327T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <predecessors>
+          <predecessor id="1" predecessor-id="15" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="23" name="Raccourcis claviers" note="" work="57600" duration="144000" start="20170331T170000Z" end="20170407T170000Z" work-start="20170403T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <predecessors>
+          <predecessor id="1" predecessor-id="22" type="FS"/>
+          <predecessor id="1" predecessor-id="15" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="24" name="Modifier la taille de l'espace de travail et du document" note="" work="28800" duration="144000" start="20170324T170000Z" end="20170331T170000Z" work-start="20170327T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <predecessors>
+          <predecessor id="1" predecessor-id="15" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="25" name="Rogner le document" note="" work="28800" duration="144000" start="20170324T170000Z" end="20170331T170000Z" work-start="20170327T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <predecessors>
+          <predecessor id="1" predecessor-id="15" type="FS"/>
+        </predecessors>
+      </task>
+    </task>
+    <task id="26" name="Cr&#xE9;ation de document" note="" work="158400" start="20170324T170000Z" end="20170414T170000Z" work-start="20170327T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="27" name="Cr&#xE9;er un document vide" note="" work="57600" duration="144000" start="20170324T170000Z" end="20170331T170000Z" work-start="20170327T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <predecessors>
+          <predecessor id="1" predecessor-id="15" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="28" name="Ouvrir une image d'un format support&#xE9; par Java" note="" work="28800" duration="144000" start="20170331T170000Z" end="20170407T170000Z" work-start="20170403T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <predecessors>
+          <predecessor id="1" predecessor-id="27" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="29" name="Sauvegarder dans un format de projet" note="" work="21600" duration="144000" start="20170331T170000Z" end="20170407T170000Z" work-start="20170403T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <predecessors>
+          <predecessor id="1" predecessor-id="27" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="30" name="Exporter aux formats png, jpg, bmp et gif" note="" work="21600" duration="144000" start="20170331T170000Z" end="20170407T170000Z" work-start="20170403T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <predecessors>
+          <predecessor id="1" predecessor-id="27" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="31" name="Ins&#xE9;rer une image dans un document" note="" work="28800" duration="144000" start="20170407T170000Z" end="20170414T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <predecessors>
+          <predecessor id="1" predecessor-id="28" type="FS"/>
+          <predecessor id="1" predecessor-id="27" type="FS"/>
+        </predecessors>
+      </task>
+    </task>
+    <task id="32" name="Param&#xE9;trage de l'application" note="" work="86400" start="20170407T170000Z" end="20170414T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="14" type="FS"/>
+      </predecessors>
+      <task id="33" name="Position du menu d'outils" note="" work="28800" duration="144000" start="20170407T170000Z" end="20170414T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration"/>
+      <task id="34" name="Options de nouveau document" note="" work="28800" duration="144000" start="20170407T170000Z" end="20170414T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration"/>
+      <task id="35" name="Configuration des raccourcis" note="" work="28800" duration="144000" start="20170407T170000Z" end="20170414T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration"/>
+    </task>
+    <task id="36" name="Fonctionnalit&#xE9;s texte" note="" work="50400" start="20170324T170000Z" end="20170405T170000Z" work-start="20170327T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="37" name="Ajout d'&#xE9;l&#xE9;ments textes" note="" work="28800" duration="144000" start="20170324T170000Z" end="20170331T170000Z" work-start="20170327T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <predecessors>
+          <predecessor id="1" predecessor-id="15" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="38" name="Choix de couleur" note="" work="7200" duration="86400" start="20170331T170000Z" end="20170405T170000Z" work-start="20170403T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <predecessors>
+          <predecessor id="1" predecessor-id="37" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="39" name="Choix de police" note="" work="7200" duration="86400" start="20170331T170000Z" end="20170405T170000Z" work-start="20170403T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <predecessors>
+          <predecessor id="1" predecessor-id="37" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="40" name="Choix de taille" note="" work="7200" duration="86400" start="20170331T170000Z" end="20170405T170000Z" work-start="20170403T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <predecessors>
+          <predecessor id="1" predecessor-id="37" type="FS"/>
+        </predecessors>
+      </task>
+    </task>
+    <task id="41" name="Fonctionnalit&#xE9; de s&#xE9;lection" note="" work="129600" start="20170407T170000Z" end="20170428T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="14" type="FS"/>
+      </predecessors>
+      <task id="42" name="S&#xE9;lection automatique d'une zone de pixel" note="" work="43200" duration="144000" start="20170407T170000Z" end="20170414T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration"/>
+      <task id="43" name="S&#xE9;lection manuelle d'une zone de pixel" note="" work="28800" duration="144000" start="20170414T170000Z" end="20170421T170000Z" work-start="20170417T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <predecessors>
+          <predecessor id="1" predecessor-id="42" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="44" name="Copier, coller, modifier, supprimer une s&#xE9;lection" note="" work="57600" duration="144000" start="20170421T170000Z" end="20170428T170000Z" work-start="20170424T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <predecessors>
+          <predecessor id="1" predecessor-id="43" type="FS"/>
+        </predecessors>
+      </task>
+    </task>
+    <task id="45" name="Fonctionnalit&#xE9;s diverses" note="" work="79200" start="20170324T170000Z" end="20170407T170000Z" work-start="20170327T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="46" name="Biblioth&#xE8;que personnelle d'images" note="" work="79200" start="20170324T170000Z" end="20170407T170000Z" work-start="20170327T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <task id="47" name="Possibilit&#xE9; de cr&#xE9;er diff&#xE9;rents catalogues d'images" note="" work="28800" duration="144000" start="20170324T170000Z" end="20170331T170000Z" work-start="20170327T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+          <predecessors>
+            <predecessor id="1" predecessor-id="15" type="FS"/>
+          </predecessors>
+        </task>
+        <task id="48" name="Possibilit&#xE9; de lister ces catalogues dans l'application" note="" work="21600" duration="144000" start="20170331T170000Z" end="20170407T170000Z" work-start="20170403T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+          <predecessors>
+            <predecessor id="1" predecessor-id="47" type="FS"/>
+          </predecessors>
+        </task>
+        <task id="49" name="Possibilit&#xE9; d'importer ces images dans les documents" note="" work="28800" duration="144000" start="20170331T170000Z" end="20170407T170000Z" work-start="20170403T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+          <predecessors>
+            <predecessor id="1" predecessor-id="47" type="FS"/>
+          </predecessors>
+        </task>
+      </task>
+    </task>
+    <task id="50" name="Compte-rendu interm&#xE9;diaire" note="" work="0" start="20170412T000000Z" end="20170412T000000Z" work-start="20170412T080000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
+      <constraint type="must-start-on" time="20170412T000000Z"/>
+    </task>
+    <task id="51" name="Fonctionnalit&#xE9;s colorim&#xE9;triques" note="" work="115200" start="20170407T170000Z" end="20170428T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="28" type="FS"/>
+      </predecessors>
+      <task id="52" name="Application de filtres pr&#xE9;d&#xE9;finis " note="" work="57600" duration="432000" start="20170407T170000Z" end="20170428T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration"/>
+      <task id="53" name="Modification de contraste" note="" work="28800" duration="144000" start="20170407T170000Z" end="20170414T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration"/>
+      <task id="54" name="Modification de luminosit&#xE9;" note="" work="28800" duration="144000" start="20170407T170000Z" end="20170414T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration"/>
+    </task>
+    <task id="55" name="Fonctionnalit&#xE9; d'historique" note="" work="79200" start="20170407T170000Z" end="20170421T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="14" type="FS"/>
+      </predecessors>
+      <task id="56" name="Annuler une action" note="" work="21600" duration="144000" start="20170407T170000Z" end="20170414T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration"/>
+      <task id="57" name="Refaire une action" note="" work="21600" duration="144000" start="20170407T170000Z" end="20170414T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration"/>
+      <task id="58" name="Parcours visuel de l'historique" note="" work="36000" duration="144000" start="20170414T170000Z" end="20170421T170000Z" work-start="20170417T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <predecessors>
+          <predecessor id="1" predecessor-id="57" type="FS"/>
+        </predecessors>
+      </task>
+    </task>
+    <task id="59" name="Fonctionnalit&#xE9;s de dessin" note="" work="79200" start="20170324T170000Z" end="20170414T170000Z" work-start="20170327T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="60" name="Pinceau" note="" work="36000" start="20170324T170000Z" end="20170407T170000Z" work-start="20170327T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="15" type="FS"/>
+        </predecessors>
+        <task id="61" name="Choisir la taille du pinceau" note="" work="21600" duration="144000" start="20170324T170000Z" end="20170331T170000Z" work-start="20170327T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration"/>
+        <task id="62" name="Choisir la couleur du pinceau" note="" work="14400" duration="144000" start="20170331T170000Z" end="20170407T170000Z" work-start="20170403T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+          <predecessors>
+            <predecessor id="1" predecessor-id="61" type="FS"/>
+          </predecessors>
+        </task>
+      </task>
+      <task id="63" name="Gomme" note="" work="21600" start="20170407T170000Z" end="20170414T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="60" type="FS"/>
+        </predecessors>
+        <task id="64" name="Choisir la taille de la gomme" note="" work="21600" duration="144000" start="20170407T170000Z" end="20170414T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration"/>
+      </task>
+      <task id="65" name="Pipette" note="" work="21600" start="20170324T170000Z" end="20170331T170000Z" work-start="20170327T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="15" type="FS"/>
+        </predecessors>
+        <task id="66" name="R&#xE9;cup&#xE9;ration de couleur sur un emplacement" note="" work="21600" duration="144000" start="20170324T170000Z" end="20170331T170000Z" work-start="20170327T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration"/>
+      </task>
+    </task>
+    <task id="67" name="Transformation d'objets" note="" work="86400" start="20170407T170000Z" end="20170414T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="28" type="FS"/>
+      </predecessors>
+      <task id="68" name="Redimensionner, pivoter, d&#xE9;placer un &#xE9;l&#xE9;ment de l'image" note="" work="21600" duration="144000" start="20170407T170000Z" end="20170414T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration"/>
+      <task id="69" name="Sym&#xE9;trie horizontale / verticale des &#xE9;l&#xE9;ments de l'image" note="" work="21600" duration="144000" start="20170407T170000Z" end="20170414T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration"/>
+      <task id="70" name="Rogner un &#xE9;l&#xE9;ment de l'image" note="" work="21600" duration="144000" start="20170407T170000Z" end="20170414T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration"/>
+      <task id="71" name="Affichage de rep&#xE8;res d'alignements automatiques simples" note="" work="21600" duration="144000" start="20170407T170000Z" end="20170414T170000Z" work-start="20170410T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration"/>
+    </task>
+    <task id="72" name="Rendu final" note="" work="0" start="20170531T000000Z" end="20170531T000000Z" work-start="20170531T080000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
       <constraint type="must-start-on" time="20170531T000000Z"/>
     </task>
   </tasks>
   <resource-groups/>
   <resources>
     <resource id="1" name="Guillaume" short-name="" type="1" units="0" email="" note="" std-rate="0"/>
+    <resource id="2" name="Eddie" short-name="" type="1" units="0" email="" note="" std-rate="0"/>
+    <resource id="3" name="Michael" short-name="" type="1" units="0" email="" note="" std-rate="0"/>
+    <resource id="4" name="Sathiya" short-name="" type="1" units="0" email="" note="" std-rate="0"/>
+    <resource id="5" name="Mathieu" short-name="" type="1" units="0" email="" note="" std-rate="0"/>
   </resources>
-  <allocations/>
+  <allocations>
+    <allocation task-id="10" resource-id="1" units="10"/>
+    <allocation task-id="4" resource-id="1" units="33"/>
+    <allocation task-id="8" resource-id="1" units="13"/>
+    <allocation task-id="10" resource-id="2" units="10"/>
+    <allocation task-id="8" resource-id="2" units="13"/>
+    <allocation task-id="10" resource-id="3" units="10"/>
+    <allocation task-id="8" resource-id="3" units="13"/>
+    <allocation task-id="10" resource-id="4" units="10"/>
+    <allocation task-id="8" resource-id="4" units="13"/>
+    <allocation task-id="10" resource-id="5" units="10"/>
+    <allocation task-id="8" resource-id="5" units="13"/>
+  </allocations>
 </project>

@@ -40,17 +40,7 @@ public class Workspace extends Group {
       return null;
    }
    
-   /**
-    * 
-    * @param params
-    * @param image
-    * @return 
-    */
-   @Override
-   public WritableImage snapshot(SnapshotParameters params, WritableImage image) {
-      return null;
-   }
-   
+  
    /**
     * 
     * @param z 

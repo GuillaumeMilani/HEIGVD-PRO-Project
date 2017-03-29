@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="iso-8859-15" standalone="no"?>
+<classDiagram>
+  <diagramElements defaultViewEntities="ALL" defaultViewEnum="true" defaultViewMethods="TYPE_AND_NAME" defaultVisibleTypes="true" informations="" name="GEMMS">
+    <inheritance id="6379">
+      <child>6364</child>
+      <parent>6378</parent>
+    </inheritance>
+    <inheritance id="6515">
+      <child>6415</child>
+      <parent>6514</parent>
+    </inheritance>
+    <association aggregation="AGGREGATE" direction="BIDIRECTIONAL" id="6717" name="">
+      <role componentId="6364" name="" visibility="PRIVATE">
+        <multiplicity>
+          <min>1</min>
+          <max>1</max>
+        </multiplicity>
+      </role>
+      <role componentId="6415" name="" visibility="PRIVATE">
+        <multiplicity>
+          <min>1</min>
+          <max>1</max>
+        </multiplicity>
+      </role>
+    </association>
+    <entity entityType="CLASS" id="6364" isAbstract="false" name="GEMMS" visibility="PUBLIC">
+      <method isAbstract="false" isStatic="true" name="main" returnType="void" view="DEFAULT" visibility="PUBLIC">
+        <variable const="false" name="args" type="String[]"/>
+      </method>
+      <method isAbstract="false" isStatic="false" name="start" returnType="void" view="DEFAULT" visibility="PUBLIC">
+        <variable const="false" name="primaryStage" type="Stage"/>
+      </method>
+    </entity>
+    <entity entityType="CLASS" id="6378" isAbstract="false" name="Application" visibility="PUBLIC"/>
+    <entity entityType="CLASS" id="6415" isAbstract="false" name="Workspace" visibility="PUBLIC">
+      <method isAbstract="false" isStatic="false" name="addLayer" returnType="void" view="DEFAULT" visibility="PUBLIC">
+        <variable const="false" name="e" type="Node"/>
+      </method>
+      <method isAbstract="false" isStatic="false" name="removeLayer" returnType="void" view="DEFAULT" visibility="PUBLIC">
+        <variable const="false" name="e" type="Node"/>
+      </method>
+      <method isAbstract="false" isStatic="false" name="getLayers" returnType="List&lt;Node&gt;" view="DEFAULT" visibility="PUBLIC"/>
+      <method isAbstract="false" isStatic="false" name="snapshot" returnType="void" view="DEFAULT" visibility="PUBLIC">
+        <variable const="false" name="params" type="SnapshotParameters"/>
+        <variable const="false" name="image" type="WritableImage"/>
+      </method>
+      <method isAbstract="false" isStatic="false" name="zoom" returnType="void" view="DEFAULT" visibility="PUBLIC">
+        <variable const="false" name="z" type="int"/>
+      </method>
+      <method isAbstract="false" isStatic="false" name="move" returnType="void" view="DEFAULT" visibility="PUBLIC">
+        <variable const="false" name="x" type="int"/>
+        <variable const="false" name="y" type="int"/>
+      </method>
+      <method isAbstract="false" isStatic="false" name="crop" returnType="void" view="DEFAULT" visibility="PUBLIC"/>
+    </entity>
+    <entity entityType="CLASS" id="6514" isAbstract="false" name="Group" visibility="PUBLIC"/>
+    <entity entityType="CLASS" id="6557" isAbstract="false" name="Document" visibility="PUBLIC">
+      <method isAbstract="false" isStatic="false" name="new" returnType="void" view="DEFAULT" visibility="PUBLIC"/>
+      <method isAbstract="false" isStatic="false" name="open" returnType="void" view="DEFAULT" visibility="PUBLIC"/>
+      <method isAbstract="false" isStatic="false" name="save" returnType="void" view="DEFAULT" visibility="PUBLIC"/>
+      <method isAbstract="false" isStatic="false" name="export" returnType="void" view="DEFAULT" visibility="PUBLIC"/>
+    </entity>
+    <entity entityType="CLASS" id="6590" isAbstract="false" name="History" visibility="PUBLIC">
+      <method isAbstract="false" isStatic="false" name="undo" returnType="void" view="DEFAULT" visibility="PUBLIC"/>
+      <method isAbstract="false" isStatic="false" name="redo" returnType="void" view="DEFAULT" visibility="PUBLIC"/>
+      <method isAbstract="false" isStatic="false" name="getHistory" returnType="List&lt;String&gt;" view="DEFAULT" visibility="PUBLIC"/>
+    </entity>
+  </diagramElements>
+  <umlView grid="10" name="Main view" open="true">
+    <relationView color="-12566464" relationId="6717">
+      <line>
+        <point>
+          <x>901</x>
+          <y>286</y>
+        </point>
+        <point>
+          <x>901</x>
+          <y>531</y>
+        </point>
+      </line>
+      <labelAssociation>
+        <x>905</x>
+        <y>412</y>
+        <w>0</w>
+        <h>16</h>
+      </labelAssociation>
+      <roleAssociation>
+        <x>905</x>
+        <y>290</y>
+        <w>0</w>
+        <h>16</h>
+      </roleAssociation>
+      <roleAssociation>
+        <x>905</x>
+        <y>509</y>
+        <w>0</w>
+        <h>16</h>
+      </roleAssociation>
+      <multipliciteAssociation>
+        <x>887</x>
+        <y>290</y>
+        <w>8</w>
+        <h>16</h>
+      </multipliciteAssociation>
+      <multipliciteAssociation>
+        <x>887</x>
+        <y>509</y>
+        <w>8</w>
+        <h>16</h>
+      </multipliciteAssociation>
+    </relationView>
+    <relationView color="-12566464" relationId="6515">
+      <line>
+        <point>
+          <x>741</x>
+          <y>531</y>
+        </point>
+        <point>
+          <x>741</x>
+          <y>466</y>
+        </point>
+      </line>
+    </relationView>
+    <relationView color="-12566464" relationId="6379">
+      <line>
+        <point>
+          <x>801</x>
+          <y>201</y>
+        </point>
+        <point>
+          <x>801</x>
+          <y>116</y>
+        </point>
+      </line>
+    </relationView>
+    <componentView color="-2079" componentID="6590" displayAttributes="true" displayDefault="true" displayMethods="true">
+      <geometry>
+        <x>1080</x>
+        <y>190</y>
+        <w>190</w>
+        <h>100</h>
+      </geometry>
+    </componentView>
+    <componentView color="-2079" componentID="6557" displayAttributes="true" displayDefault="true" displayMethods="true">
+      <geometry>
+        <x>1090</x>
+        <y>520</y>
+        <w>150</w>
+        <h>115</h>
+      </geometry>
+    </componentView>
+    <componentView color="-2079" componentID="6514" displayAttributes="false" displayDefault="false" displayMethods="false">
+      <geometry>
+        <x>660</x>
+        <y>430</y>
+        <w>150</w>
+        <h>35</h>
+      </geometry>
+    </componentView>
+    <componentView color="-2079" componentID="6415" displayAttributes="true" displayDefault="true" displayMethods="true">
+      <geometry>
+        <x>520</x>
+        <y>530</y>
+        <w>430</w>
+        <h>160</h>
+      </geometry>
+    </componentView>
+    <componentView color="-2079" componentID="6378" displayAttributes="false" displayDefault="false" displayMethods="false">
+      <geometry>
+        <x>720</x>
+        <y>80</y>
+        <w>160</w>
+        <h>35</h>
+      </geometry>
+    </componentView>
+    <componentView color="-2079" componentID="6364" displayAttributes="true" displayDefault="true" displayMethods="true">
+      <geometry>
+        <x>680</x>
+        <y>200</y>
+        <w>240</w>
+        <h>85</h>
+      </geometry>
+    </componentView>
+  </umlView>
+</classDiagram>

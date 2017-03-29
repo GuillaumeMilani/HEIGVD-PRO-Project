@@ -16,53 +16,54 @@ import javafx.scene.image.WritableImage;
  * @author mathieu
  */
 public class Workspace extends Group {
+
    /**
-    * 
-    * @param node 
+    *
+    * @param node
     */
    public void addLayer(Node node) {
-      
+      getChildren().add(node);
    }
-   
+
    /**
-    * 
-    * @param node 
+    *
+    * @param node
     */
    public void removeLayer(Node node) {
-      
+      getChildren().remove(node);
+
    }
-   
+
    /**
-    * 
-    * @return 
+    *
+    * @return
     */
    public List<Node> getLayers() {
-      return null;
+      return getChildren();
    }
-   
-  
+
    /**
-    * 
-    * @param z 
+    *
+    * @param z
     */
    public void zoom(int z) {
-      
+
    }
-   
+
    /**
-    * 
+    *
     * @param x
     * @param y
     */
    public void move(int x, int y) {
-      
+
    }
-   
+
    /**
-    * 
+    *
     */
    public void crop() {
-      
+
    }
-   
+
 }

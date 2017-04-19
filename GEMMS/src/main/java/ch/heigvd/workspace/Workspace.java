@@ -16,6 +16,16 @@ import javafx.scene.image.WritableImage;
  * @author mathieu
  */
 public class Workspace extends Group {
+   
+   private Node currentLayer;
+   
+   public void setCurrentLayer(Node node) {
+      currentLayer = node;
+   }
+   
+   public Node getCurrentLayer() {
+      return currentLayer;
+   }
 
    /**
     *
@@ -23,6 +33,7 @@ public class Workspace extends Group {
     */
    public void addLayer(Node node) {
       getChildren().add(node);
+      setCurrentLayer(node);
    }
 
    /**
@@ -31,7 +42,6 @@ public class Workspace extends Group {
     */
    public void removeLayer(Node node) {
       getChildren().remove(node);
-
    }
 
    /**

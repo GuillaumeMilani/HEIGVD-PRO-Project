@@ -10,17 +10,17 @@ import javafx.stage.Stage;
 
 public class MainApp extends Application {
 
-    @Override
+    @Override 
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/GEMMSStage.fxml"));
         
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/styles/Styles.css");
         
-        stage.setTitle("JavaFX and Maven");
+        stage.setTitle("GEMMS 2017");
         stage.setScene(scene);
         stage.show();
-    } 
+    }
 
     /**
      * The main() method is ignored in correctly deployed JavaFX application.

@@ -19,6 +19,7 @@ public class MainApp extends Application {
         
         stage.setTitle("GEMMS 2017");
         stage.setScene(scene);
+        
         stage.show();
     }
 

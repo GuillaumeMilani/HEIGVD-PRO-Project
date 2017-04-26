@@ -12,13 +12,19 @@ public class MainApp extends Application {
 
     @Override 
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/GEMMSStage.fxml"));
+        
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GEMMSStage.fxml"));
+        Parent root = (Parent)loader.load();
+        GEMMSStageFXMLController controller = (GEMMSStageFXMLController)loader.getController();
+        
         
         Scene scene = new Scene(root);
+        controller.setScene(scene);
         scene.getStylesheets().add("/styles/Styles.css");
         
         stage.setTitle("GEMMS 2017");
         stage.setScene(scene);
+        
         stage.show();
     }
 

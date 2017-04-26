@@ -1,3 +1,12 @@
 .button {
     -fx-font-weight: bold;
 }
+
+.floatingScrollbar .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.floatingScrollbar .scroll-bar:vertical .increment-button, .floatingScrollbar .scroll-bar:vertical .decrement-button {
+    -fx-shape: " ";
+    -fx-padding:0;
+} 

@@ -1,5 +1,6 @@
 package ch.heigvd.gemms;
 
+import ch.heigvd.workspace.Workspace;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -33,6 +34,8 @@ public class GEMMSStageFXMLController implements Initializable {
      */
     @FXML
     private AnchorPane centerAnchor;
+    
+    private Workspace workspace;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -46,8 +49,15 @@ public class GEMMSStageFXMLController implements Initializable {
         // Create some buttons
         createToolButton("Example", gridDrawingTools).setOnAction(event -> System.out.println("Do Something")); // pour appeler maFonction(), faire event->maFonction()
 
-        // Workspace
+        // Workspace Pane container
+        // /!\ Set in code, to change later /!\
+        centerAnchor.setPrefSize(670, 710);
         centerAnchor.setClip(new Rectangle(centerAnchor.getPrefWidth(), centerAnchor.getPrefHeight()));
+        centerAnchor.setId("workspaceAnchorPane"); // Set id for CSS styling
+        
+        // Create the Workspace with hardcoded dimensions, to change later
+        workspace = new Workspace(500, 500, centerAnchor);
+        centerAnchor.getChildren().add(workspace);
     }
 
     /**

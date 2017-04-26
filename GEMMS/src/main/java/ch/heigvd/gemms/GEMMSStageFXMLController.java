@@ -2,12 +2,9 @@ package ch.heigvd.gemms;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -16,6 +13,9 @@ import javafx.scene.shape.Rectangle;
 
 public class GEMMSStageFXMLController implements Initializable {
 
+    /**
+     * GridPanes containing the tools buttons
+     */
     @FXML
     private GridPane gridDrawingTools;
     @FXML
@@ -24,6 +24,10 @@ public class GEMMSStageFXMLController implements Initializable {
     private GridPane gridFilterTools;
     @FXML
     private GridPane gridModificationTools;
+    
+    /**
+     * AnchorPane containing the workspace
+     */
     @FXML
     private AnchorPane centerAnchor;
 
@@ -43,6 +47,13 @@ public class GEMMSStageFXMLController implements Initializable {
         centerAnchor.setClip(new Rectangle(centerAnchor.getPrefWidth(), centerAnchor.getPrefHeight()));
     }
 
+    /**
+     * Create a tool button and add it in the corresponding grid pane
+     * @param text  text of the button
+     * @param pane  grid pane to add the button
+     * @return the button created
+     */
+    // TODO: replace text by an image
     private Button createToolButton(String text, GridPane pane) {
         Button button = new Button(text);
 

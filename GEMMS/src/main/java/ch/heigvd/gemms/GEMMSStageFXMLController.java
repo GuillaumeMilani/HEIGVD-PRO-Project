@@ -23,6 +23,8 @@ public class GEMMSStageFXMLController implements Initializable {
     @FXML
     private GridPane gridFilterTools;
     @FXML
+    private GridPane gridModificationTools;
+    @FXML
     private AnchorPane centerAnchor;
 
     @Override
@@ -32,9 +34,10 @@ public class GEMMSStageFXMLController implements Initializable {
         gridDrawingTools.getRowConstraints().add(new RowConstraints(Constants.BUTTONS_HEIGHT));
         gridColorTools.getRowConstraints().add(new RowConstraints(Constants.BUTTONS_HEIGHT));
         gridFilterTools.getRowConstraints().add(new RowConstraints(Constants.BUTTONS_HEIGHT));
+        gridModificationTools.getRowConstraints().add(new RowConstraints(Constants.BUTTONS_HEIGHT));
 
         // Create some buttons
-        // createToolButton("Example", gridDrawingTools).setOnAction(event->System.out.println("Do Something"));
+        createToolButton("Example", gridDrawingTools).setOnAction(event -> System.out.println("Do Something")); // pour appeler maFonction(), faire event->maFonction()
 
         // Workspace
         centerAnchor.setClip(new Rectangle(centerAnchor.getPrefWidth(), centerAnchor.getPrefHeight()));
@@ -42,7 +45,7 @@ public class GEMMSStageFXMLController implements Initializable {
 
     private Button createToolButton(String text, GridPane pane) {
         Button button = new Button(text);
-        
+
         // Calculate the button's position in the grid
         int row = pane.getChildren().size() / 3;
         int col = pane.getChildren().size() % 3;

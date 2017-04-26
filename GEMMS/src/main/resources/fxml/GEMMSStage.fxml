@@ -32,7 +32,6 @@
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                          </columnConstraints>
                          <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                          </rowConstraints>
                       </GridPane>
                       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Modification" />
@@ -43,7 +42,6 @@
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                          </columnConstraints>
                          <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                          </rowConstraints>
                       </GridPane>
                       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Couleurs" />
@@ -54,7 +52,6 @@
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                          </columnConstraints>
                          <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                          </rowConstraints>
                       </GridPane>
                       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Filtres" />
@@ -65,7 +62,6 @@
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                          </columnConstraints>
                          <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                          </rowConstraints>
                       </GridPane>
                    </children>

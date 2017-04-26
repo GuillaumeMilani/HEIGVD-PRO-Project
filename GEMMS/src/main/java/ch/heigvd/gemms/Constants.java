@@ -5,5 +5,5 @@ package ch.heigvd.gemms;
  * @author Guillaume Milani
  */
 public class Constants {
-    public static int BUTTONS_HEIGHT = 30;
+    public static double BUTTONS_HEIGHT = 50;
 }

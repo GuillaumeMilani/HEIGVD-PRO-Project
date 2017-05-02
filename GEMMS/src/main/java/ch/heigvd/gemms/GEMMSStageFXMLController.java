@@ -12,6 +12,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 public class GEMMSStageFXMLController implements Initializable {
     
@@ -20,6 +21,8 @@ public class GEMMSStageFXMLController implements Initializable {
     /**
      * GridPanes containing the tools buttons
      */
+    @FXML
+    private GridPane gridCreationTools;
     @FXML
     private GridPane gridDrawingTools;
     @FXML
@@ -35,12 +38,16 @@ public class GEMMSStageFXMLController implements Initializable {
     @FXML
     private AnchorPane centerAnchor;
     
+    @FXML
+    private GridPane layerController;
+    
     private Workspace workspace;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
         // Create the first tools buttons row
+        gridCreationTools.getRowConstraints().add(new RowConstraints(Constants.BUTTONS_HEIGHT));
         gridDrawingTools.getRowConstraints().add(new RowConstraints(Constants.BUTTONS_HEIGHT));
         gridColorTools.getRowConstraints().add(new RowConstraints(Constants.BUTTONS_HEIGHT));
         gridFilterTools.getRowConstraints().add(new RowConstraints(Constants.BUTTONS_HEIGHT));
@@ -58,6 +65,11 @@ public class GEMMSStageFXMLController implements Initializable {
         // Create the Workspace with hardcoded dimensions, to change later
         workspace = new Workspace(500, 500, centerAnchor);
         centerAnchor.getChildren().add(workspace);
+        
+        // Temporary button to create a Text Layer
+        createToolButton("T+", gridCreationTools).setOnAction(event -> workspace.addLayer(new Text(50, 50, "Ceci est un texte"))); // pour appeler maFonction(), faire event->maFonction()
+
+        layerController.getChildren().add(workspace.getWorkspaceController());
     }
 
     /**

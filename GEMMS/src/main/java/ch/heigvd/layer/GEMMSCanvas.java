@@ -1,5 +1,7 @@
 package javafxtest;
 
+import ch.heigvd.gemms.CSSIcons;
+import ch.heigvd.workspace.LayerListable;
 import java.io.IOException;
 
 import java.io.ObjectInputStream;
@@ -13,13 +15,13 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-public class Canvas extends javafx.scene.canvas.Canvas implements Serializable {
+public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements Serializable, LayerListable {
 
 	/**
 	 * Constructor
 	 * 
 	 */
-	public Canvas() {
+	public GEMMSCanvas() {
 		super();
 	}
 	
@@ -29,7 +31,7 @@ public class Canvas extends javafx.scene.canvas.Canvas implements Serializable {
 	 * @param width this is the width of this canvas
 	 * @param height this is the height of this canvas
 	 */
-	public Canvas(double width, double height) {
+	public GEMMSCanvas(double width, double height) {
 		super(width, height);
 	}
 	
@@ -88,4 +90,14 @@ public class Canvas extends javafx.scene.canvas.Canvas implements Serializable {
             }
         }
     }
+
+   @Override
+   public String getLayerName() {
+      return "Canvas";
+   }
+
+   @Override
+   public String getThumbnailClass() {
+      return CSSIcons.CANVAS;
+   }
 }

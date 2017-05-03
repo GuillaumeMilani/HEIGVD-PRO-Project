@@ -3,9 +3,9 @@ package ch.heigvd.workspace;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ListCell;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 /*
@@ -16,6 +16,11 @@ import javafx.scene.text.Text;
 /**
  *
  * @author mathieu
+ */
+
+/**
+ * LayerListCell is a specialisation of JavaFx ListCell. The purpose is to 
+ * represent a layer of the workspace in its ListView.
  */
 public class LayerListCell extends ListCell<Node> {
 
@@ -33,19 +38,30 @@ public class LayerListCell extends ListCell<Node> {
      }
    }
    
+   /**
+    * LayerCell represents the implementation of the Layer representation. 
+    * Its role is to create the structure to represent an item in the 
+    * workspace ListView.
+    */
    private class LayerCell extends HBox {
 
       public LayerCell(Node item) {
 
          // Create a thumbnail for estetic purposes
-         Rectangle rect = new Rectangle(40, 40);
-         rect.setFill(Color.web("#bbb"));
+         AnchorPane rect = new AnchorPane();
+         rect.setPrefSize(40, 40);
+
+         // Add a Label (To be replaced by the name of the type of Node ?)
+         Text t = new Text("Layer");
+         
+         if (LayerListable.class.isInstance(item)) {
+            rect.getStyleClass().add( ((LayerListable)item).getThumbnailClass() );
+            t.setText( ((LayerListable)item).getLayerName() );
+         }
 
          // Add it to the LayerCell
          getChildren().add(rect);
-
-         // Add a Label (To be replaced by the name of the type of Node ?)
-         getChildren().add(new Text("Layer"));
+         getChildren().add(t);
 
          // Align everything
          setAlignment(Pos.CENTER_LEFT);

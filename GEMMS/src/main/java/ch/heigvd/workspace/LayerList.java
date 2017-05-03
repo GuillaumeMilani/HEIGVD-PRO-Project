@@ -16,6 +16,13 @@ import javafx.util.Callback;
  *
  * @author mathieu
  */
+
+/**
+ * LayerList is the class who's in charge of controlling the Workspace
+ * children. It extends ListView, thus allowing to select, control and safely
+ * delete Nodes from the workspace children, while keeping a coherent state 
+ * in the controller.
+ */
 public class LayerList extends ListView {
 
    public LayerList(ObservableList<Node> layers) {

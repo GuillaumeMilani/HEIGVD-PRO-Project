@@ -51,7 +51,7 @@ public class Workspace extends AnchorPane {
       setPrefSize(width, height);
       setMaxSize(width, height);
       setMinSize(width, height);
-
+      
       // Give the CSS ID
       setId("workspacePane");
 
@@ -74,6 +74,7 @@ public class Workspace extends AnchorPane {
          private double x;
          private double y;
 
+         @Override
          public void handle(MouseEvent event) {
             if (event.isShiftDown()) {
                if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
@@ -125,7 +126,7 @@ public class Workspace extends AnchorPane {
 
    /**
     *
-    * @param z
+    * @param factor
     */
    public void zoom(double factor) {
       setScaleX(getScaleX() * factor);

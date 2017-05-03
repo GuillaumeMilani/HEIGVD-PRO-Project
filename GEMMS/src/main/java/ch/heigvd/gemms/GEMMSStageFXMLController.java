@@ -1,5 +1,6 @@
 package ch.heigvd.gemms;
 
+import ch.heigvd.layer.GEMMSText;
 import ch.heigvd.workspace.Workspace;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -12,7 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
+import javafxtest.GEMMSCanvas;
 
 public class GEMMSStageFXMLController implements Initializable {
     
@@ -67,8 +68,10 @@ public class GEMMSStageFXMLController implements Initializable {
         centerAnchor.getChildren().add(workspace);
         
         // Temporary button to create a Text Layer
-        createToolButton("T+", gridCreationTools).setOnAction(event -> workspace.addLayer(new Text(50, 50, "Ceci est un texte"))); // pour appeler maFonction(), faire event->maFonction()
+        createToolButton("T+", gridCreationTools).setOnAction(event -> workspace.addLayer(new GEMMSText(50, 50, "Ceci est un texte"))); // pour appeler maFonction(), faire event->maFonction()
+        createToolButton("C+", gridCreationTools).setOnAction(event -> workspace.addLayer(new GEMMSCanvas(workspace.getPrefWidth(), workspace.getPrefHeight()))); // pour appeler maFonction(), faire event->maFonction()
 
+        
         layerController.getChildren().add(workspace.getWorkspaceController());
     }
 

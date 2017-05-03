@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
@@ -118,6 +119,10 @@
          </top>
          <center>
             <AnchorPane fx:id="centerAnchor" BorderPane.alignment="CENTER" />
+            
+            <AnchorPane fx:id="content">
+                <StackPane fx:id="centerPane" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" ></StackPane>
+            </AnchorPane>
          </center>
       </BorderPane>
    </children>

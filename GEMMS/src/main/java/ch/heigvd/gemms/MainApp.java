@@ -20,6 +20,7 @@ public class MainApp extends Application {
         
         Scene scene = new Scene(root);
         controller.setScene(scene);
+        controller.setStage((stage));
         scene.getStylesheets().add("/styles/Styles.css");
         
         stage.setTitle("GEMMS 2017");

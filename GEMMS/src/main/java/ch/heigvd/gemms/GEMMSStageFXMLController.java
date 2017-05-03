@@ -1,20 +1,29 @@
 package ch.heigvd.gemms;
 
+import java.awt.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Slider;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
+
+import javax.swing.*;
 
 public class GEMMSStageFXMLController implements Initializable {
     
     private Scene scene;
+    private Stage stage;
 
     /**
      * GridPanes containing the tools buttons
@@ -34,6 +43,7 @@ public class GEMMSStageFXMLController implements Initializable {
     @FXML
     private AnchorPane centerAnchor;
 
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -44,7 +54,7 @@ public class GEMMSStageFXMLController implements Initializable {
         gridModificationTools.getRowConstraints().add(new RowConstraints(Constants.BUTTONS_HEIGHT));
 
         // Create some buttons
-        createToolButton("Example", gridDrawingTools).setOnAction(event -> System.out.println("Do Something")); // pour appeler maFonction(), faire event->maFonction()
+        createToolButton("Example", gridDrawingTools).setOnAction(event -> {}); // pour appeler maFonction(), faire event->maFonction()
 
         // Workspace
         centerAnchor.setClip(new Rectangle(centerAnchor.getPrefWidth(), centerAnchor.getPrefHeight()));
@@ -75,10 +85,37 @@ public class GEMMSStageFXMLController implements Initializable {
 
         pane.add(button, col, row);
 
+        final Popup popup = new Popup();
+        popup.setWidth(200);
+
+        final HBox hbox = new HBox();
+        hbox.setAlignment(Pos.CENTER);
+        hbox.setPrefHeight(40);
+        hbox.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+
+        final ColorPicker cp = new ColorPicker();
+        cp.setStyle("-fx-color-label-visible: false ;");
+
+        final Slider sl = new Slider(0, 100, 50);
+
+        hbox.getChildren().add(cp);
+        hbox.getChildren().add(sl);
+
+        popup.getContent().add(hbox);
+
+        button.setOnMouseEntered(event -> {
+            popup.show(stage);
+            popup.setX(button.localToScreen(button.getBoundsInLocal()).getMinX());
+            popup.setY(button.localToScreen(button.getBoundsInLocal()).getMaxY() - button.getBoundsInLocal().getHeight() / 3);
+            popup.setAutoHide(true);
+        });
+
         return button;
     }
     
     public void setScene(Scene scene) {
         this.scene = scene;
     }
+
+    public void setStage(Stage stage) { this.stage = stage; }
 }

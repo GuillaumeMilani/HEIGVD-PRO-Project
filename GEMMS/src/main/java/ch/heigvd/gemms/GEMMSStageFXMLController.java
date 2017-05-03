@@ -13,7 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.shape.Rectangle;
-import javafxtest.GEMMSCanvas;
+import ch.heigvd.layer.GEMMSCanvas;
 
 public class GEMMSStageFXMLController implements Initializable {
     

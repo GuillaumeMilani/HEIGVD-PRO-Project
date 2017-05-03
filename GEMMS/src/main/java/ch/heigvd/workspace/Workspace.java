@@ -44,6 +44,7 @@ public class Workspace extends AnchorPane {
       // Set the workspace Pane position to be at the center of pane
       int posX = (int) ((pane.getPrefWidth() - width) / 2);
       int posY = (int) ((pane.getPrefHeight() - height) / 2);
+      
       setLayoutX(posX);
       setLayoutY(posY);
 

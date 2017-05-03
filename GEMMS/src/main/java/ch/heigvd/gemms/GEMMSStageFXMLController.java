@@ -59,16 +59,16 @@ public class GEMMSStageFXMLController implements Initializable {
 
         // Workspace Pane container
         // /!\ Set in code, to change later /!\
-        centerAnchor.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        centerAnchor.setPrefSize(600, 700);
         centerAnchor.setClip(new Rectangle(centerAnchor.getPrefWidth(), centerAnchor.getPrefHeight()));
         centerAnchor.setId("workspaceAnchorPane"); // Set id for CSS styling
         
         // Create the Workspace with hardcoded dimensions, to change later
         workspace = new Workspace(500, 500, centerAnchor);
-        AnchorPane.setTopAnchor(workspace, 5.0);
-        AnchorPane.setBottomAnchor(workspace, 5.0);
-        AnchorPane.setRightAnchor(workspace, 5.0);
-        AnchorPane.setLeftAnchor(workspace, 5.0);
+//        AnchorPane.setTopAnchor(centerAnchor, 5.0);
+//        AnchorPane.setBottomAnchor(centerAnchor, 5.0);
+//        AnchorPane.setRightAnchor(centerAnchor, 5.0);
+//        AnchorPane.setLeftAnchor(centerAnchor, 5.0);
         centerAnchor.getChildren().add(workspace);
         
         // Temporary button to create a Text Layer

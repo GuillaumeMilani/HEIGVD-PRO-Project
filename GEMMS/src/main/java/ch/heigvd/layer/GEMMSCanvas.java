@@ -1,4 +1,4 @@
-package javafxtest;
+package ch.heigvd.layer;
 
 import ch.heigvd.gemms.CSSIcons;
 import ch.heigvd.workspace.LayerListable;

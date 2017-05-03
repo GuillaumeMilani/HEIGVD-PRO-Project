@@ -9,11 +9,11 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.shape.Rectangle;
 import ch.heigvd.layer.GEMMSCanvas;
+import javafx.scene.layout.StackPane;
 
 public class GEMMSStageFXMLController implements Initializable {
     
@@ -37,7 +37,7 @@ public class GEMMSStageFXMLController implements Initializable {
      * AnchorPane containing the workspace
      */
     @FXML
-    private AnchorPane centerAnchor;
+    private StackPane centerPane;
     
     @FXML
     private GridPane layerController;
@@ -58,18 +58,13 @@ public class GEMMSStageFXMLController implements Initializable {
         createToolButton("Example", gridDrawingTools).setOnAction(event -> System.out.println("Do Something")); // pour appeler maFonction(), faire event->maFonction()
 
         // Workspace Pane container
-        // /!\ Set in code, to change later /!\
-        centerAnchor.setPrefSize(600, 700);
-        centerAnchor.setClip(new Rectangle(centerAnchor.getPrefWidth(), centerAnchor.getPrefHeight()));
-        centerAnchor.setId("workspaceAnchorPane"); // Set id for CSS styling
+        centerPane.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        centerPane.setClip(new Rectangle(centerPane.getPrefWidth(), centerPane.getPrefHeight()));
+        centerPane.setId("workspaceAnchorPane"); // Set id for CSS styling
         
         // Create the Workspace with hardcoded dimensions, to change later
-        workspace = new Workspace(500, 500, centerAnchor);
-//        AnchorPane.setTopAnchor(centerAnchor, 5.0);
-//        AnchorPane.setBottomAnchor(centerAnchor, 5.0);
-//        AnchorPane.setRightAnchor(centerAnchor, 5.0);
-//        AnchorPane.setLeftAnchor(centerAnchor, 5.0);
-        centerAnchor.getChildren().add(workspace);
+        workspace = new Workspace(500, 500, centerPane);
+        centerPane.getChildren().add(workspace);
         
         // Temporary button to create a Text Layer
         createToolButton("T+", gridCreationTools).setOnAction(event -> workspace.addLayer(new GEMMSText(50, 50, "Ceci est un texte"))); // pour appeler maFonction(), faire event->maFonction()

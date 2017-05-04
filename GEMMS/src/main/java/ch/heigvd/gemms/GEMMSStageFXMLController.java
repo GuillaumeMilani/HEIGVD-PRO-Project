@@ -7,17 +7,18 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.shape.Rectangle;
 import ch.heigvd.layer.GEMMSCanvas;
+import javafx.stage.Stage;
 
 public class GEMMSStageFXMLController implements Initializable {
     
-    private Scene scene;
+    // Stage from main
+    private Stage stage;
 
     /**
      * GridPanes containing the tools buttons
@@ -107,7 +108,7 @@ public class GEMMSStageFXMLController implements Initializable {
         return button;
     }
     
-    public void setScene(Scene scene) {
-        this.scene = scene;
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 }

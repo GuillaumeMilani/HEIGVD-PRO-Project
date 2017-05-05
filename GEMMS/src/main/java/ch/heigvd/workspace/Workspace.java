@@ -6,6 +6,10 @@
 package ch.heigvd.workspace;
 
 import ch.heigvd.gemms.Constants;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -14,18 +18,28 @@ import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 
 /**
  *
  * @author mathieu
  */
-public class Workspace extends AnchorPane {
+public class Workspace extends StackPane implements Serializable {
 
-   private final LayerList layerList;
+   // Workspace that displays layers
+   private AnchorPane workspace;
+   
+   // Size of workspace
+   private int height;
+   private int width;
+   
+   // Contains layers
+   private LayerList layerList;
    private VBox layersController;
-
+   
+  
    /**
     * Constructor for a new instance of Workspace. The Workspace extends a Pane
     * which represents the working area of the document. It sets its initial
@@ -34,30 +48,39 @@ public class Workspace extends AnchorPane {
     * @param width the width of the Workspace (according to the document needs)
     * @param height the height of the Workspace (according to the document
     * needs)
-    * @param pane the application pane in which the Workspace is to be added.
     */
-   public Workspace(int width, int height, Pane pane) {
-      // Explciit call to parent constructor
-      super();
-
-      layerList = new LayerList(getChildren());
-      // Set the workspace Pane position to be at the center of pane
-      int posX = (int) ((pane.getPrefWidth() - width) / 2);
-      int posY = (int) ((pane.getPrefHeight() - height) / 2);
+   public Workspace(int width, int height) {
+      init(width, height);
+   }
+   
+   public void init(int width, int height) {
+      this.width = width;
+      this.height = height;
       
-      setLayoutX(posX);
-      setLayoutY(posY);
+      workspace = new AnchorPane();
+      this.getChildren().add(workspace);
+        
+      setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
+      setClip(new Rectangle(getPrefWidth(), getPrefHeight()));
+      setId("workspaceAnchorPane"); // Set id for CSS styling
+
+      layerList = new LayerList(workspace.getChildren());
+      
+      // Set the workspace Pane position to be at the center of pane
+      int posX = (int) ((getPrefWidth() - width) / 2);
+      int posY = (int) ((getPrefHeight() - height) / 2);
+      workspace.setLayoutX(posX);
+      workspace.setLayoutY(posY);
 
       // Set preferredSize
-      setPrefSize(width, height);
-      setMaxSize(width, height);
-      setMinSize(width, height);
+      workspace.setPrefSize(width, height);
+      workspace.setMaxSize(width, height);
+      workspace.setMinSize(width, height);
       
-      // Give the CSS ID
-      setId("workspacePane");
+      workspace.setId("workspacePane");
 
       // Register scroll event for zoom
-      pane.setOnScroll(new EventHandler<ScrollEvent>() {
+      setOnScroll(new EventHandler<ScrollEvent>() {
          @Override
          public void handle(ScrollEvent event) {
             if (event.isControlDown()) {
@@ -91,8 +114,7 @@ public class Workspace extends AnchorPane {
          }
       };
 
-      pane.addEventHandler(MouseEvent.ANY, dragEventHandler);
-
+      addEventHandler(MouseEvent.ANY, dragEventHandler);
    }
 
    public List<Node> getCurrentLayers() {
@@ -130,8 +152,8 @@ public class Workspace extends AnchorPane {
     * @param factor
     */
    public void zoom(double factor) {
-      setScaleX(getScaleX() * factor);
-      setScaleY(getScaleY() * factor);
+      workspace.setScaleX(workspace.getScaleX() * factor);
+      workspace.setScaleY(workspace.getScaleY() * factor);
    }
 
    /**
@@ -141,8 +163,8 @@ public class Workspace extends AnchorPane {
     * @param y the y coordinate of the translation
     */
    public void move(double x, double y) {
-      setTranslateX(getTranslateX() + x);
-      setTranslateY(getTranslateY() + y);
+      workspace.setTranslateX(workspace.getTranslateX() + x);
+      workspace.setTranslateY(workspace.getTranslateY() + y);
    }
 
    /**
@@ -179,5 +201,41 @@ public class Workspace extends AnchorPane {
          return layersController;
       }
    }
+   
+   public int width() {
+      return width;
+   }
+   
+   public int height() {
+      return height;
+   }
+   
+   private void writeObject(ObjectOutputStream s) throws IOException {
+      // Write size of workspace
+      s.writeInt(height);
+      s.writeInt(width);
+      
+      // Number of layer
+      s.writeInt(layerList.getItems().size());
+      
+      for(Object n : layerList.getItems()) {
+         if(Serializable.class.isInstance(n)) {
+            s.writeObject(n);
+         }
+      }
+      
+   }
 
+   private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+      int h = s.readInt();
+      int w = s.readInt();
+      
+      init(w, h);
+      
+      int nbLayers = s.readInt();
+      
+      for(int i = 0; i < nbLayers; ++i) {
+          addLayer((Node)s.readObject());
+      }
+   }
 }

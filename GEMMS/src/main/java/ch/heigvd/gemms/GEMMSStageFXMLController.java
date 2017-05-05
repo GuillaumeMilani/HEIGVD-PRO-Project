@@ -8,13 +8,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.shape.Rectangle;
 import ch.heigvd.layer.GEMMSCanvas;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class GEMMSStageFXMLController implements Initializable {
@@ -42,7 +43,9 @@ public class GEMMSStageFXMLController implements Initializable {
      * AnchorPane containing the workspace
      */
     @FXML
-    private AnchorPane centerAnchor;
+    private BorderPane interfaceBorderPane;
+    
+    
     
     @FXML
     private GridPane layerController;
@@ -76,35 +79,43 @@ public class GEMMSStageFXMLController implements Initializable {
         gridModificationTools.getRowConstraints().add(new RowConstraints(Constants.BUTTONS_HEIGHT));
 
         
-        // Workspace Pane container
-        // /!\ Set in code, to change later /!\
-        centerAnchor.setPrefSize(600, 700);
-        centerAnchor.setClip(new Rectangle(centerAnchor.getPrefWidth(), centerAnchor.getPrefHeight()));
-        centerAnchor.setId("workspaceAnchorPane"); // Set id for CSS styling
-        
-
         // Create a new document
         document = new Document(stage);
         
         
         // Create a new workspace
         newDocumentButton.setOnAction((ActionEvent e) -> {
-            workspace = document.newDocument(centerAnchor);
-            centerAnchor.getChildren().add(workspace);
+            workspace = document.newDocument();
+            interfaceBorderPane.setCenter(workspace);
             layerController.getChildren().add(workspace.getWorkspaceController());
             
             
             // Temporary button to create a Text Layer
             createToolButton("T+", gridCreationTools).setOnAction(event -> workspace.addLayer(new GEMMSText(50, 50, "Ceci est un texte"))); // pour appeler maFonction(), faire event->maFonction()
-            createToolButton("C+", gridCreationTools).setOnAction(event -> workspace.addLayer(new GEMMSCanvas(workspace.getPrefWidth(), workspace.getPrefHeight()))); // pour appeler maFonction(), faire event->maFonction()
+            createToolButton("C+", gridCreationTools).setOnAction(event -> workspace.addLayer(new GEMMSCanvas(workspace.width(), workspace.height()))); // pour appeler maFonction(), faire event->maFonction()
         });
         
         
-        // Create the Workspace with hardcoded dimensions, to change later
-//        AnchorPane.setTopAnchor(centerAnchor, 5.0);
-//        AnchorPane.setBottomAnchor(centerAnchor, 5.0);
-//        AnchorPane.setRightAnchor(centerAnchor, 5.0);
-//        AnchorPane.setLeftAnchor(centerAnchor, 5.0);
+        // Open workspace with file
+        openDocumentButton.setOnAction((ActionEvent e) -> {
+            try {
+                workspace = document.open();
+                interfaceBorderPane.setCenter(workspace);
+                layerController.getChildren().add(workspace.getWorkspaceController());
+            } catch (IOException | ClassNotFoundException ex) {
+                Logger.getLogger(GEMMSStageFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        // Save a workspace
+        saveDocumentButton.setOnAction((ActionEvent e) -> {
+            try {
+                document.save(workspace);
+            } catch (IOException ex) {
+                Logger.getLogger(GEMMSStageFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        });
         
     }
 

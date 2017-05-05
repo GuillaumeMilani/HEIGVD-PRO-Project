@@ -57,10 +57,9 @@ public class Document {
     
     /**
      * 
-     * @param pane
      * @return 
      */
-    public Workspace newDocument(Pane pane) {
+    public Workspace newDocument() {
         // Create dialog
         Dialog<Pair<Integer, Integer>> dialog = new Dialog<>();
         dialog.setTitle("Create a new file");
@@ -113,7 +112,7 @@ public class Document {
         Optional<Pair<Integer, Integer>> result = dialog.showAndWait();
 
         if(result.isPresent()) {
-            return new Workspace(result.get().getKey(), result.get().getValue(), pane);
+            return new Workspace(result.get().getKey(), result.get().getValue());
         }
 
         return null;

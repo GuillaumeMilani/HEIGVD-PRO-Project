@@ -20,7 +20,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
+
 
 /**
  *
@@ -60,8 +60,8 @@ public class Workspace extends StackPane implements Serializable {
       workspace = new AnchorPane();
       this.getChildren().add(workspace);
         
-      setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
-      setClip(new Rectangle(getPrefWidth(), getPrefHeight()));
+      //setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
+      //setClip(new Rectangle(getPrefWidth(), getPrefHeight()));
       setId("workspaceAnchorPane"); // Set id for CSS styling
 
       layerList = new LayerList(workspace.getChildren());

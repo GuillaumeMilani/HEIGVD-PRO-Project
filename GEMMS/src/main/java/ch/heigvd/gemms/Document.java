@@ -9,27 +9,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Optional;
-import javafx.application.Platform;
-
 import javax.imageio.ImageIO;
-
 import javafx.embed.swing.SwingFXUtils;
-import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
-import javafx.util.Pair;
-import javafx.util.converter.IntegerStringConverter;
+
 
 /**
  * <h1></h1>
@@ -38,16 +24,57 @@ import javafx.util.converter.IntegerStringConverter;
  */
 public class Document {
 
-    private final FileChooser fileChooser;
-    private final Stage stage;
+    private Workspace workspace;
+    
+    private FileChooser fileChooser;
+    private Stage stage;
     private File currentFile;
-
+    
+    private String name;
+    
     /**
      * Constructor
+     * 
+     * Create a new document
      *
-     * @param s
+     * @param s stage for the file chooser
+     * @param width width of the workspace
+     * @param height height of the workspace
      */
-    public Document(Stage s) {
+    public Document(Stage s, int width, int height) {
+        init(s);
+        
+        name = "untiled";
+        workspace = new Workspace(width, height);
+    }
+    
+    /**
+     * Constructor
+     * 
+     * Open a new document with a file
+     * 
+     * @param s stage for the file chooser
+     * @param f file to open
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws ClassNotFoundException 
+     */
+    public Document(Stage s, File f) throws FileNotFoundException, IOException, ClassNotFoundException {
+        init(s);
+        
+        // TODO : Check file extension
+        currentFile = f;
+        
+        name = currentFile.getName();
+        
+        if (currentFile != null) {
+            try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(currentFile))) {
+                workspace = (Workspace) in.readObject();
+            }
+        }
+    }
+    
+    private void init(Stage s) {
         stage = s;
 
         fileChooser = new FileChooser();
@@ -55,114 +82,31 @@ public class Document {
                 new File(System.getProperty("user.home")));
     }
     
-    /**
-     * 
-     * @return 
-     */
-    public Workspace newDocument() {
-        // Create dialog
-        Dialog<Pair<Integer, Integer>> dialog = new Dialog<>();
-        dialog.setTitle("Create a new file");
-
-        // Set button
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-        // Set text field
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
-
-        TextField width = new TextField();
-        width.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
-        TextField height = new TextField();
-        height.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
-
-        grid.add(new Label("Width:"), 0, 0);
-        grid.add(width, 1, 0);
-        grid.add(new Label("Height:"), 0, 1);
-        grid.add(height, 1, 1);
-
-        dialog.getDialogPane().setContent(grid);
-
-        // Request focus
-        Platform.runLater(() -> width.requestFocus());
-
-        Node loginButton = dialog.getDialogPane().lookupButton(ButtonType.OK);
-        loginButton.setDisable(true);
-
-        // Field validation
-        width.textProperty().addListener((observable, oldValue, newValue) -> {
-            loginButton.setDisable(newValue.trim().isEmpty());
-        });
-
-        height.textProperty().addListener((observable, oldValue, newValue) -> {
-            loginButton.setDisable(newValue.trim().isEmpty());
-        });
-
-        // Return result
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == ButtonType.OK) {
-                return new Pair<>(Integer.valueOf(width.getText()), Integer.valueOf(height.getText()));
-            }
-
-            return null;
-        });
-
-        Optional<Pair<Integer, Integer>> result = dialog.showAndWait();
-
-        if(result.isPresent()) {
-            return new Workspace(result.get().getKey(), result.get().getValue());
-        }
-
-        return null;
-    }
 
     /**
-     *
-     * @throws IOException
-     * @throws FileNotFoundException
-     * @throws ClassNotFoundException
-     *
-     */
-    Workspace open() throws FileNotFoundException, IOException, ClassNotFoundException {
-
-        fileChooser.setTitle("Open file");
-        fileChooser.getExtensionFilters().add(
-                new ExtensionFilter("GEMMS", "*.gemms"));
-
-        currentFile = fileChooser.showOpenDialog(stage);
-        if (currentFile != null) {
-            try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(currentFile))) {
-                return (Workspace) in.readObject();
-            }
-        }
-
-        return null;
-    }
-
-    /**
+     * Save the workspace
      *
      * @throws IOException
      * @throws FileNotFoundException
      */
-    void save(Workspace n) throws FileNotFoundException, IOException {
+    void save() throws FileNotFoundException, IOException {
         
         if (currentFile != null) {
             try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(currentFile))) {
-                out.writeObject(n);
+                out.writeObject(workspace);
             }
         } else {
-            saveAs(n);
+            saveAs();
         }
     }
 
     /**
+     * SaveAs the workspace
      *
      * @throws IOException
      * @throws FileNotFoundException
      */
-    void saveAs(Workspace workspace) throws FileNotFoundException, IOException {
+    void saveAs() throws FileNotFoundException, IOException {
 
         fileChooser.setTitle("Save as");
         fileChooser.getExtensionFilters().add(
@@ -175,6 +119,8 @@ public class Document {
                 try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(currentFile))) {
                     out.writeObject(workspace);
                 }
+                
+                name = currentFile.getName();
             } else {
                 // throw new Exception(currentFile.getName() + " has no valid file-extension.");
             }
@@ -182,10 +128,11 @@ public class Document {
     }
 
     /**
+     * Export the workspace as an image
      *
      * @throws IOException
      */
-    void export(Workspace workspace) throws IOException {
+    void export() throws IOException {
 
         fileChooser.setTitle("Export");
         fileChooser.getExtensionFilters().add(
@@ -196,11 +143,28 @@ public class Document {
         // new ExtensionFilter("All Files", "*.*")
         File file = fileChooser.showSaveDialog(stage);
         if (file != null) {
-            // TODO : Set the size with the workspace
-            WritableImage writableImage = new WritableImage((int)workspace.getWidth(), (int)workspace.getHeight());
+            WritableImage writableImage = new WritableImage((int)workspace.width(), (int)workspace.height());
             workspace.snapshot(null, writableImage);
             RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
             ImageIO.write(renderedImage, "png", file);
         }
+    }
+    
+    /**
+     * Return the workspace
+     * 
+     * @return the workspace
+     */
+    public Workspace workspace() {
+        return workspace;
+    }
+    
+    /**
+     * Return name of the document
+     * 
+     * @return name
+     */
+    public String name() {
+        return name;
     }
 }

@@ -11,12 +11,29 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import ch.heigvd.layer.GEMMSCanvas;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.Node;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Pair;
+import javafx.util.converter.IntegerStringConverter;
 
 public class GEMMSStageFXMLController implements Initializable {
     
@@ -39,12 +56,9 @@ public class GEMMSStageFXMLController implements Initializable {
     private GridPane gridModificationTools;
     
     
-    /**
-     * AnchorPane containing the workspace
-     */
+    // Contains all workspace (tab)
     @FXML
-    private BorderPane interfaceBorderPane;
-    
+    private TabPane workspaces;
     
     
     @FXML
@@ -63,11 +77,13 @@ public class GEMMSStageFXMLController implements Initializable {
     @FXML
     private Button saveDocumentButton;
     
-
-    private Document document;
+    // List of documents
+    private ArrayList<Document> documents;
     
-    private Workspace workspace;
-
+    // File chooser
+    private FileChooser fileChooser;
+    
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -79,45 +95,141 @@ public class GEMMSStageFXMLController implements Initializable {
         gridModificationTools.getRowConstraints().add(new RowConstraints(Constants.BUTTONS_HEIGHT));
 
         
+        // Init file chooser
+        fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        
+        
+        // Document list
+        documents = new ArrayList<>();
+        
+        
         // Create a new document
-        document = new Document(stage);
-        
-        
-        // Create a new workspace
         newDocumentButton.setOnAction((ActionEvent e) -> {
-            workspace = document.newDocument();
-            interfaceBorderPane.setCenter(workspace);
-            layerController.getChildren().add(workspace.getWorkspaceController());
             
+            // Display dialog
+            Optional<Pair<Integer, Integer>> result = newDocumentDialog();
             
-            // Temporary button to create a Text Layer
-            createToolButton("T+", gridCreationTools).setOnAction(event -> workspace.addLayer(new GEMMSText(50, 50, "Ceci est un texte"))); // pour appeler maFonction(), faire event->maFonction()
-            createToolButton("C+", gridCreationTools).setOnAction(event -> workspace.addLayer(new GEMMSCanvas(workspace.width(), workspace.height()))); // pour appeler maFonction(), faire event->maFonction()
+            // Dialog OK
+            if(result.isPresent()) {
+                
+                // Create a new document
+                Document document = new Document(stage, result.get().getKey(), result.get().getValue());
+                
+                // Get workspace
+                Workspace w = document.workspace();
+                
+                // Clear
+                layerController.getChildren().clear();
+                layerController.getChildren().add(w.getWorkspaceController());
+
+                // Create tab
+                Tab tab = new Tab("untiled", w);
+                workspaces.getTabs().add(tab);
+                workspaces.getSelectionModel().select(tab);
+                
+                documents.add(document);
+            }
         });
         
         
         // Open workspace with file
         openDocumentButton.setOnAction((ActionEvent e) -> {
-            try {
-                workspace = document.open();
-                interfaceBorderPane.setCenter(workspace);
-                layerController.getChildren().add(workspace.getWorkspaceController());
-            } catch (IOException | ClassNotFoundException ex) {
-                Logger.getLogger(GEMMSStageFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+
+            File f = openDocumentDialog();
+            if(f != null) {
+                Document document = null;
+                try {
+                    document = new Document(stage, f);
+                } catch (IOException ex) {
+                    Logger.getLogger(GEMMSStageFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(GEMMSStageFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                Workspace w = document.workspace();
+
+                // Clear
+                layerController.getChildren().clear();
+                layerController.getChildren().add(w.getWorkspaceController());
+
+                // Create tab
+                Tab tab = new Tab(document.name(), w);
+                workspaces.getTabs().add(tab);
+                workspaces.getSelectionModel().select(tab);
+                
+                documents.add(document);
             }
         });
+        
         
         // Save a workspace
-        saveDocumentButton.setOnAction((ActionEvent e) -> {
-            try {
-                document.save(workspace);
-            } catch (IOException ex) {
-                Logger.getLogger(GEMMSStageFXMLController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        saveDocumentButton.setOnAction(e -> {
 
+            if(workspaces.getTabs().size() > 0) {
+                // Get current tab
+                Tab tab = workspaces.getSelectionModel().getSelectedItem();
+                Workspace w = (Workspace)tab.getContent();
+
+                // Research document with workspace
+                Document d = getDocument(w);
+
+                // Save document
+                if(d != null) {
+                    try {
+                        d.save();
+                    } catch (IOException ex) {
+                        Logger.getLogger(GEMMSStageFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                
+                // Set tab title
+                tab.setText(d.name());
+            }
         });
         
+        
+        // Tab changed action
+        workspaces.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> ov, Tab t, Tab t1) -> {
+            if(workspaces.getTabs().size() > 0) {
+                Workspace w = (Workspace)workspaces.getSelectionModel().getSelectedItem().getContent();
+                layerController.getChildren().clear();
+                layerController.getChildren().add(w.getWorkspaceController());
+            }
+            // Suppress tab
+            else {
+                // Get workspace
+                Workspace w = (Workspace)t.getContent();
+                
+                // Research document with workspace
+                Document d = getDocument(w);
+                documents.remove(d);
+                
+                // TODO : save when close ?
+                
+                // Clear
+                layerController.getChildren().clear();
+            }
+        });
+        
+        
+        // Create text button action
+        createToolButton("T+", gridCreationTools).setOnAction(e -> {
+            if(workspaces.getTabs().size() > 0) {
+                Workspace w = (Workspace)workspaces.getSelectionModel().getSelectedItem().getContent();
+                w.addLayer(new GEMMSText(50, 50, "Ceci est un texte"));
+            }
+        });
+
+        // Create canvas button action
+        createToolButton("C+", gridCreationTools).setOnAction(e -> {
+            if(workspaces.getTabs().size() > 0) {
+                Workspace w = (Workspace)workspaces.getSelectionModel().getSelectedItem().getContent();
+                w.addLayer(new GEMMSCanvas(w.width(), w.height()));
+            }
+        });
     }
+    
 
     /**
      * Create a tool button and add it in the corresponding grid pane
@@ -147,7 +259,106 @@ public class GEMMSStageFXMLController implements Initializable {
         return button;
     }
     
+    
+    /**
+     * Set the main stage
+     * 
+     * @param stage stage to set
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+    
+    
+    /**
+     * Display a dialog that init a new document
+     * 
+     * @return Pair of width and height
+     */
+    private Optional<Pair<Integer, Integer>> newDocumentDialog() {
+        // Create dialog
+        Dialog<Pair<Integer, Integer>> dialog = new Dialog<>();
+        dialog.setTitle("Create a new file");
+
+        // Set button
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        // Set text field
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField width = new TextField();
+        width.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        TextField height = new TextField();
+        height.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+
+        Label description = new Label("Document size");
+        description.setFont(Font.font(null, FontWeight.BOLD, 13));
+        grid.add(description, 0, 0);
+        grid.add(new Label("Width:"), 0, 1);
+        grid.add(width, 1, 1);
+        grid.add(new Label("Height:"), 0, 2);
+        grid.add(height, 1, 2);
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Request focus
+        Platform.runLater(() -> width.requestFocus());
+
+        Node loginButton = dialog.getDialogPane().lookupButton(ButtonType.OK);
+        loginButton.setDisable(true);
+
+        // Field validation
+        width.textProperty().addListener((observable, oldValue, newValue) -> {
+            loginButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        height.textProperty().addListener((observable, oldValue, newValue) -> {
+            loginButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        // Return result
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == ButtonType.OK) {
+                return new Pair<>(Integer.valueOf(width.getText()), Integer.valueOf(height.getText()));
+            }
+
+            return null;
+        });
+
+        return dialog.showAndWait();
+    }
+    
+    
+    /**
+     * Display a dialog that allow to choose project file
+     * 
+     * @return File project
+     */
+    private File openDocumentDialog() {
+        fileChooser.setTitle("Open file");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("GEMMS", "*.gemms"));
+
+        return fileChooser.showOpenDialog(stage);
+    }
+    
+    
+    /**
+     * Get document that contain the workspace
+     * 
+     * @param w workspace to find
+     * @return Document that contain the workspace
+     */
+    private Document getDocument(Workspace w) {
+        for(Document d : documents) {
+            if(d.workspace() == w) {
+               return d;
+            }
+        }
+        
+        return null;
     }
 }

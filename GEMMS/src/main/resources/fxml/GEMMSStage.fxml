@@ -116,6 +116,7 @@
                   <Button fx:id="newDocumentButton" mnemonicParsing="false" text="New" />
                   <Button fx:id="openDocumentButton" mnemonicParsing="false" text="Open" />
                   <Button fx:id="saveDocumentButton" mnemonicParsing="false" text="Save" />
+                  <Button fx:id="exportDocumentButton" mnemonicParsing="false" text="Export" />
               </items>
             </ToolBar>
          </top>

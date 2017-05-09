@@ -77,6 +77,9 @@ public class GEMMSStageFXMLController implements Initializable {
     @FXML
     private Button saveDocumentButton;
     
+    @FXML
+    private Button exportDocumentButton;
+    
     // List of documents
     private ArrayList<Document> documents;
     
@@ -185,6 +188,28 @@ public class GEMMSStageFXMLController implements Initializable {
                 
                 // Set tab title
                 tab.setText(d.name());
+            }
+        });
+        
+        
+        // Export workspace
+        exportDocumentButton.setOnAction(e -> {
+            if(workspaces.getTabs().size() > 0) {
+                // Get current tab
+                Tab tab = workspaces.getSelectionModel().getSelectedItem();
+                Workspace w = (Workspace)tab.getContent();
+
+                // Research document with workspace
+                Document d = getDocument(w);
+
+                // export document as image
+                if(d != null) {
+                    try {
+                        d.export();
+                    } catch (IOException ex) {
+                        Logger.getLogger(GEMMSStageFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
         });
         

@@ -18,9 +18,10 @@ import javafx.stage.Stage;
 
 
 /**
- * <h1></h1>
+ * <h1>Document</h1>
  *
- *
+ * This class create or load a from file a workspace. And allow to save in file 
+ * and export as an image.
  */
 public class Document {
 
@@ -74,6 +75,11 @@ public class Document {
         }
     }
     
+    /**
+     * Init for constructor
+     * 
+     * @param s stage to affect
+     */
     private void init(Stage s) {
         stage = s;
 

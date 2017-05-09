@@ -14,7 +14,9 @@ import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
@@ -237,5 +239,13 @@ public class Workspace extends StackPane implements Serializable {
       for(int i = 0; i < nbLayers; ++i) {
           addLayer((Node)s.readObject());
       }
+   }
+   
+   /**
+    * Override the default snapshot to take only workspace field
+    */
+   @Override
+   public WritableImage snapshot(SnapshotParameters params, WritableImage image) {
+       return workspace.snapshot(params, image);
    }
 }

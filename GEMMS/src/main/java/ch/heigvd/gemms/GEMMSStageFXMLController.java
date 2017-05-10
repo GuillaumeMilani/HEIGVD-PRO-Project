@@ -30,6 +30,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.Rotate;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
@@ -248,6 +250,28 @@ public class GEMMSStageFXMLController implements Initializable {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.addLayer(new GEMMSCanvas(w.width(), w.height()));  
+            }
+        });
+
+
+
+        // Create symetrie horizontal button action
+        createToolButton("Sym hori", gridModificationTools).setOnAction((ActionEvent e) -> {
+            if(workspaces.getTabs().size() > 0) {
+                Workspace w = (Workspace)workspaces.getSelectionModel().getSelectedItem().getContent();
+                for (Node node : w.getCurrentLayers()) {
+                    node.getTransforms().add(new Rotate(180,node.getBoundsInParent().getWidth(),node.getBoundsInParent().getHeight(),0,Rotate.Y_AXIS));
+                }
+            }
+        });
+
+        // Create symetrie vertical button action
+        createToolButton("Sym vert", gridModificationTools).setOnAction((ActionEvent e) -> {
+            if(workspaces.getTabs().size() > 0) {
+                Workspace w = (Workspace)workspaces.getSelectionModel().getSelectedItem().getContent();
+                for (Node node : w.getCurrentLayers()) {
+                    node.getTransforms().add(new Rotate(180,node.getBoundsInParent().getHeight()/2,node.getBoundsInParent().getWidth()/2,0,Rotate.X_AXIS));
+                }
             }
         });
     }

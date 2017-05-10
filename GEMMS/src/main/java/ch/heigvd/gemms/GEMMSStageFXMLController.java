@@ -244,7 +244,7 @@ public class GEMMSStageFXMLController implements Initializable {
         createToolButton("T+", gridCreationTools).setOnAction(e -> {
             if(workspaces.getTabs().size() > 0) {
                 Workspace w = (Workspace)workspaces.getSelectionModel().getSelectedItem().getContent();
-                w.addLayer(new GEMMSText(50, 50, "Ceci est un texte"));
+                w.addLayer(new GEMMSText(50, 50, "Ceci est un texte !"));
             }
         });
 
@@ -273,7 +273,7 @@ public class GEMMSStageFXMLController implements Initializable {
             if(workspaces.getTabs().size() > 0) {
                 Workspace w = (Workspace)workspaces.getSelectionModel().getSelectedItem().getContent();
                 for (Node node : w.getCurrentLayers()) {
-                    node.getTransforms().add(new Rotate(180,node.getBoundsInParent().getHeight(),node.getBoundsInParent().getWidth(),0,Rotate.X_AXIS));
+                    node.getTransforms().add(new Rotate(180,node.getBoundsInParent().getHeight()/2,node.getBoundsInParent().getWidth()/2,0,Rotate.X_AXIS));
                 }
             }
         });

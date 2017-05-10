@@ -58,11 +58,10 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements Serializa
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
                 Color c = pixelReader.getColor(x, y);
-                
-                s.writeDouble(c.getRed());
-                s.writeDouble(c.getGreen());
-                s.writeDouble(c.getBlue());
-                s.writeDouble(c.getOpacity());
+                double sat = c.getSaturation();
+                s.writeDouble(c.getHue());
+                s.writeDouble(c.getSaturation());
+                s.writeDouble(c.getBrightness());
             }
         }
     }
@@ -85,7 +84,7 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements Serializa
     	// Set the color every pixel of this canvas
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
-            	Color c = new Color(s.readDouble(), s.readDouble(), s.readDouble(), s.readDouble());
+            	Color c = Color.hsb(s.readDouble(), s.readDouble(), s.readDouble());
                 pixelWriter.setColor(x, y, c);                
             }
         }

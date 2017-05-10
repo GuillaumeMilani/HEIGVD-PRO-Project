@@ -27,7 +27,7 @@ public class LayerList extends ListView {
 
    public LayerList(ObservableList<Node> layers) {
       super(layers);
-      
+        
       // Set the CellFactory for this ListView
       setCellFactory(new Callback<ListView<Node>, ListCell<Node>>() {
          @Override

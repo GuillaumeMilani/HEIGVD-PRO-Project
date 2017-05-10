@@ -92,7 +92,6 @@ public class Workspace extends StackPane implements Serializable {
                     } else {
                         zoom(0.95);
                     }
-                    event.consume();
                 }
             }
         });
@@ -112,7 +111,9 @@ public class Workspace extends StackPane implements Serializable {
                         x = event.getX();
                         y = event.getY();
                     }
-                    event.consume();
+                } else {
+                   x = event.getX();
+                   y = event.getY();
                 }
             }
         };

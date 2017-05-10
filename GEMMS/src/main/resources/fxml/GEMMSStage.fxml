@@ -7,12 +7,15 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
@@ -110,14 +113,16 @@
                       <MenuItem mnemonicParsing="false" text="Action 2" />
                     </items>
                   </MenuButton>
-                  <Button mnemonicParsing="false" text="New" />
-                  <Button mnemonicParsing="false" text="Open" />
-                  <Button mnemonicParsing="false" text="Save" />
+                  <Button fx:id="newDocumentButton" mnemonicParsing="false" text="New" />
+                  <Button fx:id="openDocumentButton" mnemonicParsing="false" text="Open" />
+                  <Button fx:id="saveDocumentButton" mnemonicParsing="false" text="Save" />
+                  <Button fx:id="exportDocumentButton" mnemonicParsing="false" text="Export" />
               </items>
             </ToolBar>
          </top>
          <center>
-            <AnchorPane fx:id="centerAnchor" BorderPane.alignment="CENTER" />
+            <TabPane fx:id="workspaces">
+            </TabPane>
          </center>
       </BorderPane>
    </children>

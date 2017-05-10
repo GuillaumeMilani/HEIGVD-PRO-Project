@@ -19,8 +19,8 @@ public class MainApp extends Application {
         
         
         Scene scene = new Scene(root);
-        controller.setScene(scene);
-        controller.setStage((stage));
+
+        controller.setStage(stage);
         scene.getStylesheets().add("/styles/Styles.css");
         scene.getStylesheets().add("/styles/Workspace.css");
         scene.getStylesheets().add("/styles/CSSIcons.css");

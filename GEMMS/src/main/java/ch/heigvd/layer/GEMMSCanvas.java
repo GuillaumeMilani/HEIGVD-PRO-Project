@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import javafx.scene.SnapshotParameters;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -47,8 +48,10 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements Serializa
         s.writeInt(height);
         
         // Get an image 
+                SnapshotParameters sp = new SnapshotParameters();
+                sp.setFill(Color.TRANSPARENT);
 		WritableImage writableImage = new WritableImage(width, height);
-		snapshot(null, writableImage);
+		snapshot(sp, writableImage);
 		Image image = (Image) writableImage;
 		
 		// Get a pixel reader

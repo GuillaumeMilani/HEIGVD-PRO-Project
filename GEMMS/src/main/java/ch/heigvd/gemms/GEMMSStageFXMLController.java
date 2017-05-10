@@ -168,11 +168,10 @@ public class GEMMSStageFXMLController implements Initializable {
         
         // Save a workspace
         saveDocumentButton.setOnAction(e -> {
-
-            if(workspaces.getTabs().size() > 0) {
+            Workspace w = getCurrentWorkspace();
+            if(w != null) {
                 // Get current tab
                 Tab tab = workspaces.getSelectionModel().getSelectedItem();
-                Workspace w = (Workspace)tab.getContent();
 
                 // Research document with workspace
                 Document d = getDocument(w);
@@ -194,10 +193,8 @@ public class GEMMSStageFXMLController implements Initializable {
         
         // Export workspace
         exportDocumentButton.setOnAction(e -> {
-            if(workspaces.getTabs().size() > 0) {
-                // Get current tab
-                Tab tab = workspaces.getSelectionModel().getSelectedItem();
-                Workspace w = (Workspace)tab.getContent();
+           Workspace w = getCurrentWorkspace();
+            if(w != null) {
 
                 // Research document with workspace
                 Document d = getDocument(w);
@@ -216,15 +213,15 @@ public class GEMMSStageFXMLController implements Initializable {
         
         // Tab changed action
         workspaces.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> ov, Tab t, Tab t1) -> {
-            if(workspaces.getTabs().size() > 0) {
-                Workspace w = (Workspace)workspaces.getSelectionModel().getSelectedItem().getContent();
+           Workspace w = getCurrentWorkspace();
+           if(w != null) {
                 layerController.getChildren().clear();
                 layerController.getChildren().add(w.getWorkspaceController());
             }
             // Suppress tab
             else {
                 // Get workspace
-                Workspace w = (Workspace)t.getContent();
+                w = (Workspace)t.getContent();
                 
                 // Research document with workspace
                 Document d = getDocument(w);
@@ -240,17 +237,17 @@ public class GEMMSStageFXMLController implements Initializable {
         
         // Create text button action
         createToolButton("T+", gridCreationTools).setOnAction(e -> {
-            if(workspaces.getTabs().size() > 0) {
-                Workspace w = (Workspace)workspaces.getSelectionModel().getSelectedItem().getContent();
+           Workspace w = getCurrentWorkspace();
+            if(w != null) {
                 w.addLayer(new GEMMSText(50, 50, "Ceci est un texte"));
             }
         });
 
         // Create canvas button action
         createToolButton("C+", gridCreationTools).setOnAction(e -> {
-            if(workspaces.getTabs().size() > 0) {
-                Workspace w = (Workspace)workspaces.getSelectionModel().getSelectedItem().getContent();
-                w.addLayer(new GEMMSCanvas(w.width(), w.height()));
+           Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                w.addLayer(new GEMMSCanvas(w.width(), w.height()));  
             }
         });
     }
@@ -354,6 +351,13 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         return dialog.showAndWait();
+    }
+    
+    private Workspace getCurrentWorkspace() {
+       if (workspaces.getTabs().size() > 0) {
+          return (Workspace) workspaces.getSelectionModel().getSelectedItem().getContent();
+       }
+       return null;
     }
     
     

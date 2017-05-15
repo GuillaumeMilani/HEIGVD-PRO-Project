@@ -1,5 +1,8 @@
 /GEMMS/target/
 
+# IntelliJ
+.idea/
+
 # MAVEN
 target/
 pom.xml.tag

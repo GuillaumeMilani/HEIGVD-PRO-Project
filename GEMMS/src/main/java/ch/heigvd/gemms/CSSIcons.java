@@ -26,5 +26,6 @@ public class CSSIcons {
    // CSS lyaer types icon classes
    public static final String TEXT = "text-icon";
    public static final String CANVAS = "canvas-icon";
+   public static final String IMAGE = "image-icon";
    
 }

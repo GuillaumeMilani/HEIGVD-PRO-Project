@@ -11,6 +11,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import ch.heigvd.layer.GEMMSCanvas;
+import ch.heigvd.layer.GEMMSImage;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +21,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -28,12 +32,16 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.Rotate;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import javafx.util.converter.IntegerStringConverter;
+import javax.imageio.ImageIO;
 
 public class GEMMSStageFXMLController implements Initializable {
     
@@ -168,11 +176,10 @@ public class GEMMSStageFXMLController implements Initializable {
         
         // Save a workspace
         saveDocumentButton.setOnAction(e -> {
-
-            if(workspaces.getTabs().size() > 0) {
+            Workspace w = getCurrentWorkspace();
+            if(w != null) {
                 // Get current tab
                 Tab tab = workspaces.getSelectionModel().getSelectedItem();
-                Workspace w = (Workspace)tab.getContent();
 
                 // Research document with workspace
                 Document d = getDocument(w);
@@ -194,10 +201,8 @@ public class GEMMSStageFXMLController implements Initializable {
         
         // Export workspace
         exportDocumentButton.setOnAction(e -> {
-            if(workspaces.getTabs().size() > 0) {
-                // Get current tab
-                Tab tab = workspaces.getSelectionModel().getSelectedItem();
-                Workspace w = (Workspace)tab.getContent();
+           Workspace w = getCurrentWorkspace();
+            if(w != null) {
 
                 // Research document with workspace
                 Document d = getDocument(w);
@@ -216,15 +221,15 @@ public class GEMMSStageFXMLController implements Initializable {
         
         // Tab changed action
         workspaces.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> ov, Tab t, Tab t1) -> {
-            if(workspaces.getTabs().size() > 0) {
-                Workspace w = (Workspace)workspaces.getSelectionModel().getSelectedItem().getContent();
+           Workspace w = getCurrentWorkspace();
+           if(w != null) {
                 layerController.getChildren().clear();
                 layerController.getChildren().add(w.getWorkspaceController());
             }
             // Suppress tab
             else {
                 // Get workspace
-                Workspace w = (Workspace)t.getContent();
+                w = (Workspace)t.getContent();
                 
                 // Research document with workspace
                 Document d = getDocument(w);
@@ -240,17 +245,50 @@ public class GEMMSStageFXMLController implements Initializable {
         
         // Create text button action
         createToolButton("T+", gridCreationTools).setOnAction(e -> {
-            if(workspaces.getTabs().size() > 0) {
-                Workspace w = (Workspace)workspaces.getSelectionModel().getSelectedItem().getContent();
+           Workspace w = getCurrentWorkspace();
+            if(w != null) {
                 w.addLayer(new GEMMSText(50, 50, "Ceci est un texte"));
             }
         });
 
         // Create canvas button action
         createToolButton("C+", gridCreationTools).setOnAction(e -> {
+           Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                w.addLayer(new GEMMSCanvas(w.width(), w.height()));  
+            }
+        });
+
+        // Create image button action
+        createToolButton("I+", gridCreationTools).setOnAction(e -> {
+           Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                Image image = importImage();
+                if(image != null) {
+                    GEMMSImage i = new GEMMSImage(image);
+                    i.setViewport(new Rectangle2D(0, 0, w.width(), w.height()));
+                    w.addLayer(i);
+                }
+            }
+        });
+
+        // Create symetrie horizontal button action
+        createToolButton("Sym hori", gridModificationTools).setOnAction((ActionEvent e) -> {
             if(workspaces.getTabs().size() > 0) {
                 Workspace w = (Workspace)workspaces.getSelectionModel().getSelectedItem().getContent();
-                w.addLayer(new GEMMSCanvas(w.width(), w.height()));
+                for (Node node : w.getCurrentLayers()) {
+                    node.getTransforms().add(new Rotate(180,node.getBoundsInParent().getWidth(),node.getBoundsInParent().getHeight(),0,Rotate.Y_AXIS));
+                }
+            }
+        });
+
+        // Create symetrie vertical button action
+        createToolButton("Sym vert", gridModificationTools).setOnAction((ActionEvent e) -> {
+            if(workspaces.getTabs().size() > 0) {
+                Workspace w = (Workspace)workspaces.getSelectionModel().getSelectedItem().getContent();
+                for (Node node : w.getCurrentLayers()) {
+                    node.getTransforms().add(new Rotate(180,node.getBoundsInParent().getHeight()/2,node.getBoundsInParent().getWidth()/2,0,Rotate.X_AXIS));
+                }
             }
         });
     }
@@ -292,6 +330,33 @@ public class GEMMSStageFXMLController implements Initializable {
      */
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+    
+    /**
+     * Import an image dialog
+     * 
+     * @return image
+     */
+    public Image importImage() {
+        fileChooser.setTitle("Open image");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("png files (*.png)", "*.png"),
+                new FileChooser.ExtensionFilter("jpg files (*.jpg)", "*.jpg"));
+
+        File file = fileChooser.showOpenDialog(stage);
+        
+        Image image = null;
+        
+        if(file != null) {
+            try {
+                BufferedImage bufferedImage = ImageIO.read(file);
+                image = SwingFXUtils.toFXImage(bufferedImage, null);
+            } catch (IOException ex) {
+                Logger.getLogger(GEMMSStageFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return image;
     }
     
     
@@ -354,6 +419,13 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         return dialog.showAndWait();
+    }
+    
+    private Workspace getCurrentWorkspace() {
+       if (workspaces.getTabs().size() > 0) {
+          return (Workspace) workspaces.getSelectionModel().getSelectedItem().getContent();
+       }
+       return null;
     }
     
     

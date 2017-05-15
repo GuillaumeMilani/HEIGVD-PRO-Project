@@ -6,6 +6,8 @@
 package ch.heigvd.workspace;
 
 import ch.heigvd.gemms.Constants;
+import ch.heigvd.tool.Brush;
+import ch.heigvd.tool.Tool;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -41,6 +43,8 @@ public class Workspace extends StackPane implements Serializable {
     // Contains layers
     private LayerList layerList;
     private VBox layersController;
+    
+    private Tool currentTool;
 
 
     /**
@@ -81,6 +85,24 @@ public class Workspace extends StackPane implements Serializable {
         workspace.setMinSize(width, height);
 
         workspace.setId("workspacePane");
+        
+        currentTool = new Brush(this);
+        
+        workspace.addEventHandler(MouseEvent.ANY, new EventHandler<MouseEvent>() {
+            private double x;
+            private double y;
+
+            @Override
+            public void handle(MouseEvent event) {
+               if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
+                  currentTool.mousePressed(event.getX(), event.getY());
+               } else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
+                  currentTool.mouseDragged(event.getX(), event.getY());
+               } else if (event.getEventType() == MouseEvent.MOUSE_RELEASED) {
+                  currentTool.mouseReleased(event.getX(), event.getY());
+               }
+            }
+        });
 
         // Register scroll event for zoom
         setOnScroll(new EventHandler<ScrollEvent>() {

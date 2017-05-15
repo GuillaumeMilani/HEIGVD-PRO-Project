@@ -111,6 +111,7 @@ public class Workspace extends StackPane implements Serializable {
                         x = event.getX();
                         y = event.getY();
                     }
+                    event.consume();
                 } else {
                    x = event.getX();
                    y = event.getY();
@@ -118,7 +119,7 @@ public class Workspace extends StackPane implements Serializable {
             }
         };
 
-        addEventHandler(MouseEvent.ANY, dragEventHandler);
+        addEventFilter(MouseEvent.ANY, dragEventHandler);
     }
 
     public List<Node> getCurrentLayers() {

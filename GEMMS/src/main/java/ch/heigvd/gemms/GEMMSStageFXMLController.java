@@ -277,7 +277,7 @@ public class GEMMSStageFXMLController implements Initializable {
             if(workspaces.getTabs().size() > 0) {
                 Workspace w = (Workspace)workspaces.getSelectionModel().getSelectedItem().getContent();
                 for (Node node : w.getCurrentLayers()) {
-                    node.getTransforms().add(new Rotate(180,node.getBoundsInParent().getWidth(),node.getBoundsInParent().getHeight(),0,Rotate.Y_AXIS));
+                    node.getTransforms().add(new Rotate(180,node.getBoundsInParent().getWidth()/2,node.getBoundsInParent().getHeight()/2,0,Rotate.Y_AXIS));
                 }
             }
         });
@@ -287,7 +287,7 @@ public class GEMMSStageFXMLController implements Initializable {
             if(workspaces.getTabs().size() > 0) {
                 Workspace w = (Workspace)workspaces.getSelectionModel().getSelectedItem().getContent();
                 for (Node node : w.getCurrentLayers()) {
-                    node.getTransforms().add(new Rotate(180,node.getBoundsInParent().getHeight()/2,node.getBoundsInParent().getWidth()/2,0,Rotate.X_AXIS));
+                    node.getTransforms().add(new Rotate(180,node.getBoundsInParent().getWidth()/2,node.getBoundsInParent().getHeight()/2,0,Rotate.X_AXIS));
                 }
             }
         });

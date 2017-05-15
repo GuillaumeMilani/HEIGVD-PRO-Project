@@ -1,5 +1,6 @@
 package ch.heigvd.tool;
 
+import ch.heigvd.workspace.LayerListable;
 import ch.heigvd.workspace.Workspace;
 import static java.lang.System.gc;
 import java.util.List;
@@ -76,13 +77,15 @@ public class Brush implements Tool {
       
       // For each node, draw on it
       for (Node node : layers) {
-         Canvas canvas = (Canvas) node;
-         GraphicsContext gc = canvas.getGraphicsContext2D();
+         if (Canvas.class.isInstance(node)) {
+            Canvas canvas = (Canvas) node;
+            GraphicsContext gc = canvas.getGraphicsContext2D();
 
-         gc.setStroke(color);
-         gc.setLineWidth(size);
+            gc.setStroke(color);
+            gc.setLineWidth(size);
 
-         gc.strokeLine(this.x, this.y, x, y);
+            gc.strokeLine(this.x, this.y, x, y);
+         }
 
       }
       

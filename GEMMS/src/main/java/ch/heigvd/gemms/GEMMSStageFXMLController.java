@@ -12,6 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import ch.heigvd.layer.GEMMSCanvas;
 import ch.heigvd.layer.GEMMSImage;
+import ch.heigvd.tool.Brush;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +36,6 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -289,6 +289,14 @@ public class GEMMSStageFXMLController implements Initializable {
                 for (Node node : w.getCurrentLayers()) {
                     node.getTransforms().add(new Rotate(180,node.getBoundsInParent().getWidth()/2,node.getBoundsInParent().getHeight()/2,0,Rotate.X_AXIS));
                 }
+            }
+        });
+        
+        // Create brush tool
+        createToolButton("Brush", gridDrawingTools).setOnAction(e -> {
+           Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                w.setCurrentTool(new Brush(w));
             }
         });
     }

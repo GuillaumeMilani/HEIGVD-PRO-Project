@@ -129,7 +129,7 @@ public class Workspace extends StackPane implements Serializable {
      * @param node
      */
     public void addLayer(Node node) {
-        layerList.getItems().add(0, node);
+        layerList.getItems().add(node);
         layerList.getSelectionModel().clearSelection();
         layerList.getSelectionModel().selectFirst();
     }

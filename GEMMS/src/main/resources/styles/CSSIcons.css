@@ -22,3 +22,10 @@ and open the template in the editor.
     -fx-background-size: 80%;
     -fx-background-color: white;
 }
+.image-icon {
+    -fx-background-image: url("../img/image-icon.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 80%;
+    -fx-background-color: white;
+}

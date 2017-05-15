@@ -93,6 +93,6 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements Seriali
 
     @Override
     public String getThumbnailClass() {
-        return CSSIcons.CANVAS;
+        return CSSIcons.IMAGE;
     }
 }

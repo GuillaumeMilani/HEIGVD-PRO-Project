@@ -244,7 +244,9 @@ public class GEMMSStageFXMLController implements Initializable {
         
         
         // Create text button action
-        createToolButton("T+", gridCreationTools).setOnAction(e -> {
+        Button textCreation = createToolButton("", gridCreationTools);
+        textCreation.getStyleClass().add(CSSIcons.TEXT_CREATION);
+        textCreation.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.addLayer(new GEMMSText(50, 50, "Ceci est un texte"));
@@ -252,7 +254,9 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         // Create canvas button action
-        createToolButton("C+", gridCreationTools).setOnAction(e -> {
+        Button canvasCreation = createToolButton("", gridCreationTools);
+        canvasCreation.getStyleClass().add(CSSIcons.CANVAS_CREATION);
+        canvasCreation.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.addLayer(new GEMMSCanvas(w.width(), w.height()));  
@@ -260,7 +264,9 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         // Create image button action
-        createToolButton("I+", gridCreationTools).setOnAction(e -> {
+        Button imageCreation = createToolButton("I+", gridCreationTools);
+        imageCreation.getStyleClass().add(CSSIcons.IMAGE_CREATION);
+        imageCreation.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
                 Image image = importImage();

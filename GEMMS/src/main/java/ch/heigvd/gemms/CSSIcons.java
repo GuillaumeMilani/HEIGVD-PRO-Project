@@ -19,9 +19,9 @@ package ch.heigvd.gemms;
 public class CSSIcons {
    
    // CSS creation icons classes
-   public static final String TEXT_CREATION = "";
-   public static final String CANVAS_CREATION = "";
-   public static final String IMAGE_CREATION = "";
+   public static final String TEXT_CREATION = "text-creation";
+   public static final String CANVAS_CREATION = "canvas-creation";
+   public static final String IMAGE_CREATION = "image-creation";
    
    // CSS layer types icon classes
    public static final String TEXT = "text-icon";

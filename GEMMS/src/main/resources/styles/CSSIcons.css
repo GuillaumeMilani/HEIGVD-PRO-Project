@@ -31,6 +31,27 @@
     -fx-background-size: 50%;
 }
 
+.text-creation {
+    -fx-background-image: url("../img/new-text-icon.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 75%;
+}
+
+.image-creation {
+    -fx-background-image: url("../img/new-image-icon.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 75%;
+}
+
+.canvas-creation {
+    -fx-background-image: url("../img/new-canvas-icon.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 75%;
+}
+
 .tool-button {
     -fx-background-color: linear-gradient(#FFF, #DDD);
     -fy-border-radius: 10px;

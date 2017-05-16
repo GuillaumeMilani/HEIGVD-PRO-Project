@@ -23,9 +23,12 @@ public class CSSIcons {
    public static final String CANVAS_CREATION = "";
    public static final String IMAGE_CREATION = "";
    
-   // CSS lyaer types icon classes
+   // CSS layer types icon classes
    public static final String TEXT = "text-icon";
    public static final String CANVAS = "canvas-icon";
    public static final String IMAGE = "image-icon";
+   
+   // CSS tool icon classes
+   public static final String BRUSH = "brush-icon";
    
 }

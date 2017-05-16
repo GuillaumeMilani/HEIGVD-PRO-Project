@@ -1,8 +1,3 @@
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
 /* 
     Created on : May 3, 2017, 1:55:33 PM
     Author     : mathieu
@@ -28,4 +23,20 @@ and open the template in the editor.
     -fx-background-repeat: no-repeat;
     -fx-background-size: 80%;
     -fx-background-color: white;
+}
+.brush-icon{
+    -fx-background-image: url("../img/brush-icon.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 50%;
+}
+
+.tool-button {
+    -fx-background-color: linear-gradient(#FFF, #DDD);
+    -fy-border-radius: 10px;
+    -fx-border-width: 2px;
+    -fx-border-color: #DDD;
+}
+.tool-button:pressed, .tool-button:focused {
+    -fx-background-color: linear-gradient(#DDD, #FFF);
 }

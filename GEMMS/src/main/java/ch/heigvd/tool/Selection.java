@@ -6,7 +6,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.scene.Cursor;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -18,14 +17,14 @@ public class Selection implements Tool {
     private final Scene scene;
 
     private Rectangle rectangle;
-    
+
     private Workspace workspace;
 
     // TODO : Layer and clipboard injection dependency
     public Selection(Scene s, Workspace w) {
         scene = s;
         scene.setCursor(Cursor.CROSSHAIR);
-        
+
         workspace = w;
 
         rectangle = new Rectangle(0, 0, 20, 20);
@@ -60,17 +59,14 @@ public class Selection implements Tool {
                         )
                 )
         );
-        
+
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
-
-        
     }
 
     @Override
     public void mousePressed(double x, double y) {
-        
-        if(!rectangle.isVisible()) {
+        if (!rectangle.isVisible()) {
             workspace.getLayerTool().getChildren().add(rectangle);
         }
 
@@ -79,7 +75,6 @@ public class Selection implements Tool {
         rectangle.setHeight(0);
         rectangle.setX(x);
         rectangle.setY(y);
-        
     }
 
     @Override
@@ -109,7 +104,7 @@ public class Selection implements Tool {
             rectangle.setVisible(false);
             rectangle.setWidth(0);
             rectangle.setHeight(0);
-            
+
             workspace.getLayerTool().getChildren().remove(rectangle);
         }
     }

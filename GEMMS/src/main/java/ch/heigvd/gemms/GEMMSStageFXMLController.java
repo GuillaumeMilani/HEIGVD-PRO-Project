@@ -13,6 +13,7 @@ import javafx.scene.layout.RowConstraints;
 import ch.heigvd.layer.GEMMSCanvas;
 import ch.heigvd.layer.GEMMSImage;
 import ch.heigvd.tool.Brush;
+import ch.heigvd.tool.Selection;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -299,6 +300,15 @@ public class GEMMSStageFXMLController implements Initializable {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.setCurrentTool(new Brush(w));
+            }
+        });
+        
+        
+        // Create selection button action
+        createToolButton("Se", gridModificationTools).setOnAction((ActionEvent e) -> {
+           Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                w.setCurrentTool(new Selection(stage.getScene(), w));
             }
         });
     }

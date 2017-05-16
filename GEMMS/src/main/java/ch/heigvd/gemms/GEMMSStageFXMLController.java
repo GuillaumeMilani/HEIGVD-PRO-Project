@@ -214,15 +214,20 @@ public class GEMMSStageFXMLController implements Initializable {
                 Double.toString(sepia.getValue()));
         final Label saturationValue = new Label(
                 Double.toString(saturation.getValue()));
-        
+
         opacity.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) {
+
                 Workspace w = getCurrentWorkspace();
-                for (Node n : w.getCurrentLayers()) {
-                    n.setOpacity(new_val.doubleValue());
-                    opacityValue.setText(String.format("%.2f", new_val));
+                if (w != null) {
+
+                    for (Node n : w.getCurrentLayers()) {
+                        n.setOpacity(new_val.doubleValue());
+                    }
                 }
+                opacityValue.setText(String.format("%.2f", new_val));
+
             }
         });
 
@@ -230,27 +235,32 @@ public class GEMMSStageFXMLController implements Initializable {
             public void changed(ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) {
                 Workspace w = getCurrentWorkspace();
-                for (Node n : w.getCurrentLayers()) {
-                    n.setEffect(new SepiaTone(new_val.doubleValue()));
-                    sepiaValue.setText(String.format("%.2f", new_val));
+                if (w != null) {
+
+                    for (Node n : w.getCurrentLayers()) {
+                        n.setEffect(new SepiaTone(new_val.doubleValue()));
+                    }
                 }
+                sepiaValue.setText(String.format("%.2f", new_val));
+
             }
         });
-        
+
         saturation.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) {
                 Workspace w = getCurrentWorkspace();
                 ColorAdjust c = new ColorAdjust();
                 c.setSaturation(new_val.doubleValue());
-
-                for (Node n : w.getCurrentLayers()) {
-                    n.setEffect(c);
-                    saturationValue.setText(String.format("%.2f", new_val));
+                if (w != null) {
+                    for (Node n : w.getCurrentLayers()) {
+                        n.setEffect(c);
+                    }
                 }
+                saturationValue.setText(String.format("%.2f", new_val));
             }
         });
-        
+
         gridSliders.setPadding(new Insets(10, 10, 10, 10));
         createSlider(gridSliders, opacityLabel, opacity, opacityValue, 1);
         createSlider(gridSliders, sepiaLabel, sepia, sepiaValue, 2);

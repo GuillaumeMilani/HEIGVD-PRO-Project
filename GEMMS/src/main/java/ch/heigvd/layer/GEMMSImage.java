@@ -14,7 +14,7 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-public class GEMMSImage  extends javafx.scene.image.ImageView implements Serializable, LayerListable {
+public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSNode, LayerListable {
     
     public GEMMSImage() {
         super();

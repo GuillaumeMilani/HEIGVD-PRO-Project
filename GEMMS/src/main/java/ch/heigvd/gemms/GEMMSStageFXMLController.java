@@ -4,23 +4,27 @@ import ch.heigvd.dialog.ImportImageDialog;
 import ch.heigvd.dialog.NewDocumentDialog;
 import ch.heigvd.dialog.OpenDocumentDialog;
 import ch.heigvd.layer.GEMMSText;
+import ch.heigvd.layer.IGEMMSNode;
 import ch.heigvd.workspace.Workspace;
+
+import java.io.*;
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.*;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import ch.heigvd.layer.GEMMSCanvas;
+import ch.heigvd.layer.IGEMMSCanvas;
 import ch.heigvd.layer.GEMMSImage;
 import ch.heigvd.tool.Brush;
 import ch.heigvd.tool.Selection;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Optional;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
@@ -39,6 +43,8 @@ public class GEMMSStageFXMLController implements Initializable {
     // Stage from main
     private Stage stage;
 
+    @FXML
+    private AnchorPane mainAnchorPane;
     
     /**
      * GridPanes containing the tools buttons
@@ -121,7 +127,7 @@ public class GEMMSStageFXMLController implements Initializable {
         canvasCreation.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
-                w.addLayer(new GEMMSCanvas(w.width(), w.height()));  
+                w.addLayer(new IGEMMSCanvas(w.width(), w.height()));
             }
         });
 
@@ -178,6 +184,49 @@ public class GEMMSStageFXMLController implements Initializable {
                 w.setCurrentTool(new Selection(stage.getScene(), w));
             }
         });
+
+        mainAnchorPane.setOnKeyPressed(keyEvent -> {
+            if (Constants.CTRL_C.match(keyEvent)) {
+                Clipboard clipboard = Clipboard.getSystemClipboard();
+                ClipboardContent cc = new ClipboardContent();
+
+                try {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ObjectOutputStream out = new ObjectOutputStream(baos);
+
+                    List<IGEMMSNode> nodes = new LinkedList<>();
+
+                    for (Node n : getCurrentWorkspace().getCurrentLayers()) {
+                        nodes.add((IGEMMSNode)n);
+                    }
+
+                    out.writeObject(nodes);
+
+                    cc.putString(Base64.getEncoder().encodeToString(baos.toByteArray()));
+                    baos.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                clipboard.setContent(cc);
+
+            } else if (Constants.CTRL_V.match(keyEvent)) {
+                Clipboard clipboard = Clipboard.getSystemClipboard();
+                String serializedObject = clipboard.getString();
+
+                try {
+                    ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(serializedObject));
+                    ObjectInputStream in = new ObjectInputStream(bais);
+                    List<Node> nodes = (List<Node>)in.readObject();
+                    for (Node n : nodes) {
+                        getCurrentWorkspace().addLayer(n);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
     
     

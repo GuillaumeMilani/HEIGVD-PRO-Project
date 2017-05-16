@@ -194,6 +194,8 @@ public class Workspace extends StackPane implements Serializable {
    public void zoom(double factor) {
       workspace.setScaleX(workspace.getScaleX() * factor);
       workspace.setScaleY(workspace.getScaleY() * factor);
+      layerTools.setScaleX(workspace.getScaleX() * factor);
+      layerTools.setScaleY(workspace.getScaleY() * factor);
    }
 
    /**
@@ -205,6 +207,8 @@ public class Workspace extends StackPane implements Serializable {
    public void move(double x, double y) {
       workspace.setTranslateX(workspace.getTranslateX() + x);
       workspace.setTranslateY(workspace.getTranslateY() + y);
+      layerTools.setTranslateX(workspace.getTranslateX() + x);
+      layerTools.setTranslateY(workspace.getTranslateY() + y);
    }
 
    /**

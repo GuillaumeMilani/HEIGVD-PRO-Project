@@ -77,6 +77,8 @@
                          <rowConstraints>
                          </rowConstraints>
                       </GridPane>
+                      <GridPane fx:id="gridSliders" hgap="5.0" prefWidth="153.0" vgap="20.0">
+                      </GridPane>
                    </children>
                 </VBox>
               </content>

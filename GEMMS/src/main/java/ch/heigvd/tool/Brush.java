@@ -37,6 +37,13 @@ public class Brush extends LineTool {
       this.color = color;
    }
 
+   /**
+    * Draws a circle around the given pixel. The diameter of the circle is 
+    * the size of the tool. 
+    * @param x the x coordinate of the pixel
+    * @param y the y coordinate of the pixel
+    * @param gc the GraphicsContext of the canvas
+    */
    @Override
    protected void drawPixel(int x, int y, GraphicsContext gc) {
       gc.setFill(color);

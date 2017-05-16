@@ -71,14 +71,13 @@ public class ToolDragNode implements Tool{
     public void mouseDragged(double x, double y) {
         // Get the selected layers of the workspace
         List<Node> layers = workspace.getCurrentLayers();
-        double newX = workspace.getLayoutX() + x - cordRelative.x;
-        double newY = workspace.getLayoutY() + y - cordRelative.y;
+        double newX = workspace.getTranslateX() + x - cordRelative.x;
+        double newY = workspace.getTranslateY() + y - cordRelative.y;
 
         for (Node node : layers) {
-
-                node.setLayoutX(newX);
-                node.setLayoutY(newY);
-
+            
+                node.setTranslateX(newX);
+                node.setTranslateY(newY);
         }
     }
 

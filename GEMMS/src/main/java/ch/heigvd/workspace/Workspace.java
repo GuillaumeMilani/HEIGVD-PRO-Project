@@ -6,22 +6,23 @@
 package ch.heigvd.workspace;
 
 import ch.heigvd.gemms.Constants;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+
+import java.io.*;
+import java.util.Base64;
 import java.util.List;
+
+import ch.heigvd.layer.GEMMSText;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.image.WritableImage;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 
 /**
@@ -40,9 +41,12 @@ public class Workspace extends StackPane implements Serializable {
    // Contains layers
    private LayerList layerList;
    private VBox layersController;
-   
-  
-   /**
+
+   private KeyCodeCombination keyCtrlC = new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_ANY);
+   private KeyCodeCombination keyCtrlV = new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_ANY);
+
+
+    /**
     * Constructor for a new instance of Workspace. The Workspace extends a Pane
     * which represents the working area of the document. It sets its initial
     * position at the center of the containing pane.
@@ -117,6 +121,43 @@ public class Workspace extends StackPane implements Serializable {
       };
 
       addEventHandler(MouseEvent.ANY, dragEventHandler);
+
+       setOnMouseClicked(e -> {
+
+           System.out.println("Mouse clicked");
+       });
+
+
+
+       setOnKeyPressed(keyEvent -> {
+           System.out.println("Key pressed : " + keyEvent.getCharacter());
+           if (keyCtrlC.match(keyEvent)) {
+               Clipboard clipboard = Clipboard.getSystemClipboard();
+               ClipboardContent cc = new ClipboardContent();
+               GEMMSText myText = new GEMMSText("Coucou");
+               try {
+                   ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                   ObjectOutputStream out = new ObjectOutputStream(baos);
+                   out.writeObject(myText);
+                   cc.putString(Base64.getEncoder().encodeToString(baos.toByteArray()));
+               } catch (Exception e) {
+                   e.printStackTrace();
+               }
+               clipboard.setContent(cc);
+           } else if (keyCtrlV.match(keyEvent)) {
+               Clipboard clipboard = Clipboard.getSystemClipboard();
+               String serializedObject = clipboard.getString();
+
+               try {
+                   ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(serializedObject));
+                   ObjectInputStream in = new ObjectInputStream(bais);
+                   Text t = (Text) in.readObject();
+                   getChildren().add(t);
+               } catch (Exception e) {
+                   e.printStackTrace();
+               }
+           }
+       });
    }
 
    public List<Node> getCurrentLayers() {

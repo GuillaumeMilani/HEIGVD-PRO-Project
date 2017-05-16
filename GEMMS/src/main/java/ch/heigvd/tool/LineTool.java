@@ -1,5 +1,6 @@
 package ch.heigvd.tool;
 
+import ch.heigvd.layer.GEMMSCanvas;
 import ch.heigvd.workspace.Workspace;
 import java.util.List;
 import javafx.scene.Node;
@@ -105,8 +106,8 @@ public abstract class LineTool implements Tool {
 
       // For each node, draw on it
       for (Node node : layers) {
-         if (Canvas.class.isInstance(node)) {
-            Canvas canvas = (Canvas) node;
+         if (GEMMSCanvas.class.isInstance(node)) {
+            GEMMSCanvas canvas = (GEMMSCanvas) node;
             GraphicsContext gc = canvas.getGraphicsContext2D();
 
             line((int) this.x, (int) this.y, (int) x, (int) y, gc);

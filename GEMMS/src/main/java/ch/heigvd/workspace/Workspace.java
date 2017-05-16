@@ -34,6 +34,9 @@ public class Workspace extends StackPane implements Serializable {
 
    // Workspace that displays layers
    private AnchorPane workspace;
+   
+   // Layer for object's tool
+   private AnchorPane layerTools;
 
    // Size of workspace
    private int height;
@@ -65,6 +68,9 @@ public class Workspace extends StackPane implements Serializable {
 
       workspace = new AnchorPane();
       this.getChildren().add(workspace);
+      
+      layerTools = new AnchorPane();
+      this.getChildren().add(layerTools);
 
       //setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
       //setClip(new Rectangle(getPrefWidth(), getPrefHeight()));
@@ -82,13 +88,22 @@ public class Workspace extends StackPane implements Serializable {
       workspace.setPrefSize(width, height);
       workspace.setMaxSize(width, height);
       workspace.setMinSize(width, height);
-
+      
       workspace.setId("workspacePane");
+      
+      
+      // Stack the layer tool on workspace
+      layerTools.setLayoutX(posX);
+      layerTools.setLayoutY(posY);
+      layerTools.setPrefSize(width, height);
+      layerTools.setMaxSize(width, height);
+      layerTools.setMinSize(width, height);
+      
 
       currentTool = null;
 
       // Add a mouse event to manage the current tool actions
-      workspace.addEventHandler(MouseEvent.ANY, new EventHandler<MouseEvent>() {
+      layerTools.addEventHandler(MouseEvent.ANY, new EventHandler<MouseEvent>() {
          private double x;
          private double y;
 
@@ -225,6 +240,7 @@ public class Workspace extends StackPane implements Serializable {
    }
 
    public void setCurrentTool(Tool tool) {
+      layerTools.getChildren().clear();
       this.currentTool = tool;
    }
 
@@ -238,6 +254,10 @@ public class Workspace extends StackPane implements Serializable {
 
    public int height() {
       return height;
+   }
+   
+   public AnchorPane getLayerTool() {
+       return layerTools;
    }
 
    private void writeObject(ObjectOutputStream s) throws IOException {

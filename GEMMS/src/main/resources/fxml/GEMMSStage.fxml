@@ -113,10 +113,10 @@
                       <MenuItem mnemonicParsing="false" text="Action 2" />
                     </items>
                   </MenuButton>
-                  <Button fx:id="newDocumentButton" mnemonicParsing="false" text="New" />
-                  <Button fx:id="openDocumentButton" mnemonicParsing="false" text="Open" />
-                  <Button fx:id="saveDocumentButton" mnemonicParsing="false" text="Save" />
-                  <Button fx:id="exportDocumentButton" mnemonicParsing="false" text="Export" />
+                  <Button fx:id="newButton" onAction="#newButtonAction" mnemonicParsing="false" text="New" />
+                  <Button fx:id="openButton" onAction="#openButtonAction" mnemonicParsing="false" text="Open" />
+                  <Button fx:id="saveButton" onAction="#saveButtonAction" mnemonicParsing="false" text="Save" />
+                  <Button fx:id="exportButton" onAction="#exportButtonAction" mnemonicParsing="false" text="Export" />
               </items>
             </ToolBar>
          </top>

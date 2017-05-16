@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+
+import javafx.scene.Cursor;
 import javafx.scene.SnapshotParameters;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -93,6 +95,10 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements Serializa
             }
         }
     }
+
+
+
+
 
     @Override
     public String getLayerName() {

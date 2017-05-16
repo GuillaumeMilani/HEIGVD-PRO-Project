@@ -293,7 +293,9 @@ public class GEMMSStageFXMLController implements Initializable {
         });
         
         // Create brush tool
-        createToolButton("Brush", gridDrawingTools).setOnAction(e -> {
+        Button brush = createToolButton("", gridDrawingTools);
+        brush.getStyleClass().add(CSSIcons.BRUSH);
+        brush.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.setCurrentTool(new Brush(w));
@@ -324,6 +326,7 @@ public class GEMMSStageFXMLController implements Initializable {
         button.setPrefHeight(Double.MAX_VALUE);
         button.setPrefWidth(Double.MAX_VALUE);
         button.setPadding(new Insets(0, 0, 0, 0));
+        button.getStyleClass().add("tool-button");
 
         pane.add(button, col, row);
 

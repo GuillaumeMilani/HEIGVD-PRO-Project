@@ -192,22 +192,19 @@ public class GEMMSStageFXMLController implements Initializable {
 
         mainAnchorPane.setOnKeyPressed(keyEvent -> {
             if (Constants.CTRL_C.match(keyEvent)) {
-                if (getCurrentWorkspace().getCurrentTool() instanceof Selection) {
+                if (getCurrentWorkspace() != null && getCurrentWorkspace().getCurrentTool() instanceof Selection) {
                     Selection selection = (Selection)getCurrentWorkspace().getCurrentTool();
                     int selectionWidth = (int)(selection.getRectangle().getWidth());
                     int selectionHeight = (int)(selection.getRectangle().getHeight());
 
-                    double posX = getCurrentWorkspace().localToParent(getCurrentWorkspace().getLayerTool().localToParent(selection.getRectangle().getBoundsInParent())).getMinX();
-                    double posY = getCurrentWorkspace().localToParent(getCurrentWorkspace().getLayerTool().localToParent(selection.getRectangle().getBoundsInParent())).getMinY();
+                    double posXWCoord = getCurrentWorkspace().localToParent(getCurrentWorkspace().getLayerTool().localToParent(selection.getRectangle().getBoundsInParent())).getMinX();
+                    double posYWCoord = getCurrentWorkspace().localToParent(getCurrentWorkspace().getLayerTool().localToParent(selection.getRectangle().getBoundsInParent())).getMinY();
 
-                    System.out.println("x : " + posX + " y : " + posY + " width : " + selectionWidth + " height : " + selectionHeight);
-
-
-                    GEMMSCanvas canvas = new GEMMSCanvas(selectionWidth, selectionHeight);
+                    GEMMSCanvas canvas = new GEMMSCanvas(getCurrentWorkspace().width(), getCurrentWorkspace().height());
                     SnapshotParameters param = new SnapshotParameters();
                     param.setViewport(new Rectangle2D(
-                            posX,
-                            posY,
+                            posXWCoord,
+                            posYWCoord,
                             selectionWidth,
                             selectionHeight));
 
@@ -215,52 +212,56 @@ public class GEMMSStageFXMLController implements Initializable {
                     Image img = getCurrentWorkspace().snapshot(param, null);
 
                     ImageView iv = new ImageView(img);
-                    getCurrentWorkspace().addLayer(iv);
-                    iv.setX(posX);
-                    iv.setY(posY);
-                    canvas.getGraphicsContext2D().drawImage(img, posX, posY);
-                    getCurrentWorkspace().addLayer(canvas);
+                    // getCurrentWorkspace().addLayer(iv);
+                    iv.setX(selection.getRectangle().getX());
+                    iv.setY(selection.getRectangle().getY());
+                    canvas.getGraphicsContext2D().drawImage(img, selection.getRectangle().getX(), selection.getRectangle().getY(), selectionWidth, selectionHeight);
+
+                    saveNodesToClipboard(Arrays.asList(canvas));
+                } else {
+                    saveNodesToClipboard(getCurrentWorkspace().getCurrentLayers());
                 }
-                Clipboard clipboard = Clipboard.getSystemClipboard();
-                ClipboardContent cc = new ClipboardContent();
-
-                try {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    ObjectOutputStream out = new ObjectOutputStream(baos);
-
-                    List<IGEMMSNode> nodes = new LinkedList<>();
-
-                    for (Node n : getCurrentWorkspace().getCurrentLayers()) {
-                        nodes.add((IGEMMSNode)n);
-                    }
-
-                    out.writeObject(nodes);
-
-                    cc.putString(Base64.getEncoder().encodeToString(baos.toByteArray()));
-                    baos.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                clipboard.setContent(cc);
 
             } else if (Constants.CTRL_V.match(keyEvent)) {
-                Clipboard clipboard = Clipboard.getSystemClipboard();
-                String serializedObject = clipboard.getString();
-
-                try {
-                    ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(serializedObject));
-                    ObjectInputStream in = new ObjectInputStream(bais);
-                    List<Node> nodes = (List<Node>)in.readObject();
-                    for (Node n : nodes) {
-                        getCurrentWorkspace().addLayer(n);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                for (Node n : getNodesFromClipboard()) {
+                    getCurrentWorkspace().addLayer(n);
                 }
             }
         });
 
+    }
+
+    private void saveNodesToClipboard(List<Node> nodes) {
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent cc = new ClipboardContent();
+
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(baos);
+
+            out.writeObject(nodes);
+
+            cc.putString(Base64.getEncoder().encodeToString(baos.toByteArray()));
+            baos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        clipboard.setContent(cc);
+    }
+
+    private List<Node> getNodesFromClipboard() {
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        String serializedObject = clipboard.getString();
+
+        try {
+            ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(serializedObject));
+            ObjectInputStream in = new ObjectInputStream(bais);
+            return (List<Node>)in.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     
     

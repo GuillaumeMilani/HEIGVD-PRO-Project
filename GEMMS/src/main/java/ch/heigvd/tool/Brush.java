@@ -1,6 +1,9 @@
 package ch.heigvd.tool;
 
 import ch.heigvd.workspace.Workspace;
+import java.util.List;
+import javafx.scene.Node;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -22,7 +25,7 @@ public class Brush extends LineTool implements SizeConfigurable {
     * @param workspace the Workspace to work on
     */
    public Brush(Workspace workspace) {
-      this(workspace, Color.BLACK, 1);
+      this(workspace, ColorSet.getInstance().getColor(), 5);
    }
 
    /**
@@ -87,6 +90,37 @@ public class Brush extends LineTool implements SizeConfigurable {
     */
    public int getSize() {
       return size;
+   }
+   
+   @Override
+   public void mousePressed(double x, double y) {
+      setColor(ColorSet.getInstance().getColor());
+      super.mousePressed(x, y);
+   }
+
+   /**
+    * Method to call during the dragging motion.
+    *
+    * @param x the event x coordinate
+    * @param y the event y coordinate
+    */
+   @Override
+   public void mouseDragged(double x, double y) {
+      if (!started)
+         setColor(ColorSet.getInstance().getColor());
+      super.mouseDragged(x, y);
+   }
+
+   /**
+    * Method to call at the end of the drag movement.
+    *
+    * @param x the x coordinate of the event
+    * @param y the y coordinate of the event
+    */
+   @Override
+   public void mouseReleased(double x, double y) {
+      super.mouseReleased(x, y);
+
    }
 
 }

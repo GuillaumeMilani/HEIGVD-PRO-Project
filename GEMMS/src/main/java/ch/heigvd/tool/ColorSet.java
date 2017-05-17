@@ -5,6 +5,11 @@
  */
 package ch.heigvd.tool;
 
+import static java.awt.SystemColor.text;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
 /**
@@ -16,6 +21,7 @@ public class ColorSet {
    private ColorPack primaryColor;
    private ColorPack secondaryColor;
    private ColorPack currentColor;
+   private HBox colorController = null;
 
    private ColorSet() {
       primaryColor = new ColorPack(Color.BLACK);
@@ -27,7 +33,7 @@ public class ColorSet {
       static final ColorSet colorSet = new ColorSet();
    }
    
-   public ColorSet getInstance(){
+   public static ColorSet getInstance(){
       return Instance.colorSet;
    }
    
@@ -39,11 +45,29 @@ public class ColorSet {
       currentColor.setColor(color);
    }
    
+   public HBox getColorController() {
+      if (colorController == null) {
+         colorController = new HBox();
+         colorController.getChildren().add(primaryColor.getColorPicker());
+         colorController.getChildren().add(secondaryColor.getColorPicker());
+      }
+      return colorController;
+   }
+   
    private class ColorPack {
       private Color color;
+      private ColorPicker cp;
       
       public ColorPack(Color color) {
          this.color = color;
+         cp = new ColorPicker();
+         cp.setValue(color);
+         cp.setPrefWidth(40);
+         cp.setOnAction(new EventHandler() {
+            public void handle(Event t) {
+               ColorPack.this.color = cp.getValue();
+            }
+        });
       }
       
       public Color getColor() {
@@ -52,6 +76,10 @@ public class ColorSet {
       
       public void setColor(Color color) {
          this.color = color;
+      }
+      
+      public ColorPicker getColorPicker() {
+         return cp;
       }
       
       

@@ -27,7 +27,7 @@ public abstract class LineTool implements Tool {
    protected int x;
    protected int y;
 
-   boolean started = false;
+   protected boolean started = false;
 
    /**
     * Constructor.

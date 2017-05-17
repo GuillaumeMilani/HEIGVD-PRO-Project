@@ -16,6 +16,7 @@ import javafx.scene.layout.RowConstraints;
 import ch.heigvd.layer.GEMMSCanvas;
 import ch.heigvd.layer.GEMMSImage;
 import ch.heigvd.tool.Brush;
+import ch.heigvd.tool.ColorSet;
 import ch.heigvd.tool.Eraser;
 import ch.heigvd.tool.Selection;
 import ch.heigvd.tool.ToolSettingsContainer;
@@ -33,6 +34,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
@@ -66,6 +68,8 @@ public class GEMMSStageFXMLController implements Initializable {
     @FXML
     private GridPane layerController;
     
+    @FXML
+    private AnchorPane colorController;
 
     // List of documents
     private ArrayList<Document> documents;
@@ -104,6 +108,8 @@ public class GEMMSStageFXMLController implements Initializable {
                 layerController.getChildren().clear();
             }
         });
+        
+        colorController.getChildren().add(ColorSet.getInstance().getColorController());
         
         // Create text button action
         Button textCreation = createToolButton("", gridCreationTools);

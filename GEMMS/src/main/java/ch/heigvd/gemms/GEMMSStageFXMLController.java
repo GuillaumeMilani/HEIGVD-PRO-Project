@@ -14,13 +14,18 @@ import java.util.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Group;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import ch.heigvd.layer.IGEMMSCanvas;
+import ch.heigvd.layer.GEMMSCanvas;
 import ch.heigvd.layer.GEMMSImage;
 import ch.heigvd.tool.Brush;
 import ch.heigvd.tool.Selection;
@@ -127,7 +132,7 @@ public class GEMMSStageFXMLController implements Initializable {
         canvasCreation.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
-                w.addLayer(new IGEMMSCanvas(w.width(), w.height()));
+                w.addLayer(new GEMMSCanvas(w.width(), w.height()));
             }
         });
 
@@ -187,6 +192,35 @@ public class GEMMSStageFXMLController implements Initializable {
 
         mainAnchorPane.setOnKeyPressed(keyEvent -> {
             if (Constants.CTRL_C.match(keyEvent)) {
+                if (getCurrentWorkspace().getCurrentTool() instanceof Selection) {
+                    Selection selection = (Selection)getCurrentWorkspace().getCurrentTool();
+                    int selectionWidth = (int)(selection.getRectangle().getWidth());
+                    int selectionHeight = (int)(selection.getRectangle().getHeight());
+
+                    double posX = getCurrentWorkspace().localToParent(getCurrentWorkspace().getLayerTool().localToParent(selection.getRectangle().getBoundsInParent())).getMinX();
+                    double posY = getCurrentWorkspace().localToParent(getCurrentWorkspace().getLayerTool().localToParent(selection.getRectangle().getBoundsInParent())).getMinY();
+
+                    System.out.println("x : " + posX + " y : " + posY + " width : " + selectionWidth + " height : " + selectionHeight);
+
+
+                    GEMMSCanvas canvas = new GEMMSCanvas(selectionWidth, selectionHeight);
+                    SnapshotParameters param = new SnapshotParameters();
+                    param.setViewport(new Rectangle2D(
+                            posX,
+                            posY,
+                            selectionWidth,
+                            selectionHeight));
+
+
+                    Image img = getCurrentWorkspace().snapshot(param, null);
+
+                    ImageView iv = new ImageView(img);
+                    getCurrentWorkspace().addLayer(iv);
+                    iv.setX(posX);
+                    iv.setY(posY);
+                    canvas.getGraphicsContext2D().drawImage(img, posX, posY);
+                    getCurrentWorkspace().addLayer(canvas);
+                }
                 Clipboard clipboard = Clipboard.getSystemClipboard();
                 ClipboardContent cc = new ClipboardContent();
 

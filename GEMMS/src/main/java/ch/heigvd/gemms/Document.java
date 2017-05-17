@@ -11,7 +11,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import javax.imageio.ImageIO;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
+import javafx.scene.transform.Transform;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -149,6 +152,12 @@ public class Document {
         // new ExtensionFilter("All Files", "*.*")
         File file = fileChooser.showSaveDialog(stage);
         if (file != null) {
+            
+            SnapshotParameters sp = new SnapshotParameters();
+            
+            // Set default zoom when export
+            sp.setTransform(Transform.scale(1 - workspace.getScaleX(), 1 - workspace.getScaleY()));
+            
             WritableImage writableImage = new WritableImage((int)workspace.width(), (int)workspace.height());
             workspace.snapshot(null, writableImage);
             RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);

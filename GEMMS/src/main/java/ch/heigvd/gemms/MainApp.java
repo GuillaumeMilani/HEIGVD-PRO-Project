@@ -19,6 +19,7 @@ public class MainApp extends Application {
         
         
         Scene scene = new Scene(root);
+
         controller.setStage(stage);
         scene.getStylesheets().add("/styles/Styles.css");
         scene.getStylesheets().add("/styles/Workspace.css");

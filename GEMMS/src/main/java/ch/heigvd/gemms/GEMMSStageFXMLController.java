@@ -10,7 +10,14 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Slider;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import ch.heigvd.layer.GEMMSCanvas;
@@ -32,14 +39,14 @@ import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser;
 import javafx.util.Pair;
 
 public class GEMMSStageFXMLController implements Initializable {
-    
+
     // Stage from main
     private Stage stage;
 
-    
     /**
      * GridPanes containing the tools buttons
      */
@@ -66,8 +73,6 @@ public class GEMMSStageFXMLController implements Initializable {
 
     // List of documents
     private ArrayList<Document> documents;
-   
-    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -77,7 +82,6 @@ public class GEMMSStageFXMLController implements Initializable {
         gridColorTools.getRowConstraints().add(new RowConstraints(Constants.BUTTONS_HEIGHT));
         gridFilterTools.getRowConstraints().add(new RowConstraints(Constants.BUTTONS_HEIGHT));
         gridModificationTools.getRowConstraints().add(new RowConstraints(Constants.BUTTONS_HEIGHT));
-
         // Document list
         documents = new ArrayList<>();
         
@@ -206,6 +210,31 @@ public class GEMMSStageFXMLController implements Initializable {
         button.getStyleClass().add("tool-button");
 
         pane.add(button, col, row);
+
+        final Popup popup = new Popup();
+        popup.setWidth(200);
+
+        final HBox hbox = new HBox();
+        hbox.setAlignment(Pos.CENTER);
+        hbox.setPrefHeight(40);
+        hbox.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+
+        final ColorPicker cp = new ColorPicker();
+        cp.setStyle("-fx-color-label-visible: false ;");
+
+        final Slider sl = new Slider(0, 100, 50);
+
+        hbox.getChildren().add(cp);
+        hbox.getChildren().add(sl);
+
+        popup.getContent().add(hbox);
+
+        button.setOnMouseEntered(event -> {
+            popup.show(stage);
+            popup.setX(button.localToScreen(button.getBoundsInLocal()).getMinX());
+            popup.setY(button.localToScreen(button.getBoundsInLocal()).getMaxY() - button.getBoundsInLocal().getHeight() / 3);
+            popup.setAutoHide(true);
+        });
 
         return button;
     }

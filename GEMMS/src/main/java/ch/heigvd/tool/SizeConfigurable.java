@@ -5,13 +5,10 @@
  */
 package ch.heigvd.tool;
 
-import javafx.scene.paint.Color;
-
 /**
  *
  * @author mathieu
  */
-public interface DefaultParametrable {
-   public void setColor(Color color);
+public interface SizeConfigurable {
    public void setSize(int size);
 }

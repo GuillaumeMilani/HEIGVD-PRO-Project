@@ -18,7 +18,8 @@ import ch.heigvd.layer.GEMMSImage;
 import ch.heigvd.tool.Brush;
 import ch.heigvd.tool.Eraser;
 import ch.heigvd.tool.Selection;
-import ch.heigvd.tool.ToolDefaultSettings;
+import ch.heigvd.tool.ToolSettingsContainer;
+import ch.heigvd.tool.ToolSizeSettings;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.transform.Rotate;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -162,28 +164,29 @@ public class GEMMSStageFXMLController implements Initializable {
         // Create brush tool
         Button brush = createToolButton("", gridDrawingTools);
         brush.getStyleClass().add(CSSIcons.BRUSH);
-        final ToolDefaultSettings brushSettings = new ToolDefaultSettings(brush);
-        
-        
+        ToolSizeSettings brushSizer = new ToolSizeSettings(1, 150, 5);
+        final ToolSettingsContainer brushSettings = new ToolSettingsContainer(brushSizer);
         brush.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
                Brush b = new Brush(w);
                w.setCurrentTool(b);
-               brushSettings.setTargetTool(b);
+               brushSizer.setTarget(b);
+               displayToolSetting(brush, brushSettings);
             }
-            brushSettings.show(stage);
-            brushSettings.setX(brush.localToScreen(brush.getBoundsInLocal()).getMinX());
-            brushSettings.setY(brush.localToScreen(brush.getBoundsInLocal()).getMaxY() - brush.getBoundsInLocal().getHeight() / 3);
-            brushSettings.setAutoHide(true);
         });
 
         // Create eraser tool
         Button eraser = createToolButton("Eraser", gridDrawingTools);
+        ToolSizeSettings eraserSizer = new ToolSizeSettings(1, 150, 5);
+        final ToolSettingsContainer eraserSettings = new ToolSettingsContainer(eraserSizer);
         eraser.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
-                w.setCurrentTool(new Eraser(w));
+               Eraser er = new Eraser(w);
+               w.setCurrentTool(er);
+               eraserSizer.setTarget(er);
+               displayToolSetting(eraser, eraserSettings);
             }
         });
         
@@ -196,6 +199,12 @@ public class GEMMSStageFXMLController implements Initializable {
         });
     }
     
+    private void displayToolSetting(Button button, Popup popup) {
+      popup.show(stage);
+      popup.setX(button.localToScreen(button.getBoundsInLocal()).getMinX());
+      popup.setY(button.localToScreen(button.getBoundsInLocal()).getMaxY());
+      popup.setAutoHide(true);
+    }
     
     /**
      * Create a tool button and add it in the corresponding grid pane

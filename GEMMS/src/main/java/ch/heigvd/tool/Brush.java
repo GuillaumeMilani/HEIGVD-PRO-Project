@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
  *
  * @author mathieu
  */
-public class Brush extends LineTool implements DefaultParametrable {
+public class Brush extends LineTool implements SizeConfigurable {
 
    // Color of the brush
    Color color;
@@ -75,6 +75,7 @@ public class Brush extends LineTool implements DefaultParametrable {
     *
     * @param size the new size
     */
+   @Override
    public void setSize(int size) {
       this.size = size;
    }

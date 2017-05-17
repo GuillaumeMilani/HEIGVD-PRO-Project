@@ -27,6 +27,8 @@ public abstract class LineTool implements Tool {
    protected int x;
    protected int y;
 
+   boolean started = false;
+
    /**
     * Constructor.
     *
@@ -47,9 +49,9 @@ public abstract class LineTool implements Tool {
     * https://de.wikipedia.org/wiki/Bresenham-Algorithmus
     *
     * on 16.05.2017
-    * 
-    * The method calls the abstract method drawPixel for each pixel it needs
-    * to apply a action on.
+    *
+    * The method calls the abstract method drawPixel for each pixel it needs to
+    * apply a action on.
     *
     * @param x0 the x coordinate of the first point
     * @param y0 the y coordinate of the first point
@@ -90,29 +92,37 @@ public abstract class LineTool implements Tool {
    public void mousePressed(double x, double y) {
       this.x = (int) x;
       this.y = (int) y;
+
+      started = true;
    }
-   
+
    /**
     * Method to call during the dragging motion.
+    *
     * @param x the event x coordinate
     * @param y the event y coordinate
     */
    @Override
    public void mouseDragged(double x, double y) {
 
-      // Get the selected layers of the workspace
-      List<Node> layers = workspace.getCurrentLayers();
+      if (started) {
 
-      // For each node, draw on it
-      for (Node node : layers) {
-         if (Canvas.class.isInstance(node)) {
-            Canvas canvas = (Canvas) node;
-            GraphicsContext gc = canvas.getGraphicsContext2D();
+         // Get the selected layers of the workspace
+         List<Node> layers = workspace.getCurrentLayers();
 
-            line((int) this.x, (int) this.y, (int) x, (int) y, gc);
+         // For each node, draw on it
+         for (Node node : layers) {
+            if (Canvas.class.isInstance(node)) {
+               Canvas canvas = (Canvas) node;
+               GraphicsContext gc = canvas.getGraphicsContext2D();
+
+               line((int) this.x, (int) this.y, (int) x, (int) y, gc);
+
+            }
 
          }
-
+      } else {
+         started = true;
       }
 
       // Update the position
@@ -130,10 +140,11 @@ public abstract class LineTool implements Tool {
    public void mouseReleased(double x, double y) {
 
    }
-   
+
    /**
-    * Method to define the action to apply to each painted pixel by the Bresenham
-    * algorithm
+    * Method to define the action to apply to each painted pixel by the
+    * Bresenham algorithm
+    *
     * @param x the x coordinate of the pixel
     * @param y the y coordinate of the pixel
     * @param gc the GraphicsContext of the canvas

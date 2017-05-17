@@ -30,5 +30,11 @@ public class CSSIcons {
    
    // CSS tool icon classes
    public static final String BRUSH = "brush-icon";
+   // Icons made by http://www.freepik.com"from www.flaticon.com is licensed 
+   // by Creative Commons BY 3.0"
+   public static final String ERASER = "eraser-icon";
+   //<div>Icons made by Freepik from www.flaticon.comis licensed by CC 3.0 BY
+   public static final String H_SYMMETRY = "h-symmetry-icon";
+   public static final String V_SYMMETRY = "v-symmetry-icon";
    
 }

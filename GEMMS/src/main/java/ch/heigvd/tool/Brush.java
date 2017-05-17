@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
  *
  * @author mathieu
  */
-public class Brush extends LineTool {
+public class Brush extends LineTool implements SizeConfigurable {
 
    // Color of the brush
    Color color;
@@ -22,7 +22,7 @@ public class Brush extends LineTool {
     * @param workspace the Workspace to work on
     */
    public Brush(Workspace workspace) {
-      this(workspace, Color.BLACK, 1);
+      this(workspace, ColorSet.getInstance().getColor(), 5);
    }
 
    /**
@@ -75,6 +75,7 @@ public class Brush extends LineTool {
     *
     * @param size the new size
     */
+   @Override
    public void setSize(int size) {
       this.size = size;
    }
@@ -86,6 +87,37 @@ public class Brush extends LineTool {
     */
    public int getSize() {
       return size;
+   }
+   
+   @Override
+   public void mousePressed(double x, double y) {
+      setColor(ColorSet.getInstance().getColor());
+      super.mousePressed(x, y);
+   }
+
+   /**
+    * Method to call during the dragging motion.
+    *
+    * @param x the event x coordinate
+    * @param y the event y coordinate
+    */
+   @Override
+   public void mouseDragged(double x, double y) {
+      if (!started)
+         setColor(ColorSet.getInstance().getColor());
+      super.mouseDragged(x, y);
+   }
+
+   /**
+    * Method to call at the end of the drag movement.
+    *
+    * @param x the x coordinate of the event
+    * @param y the y coordinate of the event
+    */
+   @Override
+   public void mouseReleased(double x, double y) {
+      super.mouseReleased(x, y);
+
    }
 
 }

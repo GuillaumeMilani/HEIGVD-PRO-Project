@@ -148,7 +148,9 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         // Create symetrie horizontal button action
-        createToolButton("Sym hori", gridModificationTools).setOnAction((ActionEvent e) -> {
+        Button hSym = createToolButton("", gridModificationTools);
+        hSym.getStyleClass().add(CSSIcons.H_SYMMETRY);
+        hSym.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 for (Node node : w.getCurrentLayers()) {
@@ -158,7 +160,9 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         // Create symetrie vertical button action
-        createToolButton("Sym vert", gridModificationTools).setOnAction((ActionEvent e) -> {
+        Button vSym = createToolButton("", gridModificationTools);
+        vSym.getStyleClass().add(CSSIcons.V_SYMMETRY);
+        vSym.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 for (Node node : w.getCurrentLayers()) {

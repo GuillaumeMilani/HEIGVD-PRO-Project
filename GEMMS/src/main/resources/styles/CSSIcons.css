@@ -36,6 +36,18 @@
     -fx-background-repeat: no-repeat;
     -fx-background-size: 65%;
 }
+.h-symmetry-icon{
+    -fx-background-image: url("../img/h-symmetry-icon.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 50%;
+}
+.v-symmetry-icon{
+    -fx-background-image: url("../img/v-symmetry-icon.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 50%;
+}
 
 .text-creation {
     -fx-background-image: url("../img/new-text-icon.png");

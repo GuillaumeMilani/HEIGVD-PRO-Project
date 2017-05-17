@@ -39,7 +39,6 @@ import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
-import javafx.stage.FileChooser;
 import javafx.util.Pair;
 
 public class GEMMSStageFXMLController implements Initializable {

@@ -30,5 +30,6 @@ public class CSSIcons {
    
    // CSS tool icon classes
    public static final String BRUSH = "brush-icon";
+   public static final String ERASER = "eraser-icon";
    
 }

@@ -7,10 +7,13 @@ import ch.heigvd.layer.GEMMSText;
 import ch.heigvd.layer.IGEMMSNode;
 import ch.heigvd.workspace.Workspace;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -18,10 +21,9 @@ import javafx.scene.Group;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
+import javafx.scene.image.*;
+import javafx.scene.image.Image;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -30,6 +32,7 @@ import ch.heigvd.layer.GEMMSImage;
 import ch.heigvd.tool.Brush;
 import ch.heigvd.tool.Selection;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
@@ -38,7 +41,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Pair;
@@ -191,33 +194,79 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         mainAnchorPane.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {
+                getCurrentWorkspace().setCurrentTool(null);
+            } else if (keyEvent.getCode().equals(KeyCode.DELETE)) {
+                getCurrentWorkspace().getCurrentLayers().forEach(n->getCurrentWorkspace().getLayers().remove(n));
+            }
+            // ---------- CTRL + C ----------
             if (Constants.CTRL_C.match(keyEvent)) {
+
+                // In case there is a selection
                 if (getCurrentWorkspace() != null && getCurrentWorkspace().getCurrentTool() instanceof Selection) {
+
+                    // Get the selection
                     Selection selection = (Selection)getCurrentWorkspace().getCurrentTool();
                     int selectionWidth = (int)(selection.getRectangle().getWidth());
                     int selectionHeight = (int)(selection.getRectangle().getHeight());
 
-                    double posXWCoord = getCurrentWorkspace().localToParent(getCurrentWorkspace().getLayerTool().localToParent(selection.getRectangle().getBoundsInParent())).getMinX();
-                    double posYWCoord = getCurrentWorkspace().localToParent(getCurrentWorkspace().getLayerTool().localToParent(selection.getRectangle().getBoundsInParent())).getMinY();
-
+                    // Prepare the canvas to save the selection
                     GEMMSCanvas canvas = new GEMMSCanvas(getCurrentWorkspace().width(), getCurrentWorkspace().height());
                     SnapshotParameters param = new SnapshotParameters();
-                    param.setViewport(new Rectangle2D(
-                            posXWCoord,
-                            posYWCoord,
-                            selectionWidth,
-                            selectionHeight));
+                    param.setFill(Color.TRANSPARENT);
 
+                    PixelWriter pixelWriter = canvas.getGraphicsContext2D().getPixelWriter();
 
-                    Image img = getCurrentWorkspace().snapshot(param, null);
+                    BufferedImage image = new BufferedImage(selectionWidth, selectionHeight, BufferedImage.TYPE_INT_ARGB);
 
-                    ImageView iv = new ImageView(img);
-                    // getCurrentWorkspace().addLayer(iv);
-                    iv.setX(selection.getRectangle().getX());
-                    iv.setY(selection.getRectangle().getY());
-                    canvas.getGraphicsContext2D().drawImage(img, selection.getRectangle().getX(), selection.getRectangle().getY(), selectionWidth, selectionHeight);
+                    // Snapshot each node selected
+                    for (Node n : getCurrentWorkspace().getCurrentLayers()) {
+                        /**
+                         * The viewport (part of node that will be snapshoted) must be in the
+                         * node that will be snapshoted parent's coordinate system.
+                         * Passing by the scene coordinate we are able to convert to the node parent's coordinate system.
+                         */
+                        double posXWCoord = n.sceneToLocal(getCurrentWorkspace().getLayerTool().localToScene(selection.getRectangle().getBoundsInParent())).getMinX();
+                        double posYWCoord = n.sceneToLocal(getCurrentWorkspace().getLayerTool().localToScene(selection.getRectangle().getBoundsInParent())).getMinY();
 
+                        /**
+                         * The viewport will define the part of the node that will be snapshoted (the selection actually)
+                         */
+                        param.setViewport(new Rectangle2D(
+                                posXWCoord,
+                                posYWCoord,
+                                selectionWidth,
+                                selectionHeight));
+
+                        BufferedImage newImage = SwingFXUtils.fromFXImage(n.snapshot(param, null), null);
+
+                        Graphics2D graphics = (Graphics2D) image.getGraphics();
+
+                        graphics.setBackground(java.awt.Color.WHITE);
+                        graphics.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                        graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+
+                        graphics.drawImage(newImage, 0, 0, null);
+                    }
+
+                    // Get a pixel reader
+                    PixelReader pixelReader = SwingFXUtils.toFXImage(image, null).getPixelReader();
+
+                    // Write the color of every pixel
+                    for (int y = 0; y < selectionHeight; ++y) {
+                        for (int x = 0; x < selectionWidth; ++x) {
+                            Color c = pixelReader.getColor(x, y);
+                            pixelWriter.setColor(
+                                    x + (int) Math.round(selection.getRectangle().getBoundsInParent().getMinX()),
+                                    y + (int) Math.round(selection.getRectangle().getBoundsInParent().getMinY()),
+                                    c);
+                        }
+                    }
+
+                    // Save the canvas to clipboard
                     saveNodesToClipboard(Arrays.asList(canvas));
+
+                // No selection then copy the current layers
                 } else {
                     saveNodesToClipboard(getCurrentWorkspace().getCurrentLayers());
                 }
@@ -231,10 +280,15 @@ public class GEMMSStageFXMLController implements Initializable {
 
     }
 
+    /**
+     * Copy a list of nodes in the clipboard
+     * @param nodes the nodes to copy to clipboard
+     */
     private void saveNodesToClipboard(List<Node> nodes) {
         Clipboard clipboard = Clipboard.getSystemClipboard();
         ClipboardContent cc = new ClipboardContent();
 
+        // Serialize each node
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream out = new ObjectOutputStream(baos);
@@ -244,21 +298,28 @@ public class GEMMSStageFXMLController implements Initializable {
             cc.putString(Base64.getEncoder().encodeToString(baos.toByteArray()));
             baos.close();
         } catch (Exception e) {
+            // TODO: manage exceptions
             e.printStackTrace();
         }
 
         clipboard.setContent(cc);
     }
 
+    /**
+     * Retrieve a list of nodes from the clipboard
+     * @return the list of nodes that was in the clipboard
+     */
     private List<Node> getNodesFromClipboard() {
         Clipboard clipboard = Clipboard.getSystemClipboard();
         String serializedObject = clipboard.getString();
 
+        // Deserialize the clipboard's content
         try {
             ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(serializedObject));
             ObjectInputStream in = new ObjectInputStream(bais);
             return (List<Node>)in.readObject();
         } catch (Exception e) {
+            // TODO: manage exceptions
             e.printStackTrace();
             return null;
         }

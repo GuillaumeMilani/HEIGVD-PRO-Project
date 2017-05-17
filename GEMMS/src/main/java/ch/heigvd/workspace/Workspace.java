@@ -17,6 +17,8 @@ import java.util.List;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
@@ -26,6 +28,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.transform.Transform;
 
 /**
  * @author mathieu
@@ -104,18 +107,26 @@ public class Workspace extends StackPane implements Serializable {
 
       // Add a mouse event to manage the current tool actions
       layerTools.addEventHandler(MouseEvent.ANY, new EventHandler<MouseEvent>() {
-         private double x;
-         private double y;
 
          @Override
          public void handle(MouseEvent event) {
             if (currentTool != null) {
+                
+                // Get mouse position
+                Point3D p = new Point3D(event.getX(), event.getY(), 0);
+                
+                if(getCurrentLayers().size() > 0) {
+                    for(Transform t : getCurrentLayers().get(0).getTransforms()) {
+                        p = t.transform(p.getX(), p.getY(), p.getZ());
+                    }
+                }
+                
                if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
-                  currentTool.mousePressed(event.getX(), event.getY());
+                  currentTool.mousePressed(p.getX(), p.getY());
                } else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
-                  currentTool.mouseDragged(event.getX(), event.getY());
+                  currentTool.mouseDragged(p.getX(), p.getY());
                } else if (event.getEventType() == MouseEvent.MOUSE_RELEASED) {
-                  currentTool.mouseReleased(event.getX(), event.getY());
+                  currentTool.mouseReleased(p.getX(), p.getY());
                }
             }
          }

@@ -9,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 /**
@@ -67,8 +68,8 @@ public class EyeDropper implements Tool {
    @Override
    public void mouseReleased(double x, double y) {
       pickedColor = pickColor((int)x, (int)y);
-      if (pickedColor != null) {
-         // TODO Do something with the color
+      if (pickedColor != null && Color.class.isInstance(pickedColor)) {
+         ColorSet.getInstance().setColor((Color)pickedColor);
       }
    }
 

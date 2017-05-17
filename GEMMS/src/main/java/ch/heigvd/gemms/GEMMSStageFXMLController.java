@@ -202,9 +202,10 @@ public class GEMMSStageFXMLController implements Initializable {
             }
         });
         
-        // Create ColorPicker tool
-        Button colorPicker = createToolButton("Color picker", gridDrawingTools);
-        colorPicker.setOnAction(e -> {
+        // Create EyeDropper tool
+        Button eyeDropper = createToolButton("", gridDrawingTools);
+        eyeDropper.getStyleClass().add(CSSIcons.EYE_DROPPER);
+        eyeDropper.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.setCurrentTool(new EyeDropper(w));

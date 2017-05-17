@@ -37,6 +37,7 @@ public class ColorSet {
       primaryColor = new ColorPack(Color.BLACK);
       secondaryColor = new ColorPack(Color.WHITE);
       currentColor = primaryColor;
+      setCurrentColorPack(primaryColor);
    }
 
    /**
@@ -101,8 +102,6 @@ public class ColorSet {
     * current color and defines controllers element to change its state.
     */
    private class ColorPack {
-
-      private Color color;
       private ColorPicker cp;
 
       /**
@@ -112,8 +111,6 @@ public class ColorSet {
        * @param color
        */
       public ColorPack(Color color) {
-         this.color = color;
-
          // Create the linked ColorPicker
          cp = new ColorPicker();
          cp.setValue(color);
@@ -123,8 +120,7 @@ public class ColorSet {
          cp.setOnAction(new EventHandler() {
             @Override
             public void handle(Event t) {
-               // Chnage the current ColorPack color
-               ColorPack.this.setColor(cp.getValue());
+               // Chnage the current ColorPack
                setCurrentColorPack(ColorPack.this);
             }
          });
@@ -138,8 +134,6 @@ public class ColorSet {
 
                if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
                   setCurrentColorPack(ColorPack.this);
-               } else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
-               } else if (event.getEventType() == MouseEvent.MOUSE_RELEASED) {
                }
             }
          });
@@ -151,7 +145,7 @@ public class ColorSet {
        * @return the current color
        */
       private Color getColor() {
-         return color;
+         return cp.getValue();
       }
 
       /**
@@ -160,7 +154,10 @@ public class ColorSet {
        * @param color the new color
        */
       private void setColor(Color color) {
-         this.color = color;
+         if (color != null)
+            cp.setValue(color);
+         else
+            System.out.println("loloooo");
       }
 
       /**

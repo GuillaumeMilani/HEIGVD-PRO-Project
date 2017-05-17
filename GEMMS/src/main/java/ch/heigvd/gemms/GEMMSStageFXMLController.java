@@ -4,6 +4,7 @@ import ch.heigvd.dialog.ImportImageDialog;
 import ch.heigvd.dialog.NewDocumentDialog;
 import ch.heigvd.dialog.OpenDocumentDialog;
 import ch.heigvd.layer.GEMMSText;
+import ch.heigvd.tool.Drag;
 import ch.heigvd.tool.ToolDragNode;
 import ch.heigvd.workspace.Workspace;
 import java.net.URL;
@@ -184,9 +185,10 @@ public class GEMMSStageFXMLController implements Initializable {
         createToolButton("Drag", gridModificationTools).setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
-                w.setCurrentTool(new ToolDragNode(w));
+                w.setCurrentTool(new Drag(w));
             }
         });
+
     }
     
     

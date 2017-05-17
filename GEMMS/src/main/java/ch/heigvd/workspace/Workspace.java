@@ -167,11 +167,6 @@ public class Workspace extends StackPane implements Serializable {
       addEventFilter(MouseEvent.ANY, dragEventHandler);
 
       addEventHandler(MouseEvent.ANY, dragEventHandler);
-
-       setOnMouseClicked(e -> {
-           System.out.println("Mouse clicked");
-           requestFocus();
-       });
    }
 
    public List<Node> getCurrentLayers() {

@@ -352,6 +352,11 @@ public class GEMMSStageFXMLController implements Initializable {
     }
     
     
+    @FXML
+    private void resizeButtonAction(ActionEvent e) {
+
+    }
+    
     /**
      * Set the main stage
      * 

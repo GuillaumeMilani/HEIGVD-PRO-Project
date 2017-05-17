@@ -1,9 +1,6 @@
 package ch.heigvd.tool;
 
 import ch.heigvd.workspace.Workspace;
-import java.util.List;
-import javafx.scene.Node;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 

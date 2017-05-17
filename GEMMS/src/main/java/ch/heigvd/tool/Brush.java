@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
  *
  * @author mathieu
  */
-public class Brush extends LineTool {
+public class Brush extends LineTool implements DefaultParametrable {
 
    // Color of the brush
    Color color;

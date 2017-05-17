@@ -10,14 +10,7 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.Slider;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.stage.Popup;
-import javafx.stage.Stage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import ch.heigvd.layer.GEMMSCanvas;
@@ -25,6 +18,7 @@ import ch.heigvd.layer.GEMMSImage;
 import ch.heigvd.tool.Brush;
 import ch.heigvd.tool.Eraser;
 import ch.heigvd.tool.Selection;
+import ch.heigvd.tool.ToolDefaultSettings;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -168,13 +162,22 @@ public class GEMMSStageFXMLController implements Initializable {
         // Create brush tool
         Button brush = createToolButton("", gridDrawingTools);
         brush.getStyleClass().add(CSSIcons.BRUSH);
+        final ToolDefaultSettings brushSettings = new ToolDefaultSettings(brush);
+        
+        
         brush.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
-                w.setCurrentTool(new Brush(w));
+               Brush b = new Brush(w);
+               w.setCurrentTool(b);
+               brushSettings.setTargetTool(b);
             }
+            brushSettings.show(stage);
+            brushSettings.setX(brush.localToScreen(brush.getBoundsInLocal()).getMinX());
+            brushSettings.setY(brush.localToScreen(brush.getBoundsInLocal()).getMaxY() - brush.getBoundsInLocal().getHeight() / 3);
+            brushSettings.setAutoHide(true);
         });
-        
+
         // Create eraser tool
         Button eraser = createToolButton("Eraser", gridDrawingTools);
         eraser.setOnAction(e -> {
@@ -219,31 +222,6 @@ public class GEMMSStageFXMLController implements Initializable {
         button.getStyleClass().add("tool-button");
 
         pane.add(button, col, row);
-
-        final Popup popup = new Popup();
-        popup.setWidth(200);
-
-        final HBox hbox = new HBox();
-        hbox.setAlignment(Pos.CENTER);
-        hbox.setPrefHeight(40);
-        hbox.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
-
-        final ColorPicker cp = new ColorPicker();
-        cp.setStyle("-fx-color-label-visible: false ;");
-
-        final Slider sl = new Slider(0, 100, 50);
-
-        hbox.getChildren().add(cp);
-        hbox.getChildren().add(sl);
-
-        popup.getContent().add(hbox);
-
-        button.setOnMouseEntered(event -> {
-            popup.show(stage);
-            popup.setX(button.localToScreen(button.getBoundsInLocal()).getMinX());
-            popup.setY(button.localToScreen(button.getBoundsInLocal()).getMaxY() - button.getBoundsInLocal().getHeight() / 3);
-            popup.setAutoHide(true);
-        });
 
         return button;
     }

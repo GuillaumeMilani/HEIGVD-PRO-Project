@@ -18,6 +18,7 @@ import ch.heigvd.layer.GEMMSImage;
 import ch.heigvd.tool.Brush;
 import ch.heigvd.tool.ColorSet;
 import ch.heigvd.tool.Eraser;
+import ch.heigvd.tool.EyeDropper;
 import ch.heigvd.tool.Selection;
 import ch.heigvd.tool.ToolSettingsContainer;
 import ch.heigvd.tool.ToolSizeSettings;
@@ -198,6 +199,16 @@ public class GEMMSStageFXMLController implements Initializable {
                w.setCurrentTool(er);
                eraserSizer.setTarget(er);
                displayToolSetting(eraser, eraserSettings);
+            }
+        });
+        
+        // Create EyeDropper tool
+        Button eyeDropper = createToolButton("", gridDrawingTools);
+        eyeDropper.getStyleClass().add(CSSIcons.EYE_DROPPER);
+        eyeDropper.setOnAction(e -> {
+           Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                w.setCurrentTool(new EyeDropper(w));
             }
         });
         

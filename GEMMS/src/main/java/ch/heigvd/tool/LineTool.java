@@ -1,5 +1,6 @@
 package ch.heigvd.tool;
 
+import ch.heigvd.layer.GEMMSCanvas;
 import ch.heigvd.workspace.Workspace;
 import java.util.List;
 import javafx.scene.Node;
@@ -106,7 +107,6 @@ public abstract class LineTool implements Tool {
    public void mouseDragged(double x, double y) {
 
       if (started) {
-
          // Get the selected layers of the workspace
          List<Node> layers = workspace.getCurrentLayers();
 

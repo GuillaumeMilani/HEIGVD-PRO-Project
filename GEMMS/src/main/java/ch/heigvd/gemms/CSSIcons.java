@@ -33,8 +33,10 @@ public class CSSIcons {
    // Icons made by http://www.freepik.com"from www.flaticon.com is licensed 
    // by Creative Commons BY 3.0"
    public static final String ERASER = "eraser-icon";
-   //<div>Icons made by Freepik from www.flaticon.comis licensed by CC 3.0 BY
+   // Icons made by Freepik from www.flaticon.comis licensed by CC 3.0 BY
    public static final String H_SYMMETRY = "h-symmetry-icon";
    public static final String V_SYMMETRY = "v-symmetry-icon";
+   // Icons made by Vaadin at www.flaticon.com is licensed by CC 3.0 BY
+   public static final String EYE_DROPPER="eye-dropper-icon";
    
 }

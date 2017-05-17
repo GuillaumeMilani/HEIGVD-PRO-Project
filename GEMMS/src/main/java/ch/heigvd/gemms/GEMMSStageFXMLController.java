@@ -183,7 +183,8 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         // Create eraser tool
-        Button eraser = createToolButton("Eraser", gridDrawingTools);
+        Button eraser = createToolButton("", gridDrawingTools);
+        eraser.getStyleClass().add(CSSIcons.ERASER);
         ToolSizeSettings eraserSizer = new ToolSizeSettings(1, 150, 5);
         final ToolSettingsContainer eraserSettings = new ToolSettingsContainer(eraserSizer);
         eraser.setOnAction(e -> {

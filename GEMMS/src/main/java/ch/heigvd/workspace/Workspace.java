@@ -271,6 +271,14 @@ public class Workspace extends StackPane implements Serializable {
       return height;
    }
    
+   public double getWorkspaceScaleX() {
+      return workspace.getScaleX();
+   }
+   
+   public double getWorkspaceScaleY() {
+      return workspace.getScaleY();
+   }
+   
    public AnchorPane getLayerTool() {
        return layerTools;
    }

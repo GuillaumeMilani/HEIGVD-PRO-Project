@@ -6,6 +6,7 @@
 package ch.heigvd.workspace;
 
 import ch.heigvd.gemms.Constants;
+import ch.heigvd.layer.GEMMSCanvas;
 import ch.heigvd.tool.Brush;
 import ch.heigvd.tool.Tool;
 
@@ -28,6 +29,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Transform;
 
 /**
@@ -51,6 +53,9 @@ public class Workspace extends StackPane implements Serializable {
 
    // current selected tool
    private Tool currentTool;
+   
+   // Clip of workspace
+   private Rectangle clip;
 
    /**
     * Constructor for a new instance of Workspace. The Workspace extends a Pane
@@ -66,9 +71,6 @@ public class Workspace extends StackPane implements Serializable {
    }
 
    public void init(int width, int height) {
-      this.width = width;
-      this.height = height;
-
       workspace = new AnchorPane();
       this.getChildren().add(workspace);
       
@@ -78,29 +80,12 @@ public class Workspace extends StackPane implements Serializable {
       //setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
       //setClip(new Rectangle(getPrefWidth(), getPrefHeight()));
       setId("workspaceAnchorPane"); // Set id for CSS styling
-
-      layerList = new LayerList(workspace.getChildren());
-
-      // Set the workspace Pane position to be at the center of pane
-      int posX = (int) ((getPrefWidth() - width) / 2);
-      int posY = (int) ((getPrefHeight() - height) / 2);
-      workspace.setLayoutX(posX);
-      workspace.setLayoutY(posY);
-
-      // Set preferredSize
-      workspace.setPrefSize(width, height);
-      workspace.setMaxSize(width, height);
-      workspace.setMinSize(width, height);
-      
       workspace.setId("workspacePane");
       
+      // Define the canvas size
+      resizeCanvas(width, height);
       
-      // Stack the layer tool on workspace
-      layerTools.setLayoutX(posX);
-      layerTools.setLayoutY(posY);
-      layerTools.setPrefSize(width, height);
-      layerTools.setMaxSize(width, height);
-      layerTools.setMinSize(width, height);
+      layerList = new LayerList(workspace.getChildren());
       
 
       currentTool = null;
@@ -227,6 +212,34 @@ public class Workspace extends StackPane implements Serializable {
     */
    public void crop() {
 
+   }
+   
+   
+   public void resizeCanvas(int width, int height) {
+      this.width = width;
+      this.height = height;
+
+      // Set the workspace Pane position to be at the center of pane
+      int posX = (int) ((getPrefWidth() - width) / 2);
+      int posY = (int) ((getPrefHeight() - height) / 2);
+      workspace.setLayoutX(posX);
+      workspace.setLayoutY(posY);
+
+      // Set preferredSize
+      workspace.setPrefSize(width, height);
+      workspace.setMaxSize(width, height);
+      workspace.setMinSize(width, height);
+
+      // Stack the layer tool on workspace
+      layerTools.setLayoutX(posX);
+      layerTools.setLayoutY(posY);
+      layerTools.setPrefSize(width, height);
+      layerTools.setMaxSize(width, height);
+      layerTools.setMinSize(width, height);
+      
+      // Set the clip
+      clip = new Rectangle(width, height);
+      workspace.setClip(clip);
    }
 
    public VBox getWorkspaceController() {

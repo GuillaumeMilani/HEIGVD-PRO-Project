@@ -354,7 +354,10 @@ public class GEMMSStageFXMLController implements Initializable {
     
     @FXML
     private void resizeButtonAction(ActionEvent e) {
-
+        Workspace w = getCurrentWorkspace();
+        if(w != null) {
+            w.resizeCanvas(200, 600);
+        }
     }
     
     /**

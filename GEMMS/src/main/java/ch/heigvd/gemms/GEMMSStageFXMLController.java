@@ -4,7 +4,6 @@ import ch.heigvd.dialog.ImportImageDialog;
 import ch.heigvd.dialog.NewDocumentDialog;
 import ch.heigvd.dialog.OpenDocumentDialog;
 import ch.heigvd.layer.GEMMSText;
-import ch.heigvd.tool.Drag;
 import ch.heigvd.workspace.Workspace;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -224,7 +223,9 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         // Create drag button action
-        createToolButton("Text", gridModificationTools).setOnAction((ActionEvent e) -> {
+        Button text = createToolButton("", gridModificationTools);
+        text.getStyleClass().add(CSSIcons.TEXT_TOOL);
+        text.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 TextInputDialog dialog = new TextInputDialog();
@@ -238,14 +239,6 @@ public class GEMMSStageFXMLController implements Initializable {
                     }
                 }
 
-            }
-        });
-
-        // Create drag button action
-        createToolButton("Drag", gridModificationTools).setOnAction((ActionEvent e) -> {
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-                w.setCurrentTool(new Drag(w));
             }
         });
 

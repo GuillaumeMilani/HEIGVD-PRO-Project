@@ -38,5 +38,6 @@ public class CSSIcons {
    public static final String V_SYMMETRY = "v-symmetry-icon";
    // Icons made by Vaadin at www.flaticon.com is licensed by CC 3.0 BY
    public static final String EYE_DROPPER="eye-dropper-icon";
+   public static final String TEXT_TOOL = "text-tool-icon";
    
 }

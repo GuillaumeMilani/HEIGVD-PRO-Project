@@ -219,27 +219,15 @@ public class Workspace extends StackPane implements Serializable {
       this.width = width;
       this.height = height;
 
-      // Set the workspace Pane position to be at the center of pane
-      int posX = (int) ((getPrefWidth() - width) / 2);
-      int posY = (int) ((getPrefHeight() - height) / 2);
-      workspace.setLayoutX(posX);
-      workspace.setLayoutY(posY);
-
       // Set preferredSize
       workspace.setPrefSize(width, height);
       workspace.setMaxSize(width, height);
       workspace.setMinSize(width, height);
 
       // Stack the layer tool on workspace
-      layerTools.setLayoutX(posX);
-      layerTools.setLayoutY(posY);
       layerTools.setPrefSize(width, height);
       layerTools.setMaxSize(width, height);
       layerTools.setMinSize(width, height);
-      
-      // Set the clip
-      clip = new Rectangle(width, height);
-      workspace.setClip(clip);
    }
 
    public VBox getWorkspaceController() {

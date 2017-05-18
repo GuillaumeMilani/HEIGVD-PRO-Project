@@ -4,7 +4,6 @@ import ch.heigvd.dialog.ImportImageDialog;
 import ch.heigvd.dialog.NewDocumentDialog;
 import ch.heigvd.dialog.OpenDocumentDialog;
 import ch.heigvd.layer.GEMMSText;
-import ch.heigvd.layer.IGEMMSNode;
 import ch.heigvd.workspace.Workspace;
 
 import java.awt.*;
@@ -17,9 +16,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.Group;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.image.*;
 import javafx.scene.image.Image;
@@ -203,7 +200,7 @@ public class GEMMSStageFXMLController implements Initializable {
             if (Constants.CTRL_C.match(keyEvent)) {
 
                 // In case there is a selection
-                if (getCurrentWorkspace() != null && getCurrentWorkspace().getCurrentTool() instanceof Selection) {
+                if (getCurrentWorkspace() != null && getCurrentWorkspace().getLayerTool() != null && getCurrentWorkspace().getCurrentTool() instanceof Selection) {
 
                     // Get the selection
                     Selection selection = (Selection)getCurrentWorkspace().getCurrentTool();
@@ -267,7 +264,8 @@ public class GEMMSStageFXMLController implements Initializable {
                     saveNodesToClipboard(Arrays.asList(canvas));
 
                 // No selection then copy the current layers
-                } else {
+                } else if (getCurrentWorkspace() != null && getCurrentWorkspace().getCurrentLayers() != null) {
+
                     saveNodesToClipboard(getCurrentWorkspace().getCurrentLayers());
                 }
 

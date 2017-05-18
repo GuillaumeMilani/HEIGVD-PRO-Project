@@ -6,12 +6,7 @@
 package ch.heigvd.workspace;
 
 import ch.heigvd.gemms.Constants;
-import java.io.*;
-import java.util.*;
 
-import ch.heigvd.layer.GEMMSText;
-import ch.heigvd.layer.IGEMMSNode;
-import ch.heigvd.tool.Brush;
 import ch.heigvd.tool.Tool;
 
 import java.io.IOException;
@@ -20,7 +15,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -31,7 +25,6 @@ import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 /**
  * @author mathieu

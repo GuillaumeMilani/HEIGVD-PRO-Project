@@ -241,7 +241,6 @@ public class GEMMSStageFXMLController implements Initializable {
 
             }
         });
-
     }
     
     private void displayToolSetting(Button button, Popup popup) {

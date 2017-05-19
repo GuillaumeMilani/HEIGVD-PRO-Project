@@ -161,8 +161,8 @@ public class Workspace extends StackPane implements Serializable {
       super.layoutChildren();
       
       // Center the clip
-      clip.setLayoutX((getWidth() - width) / 2);
-      clip.setLayoutY((getHeight() - height) / 2);
+      clip.setLayoutX(Math.round((getWidth() - width) / 2));
+      clip.setLayoutY(Math.round((getHeight() - height) / 2));
       setClip(clip);
    }
    

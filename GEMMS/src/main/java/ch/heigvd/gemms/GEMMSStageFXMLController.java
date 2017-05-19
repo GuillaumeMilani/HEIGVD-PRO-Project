@@ -4,6 +4,7 @@ import ch.heigvd.dialog.ImportImageDialog;
 import ch.heigvd.dialog.NewDocumentDialog;
 import ch.heigvd.dialog.OpenDocumentDialog;
 import ch.heigvd.layer.GEMMSText;
+import ch.heigvd.layer.IGEMMSNode;
 import ch.heigvd.workspace.Workspace;
 
 import java.awt.*;
@@ -236,11 +237,19 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         mainAnchorPane.setOnKeyPressed(keyEvent -> {
+            // ---------- ESC ----------
+
             if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {
+                // Disable current tool
                 getCurrentWorkspace().setCurrentTool(null);
+
+            // ---------- DEL ----------
+
             } else if (keyEvent.getCode().equals(KeyCode.DELETE)) {
+            // Drop the current selected layers
                 getCurrentWorkspace().getCurrentLayers().forEach(n->getCurrentWorkspace().getLayers().remove(n));
             }
+
             // ---------- CTRL + C ----------
             if (Constants.CTRL_C.match(keyEvent)) {
 
@@ -336,7 +345,9 @@ public class GEMMSStageFXMLController implements Initializable {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream out = new ObjectOutputStream(baos);
 
-            out.writeObject(nodes);
+            List<IGEMMSNode> n = new LinkedList<>();
+            nodes.forEach(node -> n.add((IGEMMSNode)node));
+            out.writeObject(n);
 
             cc.putString(Base64.getEncoder().encodeToString(baos.toByteArray()));
             baos.close();

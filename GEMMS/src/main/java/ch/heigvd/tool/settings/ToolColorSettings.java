@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ch.heigvd.tool;
+package ch.heigvd.tool.settings;
 
+import ch.heigvd.tool.ColorSet;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.ColorPicker;
@@ -17,7 +18,7 @@ import javafx.scene.paint.Color;
 public class ToolColorSettings extends ToolSettings {
 
    // The target to configure
-   private ColorConfigurable target;
+   private ColorConfigurableTool target;
 
    // Color picker
    private ColorPicker cp;
@@ -36,7 +37,7 @@ public class ToolColorSettings extends ToolSettings {
       
       getChildren().add(cp);
    }
-   public void setTarget(ColorConfigurable target) {
+   public void setTarget(ColorConfigurableTool target) {
       this.target = target;
       Color color = target.getColor();
       if (color != null) {

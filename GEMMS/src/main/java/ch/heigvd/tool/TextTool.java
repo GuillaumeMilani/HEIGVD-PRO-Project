@@ -1,5 +1,7 @@
 package ch.heigvd.tool;
 
+import ch.heigvd.tool.settings.ColorConfigurableTool;
+import ch.heigvd.tool.settings.SizeConfigurableTool;
 import ch.heigvd.layer.GEMMSText;
 import ch.heigvd.workspace.Workspace;
 import java.util.List;
@@ -19,7 +21,7 @@ import javafx.scene.paint.Color;
  * on it.
  * @author mathieu
  */
-public class TextTool implements Tool, SizeConfigurable, ColorConfigurable {
+public class TextTool implements Tool, SizeConfigurableTool, ColorConfigurableTool {
    // The Workspace to work on
    private final Workspace workspace;
    

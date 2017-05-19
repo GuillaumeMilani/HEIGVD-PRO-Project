@@ -3,14 +3,27 @@ package ch.heigvd.gemms;
 import ch.heigvd.dialog.ImportImageDialog;
 import ch.heigvd.dialog.NewDocumentDialog;
 import ch.heigvd.dialog.OpenDocumentDialog;
+import ch.heigvd.dialog.ResizeDialog;
 import ch.heigvd.layer.GEMMSText;
+import ch.heigvd.layer.IGEMMSNode;
 import ch.heigvd.workspace.Workspace;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.*;
+
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
+import javafx.scene.image.*;
+import javafx.scene.image.Image;
+import javafx.scene.input.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -21,14 +34,20 @@ import ch.heigvd.tool.ColorSet;
 import ch.heigvd.tool.Eraser;
 import ch.heigvd.tool.EyeDropper;
 import ch.heigvd.tool.Selection;
+<<<<<<< HEAD
 import ch.heigvd.tool.TextTool;
 import ch.heigvd.tool.ToolColorSettings;
+=======
+
+import java.util.List;
+>>>>>>> b241321673c556123f3a6f3de245ae0748385681
 import ch.heigvd.tool.ToolSettingsContainer;
 import ch.heigvd.tool.ToolSizeSettings;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
@@ -37,8 +56,8 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
@@ -48,6 +67,9 @@ public class GEMMSStageFXMLController implements Initializable {
 
     // Stage from main
     private Stage stage;
+
+    @FXML
+    private AnchorPane mainAnchorPane;
 
     /**
      * GridPanes containing the tools buttons
@@ -138,7 +160,7 @@ public class GEMMSStageFXMLController implements Initializable {
         canvasCreation.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
-                w.addLayer(new GEMMSCanvas(w.width(), w.height()));  
+                w.addLayer(new GEMMSCanvas(w.width(), w.height()));
             }
         });
 
@@ -231,7 +253,7 @@ public class GEMMSStageFXMLController implements Initializable {
             }
         });
 
-        // Create drag button action
+        // Create text button action
         Button text = createToolButton("", gridModificationTools);
         
         final ToolColorSettings textColor = new ToolColorSettings(ColorSet.getInstance().getColor());
@@ -247,6 +269,147 @@ public class GEMMSStageFXMLController implements Initializable {
                displayToolSetting(text, textSettings);
             }
         });
+
+        mainAnchorPane.setOnKeyPressed(keyEvent -> {
+            // ---------- ESC ----------
+
+            if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {
+                // Disable current tool
+                getCurrentWorkspace().setCurrentTool(null);
+
+            // ---------- DEL ----------
+
+            } else if (keyEvent.getCode().equals(KeyCode.DELETE)) {
+            // Drop the current selected layers
+                getCurrentWorkspace().getCurrentLayers().forEach(n->getCurrentWorkspace().getLayers().remove(n));
+            }
+            // ---------- CTRL + C ----------
+            if (Constants.CTRL_C.match(keyEvent)) {
+
+                // In case there is a selection
+                if (getCurrentWorkspace() != null && getCurrentWorkspace().getLayerTool() != null && getCurrentWorkspace().getCurrentTool() instanceof Selection) {
+
+                    // Get the selection
+                    Selection selection = (Selection)getCurrentWorkspace().getCurrentTool();
+                    int selectionWidth = (int)(selection.getRectangle().getWidth());
+                    int selectionHeight = (int)(selection.getRectangle().getHeight());
+
+                    // Prepare the canvas to save the selection
+                    GEMMSCanvas canvas = new GEMMSCanvas(getCurrentWorkspace().width(), getCurrentWorkspace().height());
+                    SnapshotParameters param = new SnapshotParameters();
+                    param.setFill(Color.TRANSPARENT);
+
+                    PixelWriter pixelWriter = canvas.getGraphicsContext2D().getPixelWriter();
+
+                    BufferedImage image = new BufferedImage(selectionWidth, selectionHeight, BufferedImage.TYPE_INT_ARGB);
+
+                    // Snapshot each node selected
+                    for (Node n : getCurrentWorkspace().getCurrentLayers()) {
+                        /**
+                         * The viewport (part of node that will be snapshoted) must be in the
+                         * node that will be snapshoted parent's coordinate system.
+                         * Passing by the scene coordinate we are able to convert to the node parent's coordinate system.
+                         */
+                        double posXWCoord = n.sceneToLocal(getCurrentWorkspace().getLayerTool().localToScene(selection.getRectangle().getBoundsInParent())).getMinX();
+                        double posYWCoord = n.sceneToLocal(getCurrentWorkspace().getLayerTool().localToScene(selection.getRectangle().getBoundsInParent())).getMinY();
+
+                        /**
+                         * The viewport will define the part of the node that will be snapshoted (the selection actually)
+                         */
+                        param.setViewport(new Rectangle2D(
+                                posXWCoord,
+                                posYWCoord,
+                                selectionWidth,
+                                selectionHeight));
+
+                        BufferedImage newImage = SwingFXUtils.fromFXImage(n.snapshot(param, null), null);
+
+                        Graphics2D graphics = (Graphics2D) image.getGraphics();
+
+                        graphics.setBackground(java.awt.Color.WHITE);
+                        graphics.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                        graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+
+                        graphics.drawImage(newImage, 0, 0, null);
+                    }
+
+                    // Get a pixel reader
+                    PixelReader pixelReader = SwingFXUtils.toFXImage(image, null).getPixelReader();
+
+                    // Write the color of every pixel
+                    for (int y = 0; y < selectionHeight; ++y) {
+                        for (int x = 0; x < selectionWidth; ++x) {
+                            Color c = pixelReader.getColor(x, y);
+                            pixelWriter.setColor(
+                                    x + (int) Math.round(selection.getRectangle().getBoundsInParent().getMinX()),
+                                    y + (int) Math.round(selection.getRectangle().getBoundsInParent().getMinY()),
+                                    c);
+                        }
+                    }
+
+                    // Save the canvas to clipboard
+                    saveNodesToClipboard(Arrays.asList(canvas));
+
+                // No selection then copy the current layers
+                } else if (getCurrentWorkspace() != null && getCurrentWorkspace().getCurrentLayers() != null) {
+
+                    saveNodesToClipboard(getCurrentWorkspace().getCurrentLayers());
+                }
+
+            } else if (Constants.CTRL_V.match(keyEvent)) {
+                for (Node n : getNodesFromClipboard()) {
+                    getCurrentWorkspace().addLayer(n);
+                }
+            }
+        });
+
+    }
+
+    /**
+     * Copy a list of nodes in the clipboard
+     * @param nodes the nodes to copy to clipboard
+     */
+    private void saveNodesToClipboard(List<Node> nodes) {
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent cc = new ClipboardContent();
+
+        // Serialize each node
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(baos);
+
+            List<IGEMMSNode> n = new LinkedList<>();
+            nodes.forEach(node -> n.add((IGEMMSNode)node));
+            out.writeObject(n);
+
+            cc.putString(Base64.getEncoder().encodeToString(baos.toByteArray()));
+            baos.close();
+        } catch (Exception e) {
+            // TODO: manage exceptions
+            e.printStackTrace();
+        }
+
+        clipboard.setContent(cc);
+    }
+
+    /**
+     * Retrieve a list of nodes from the clipboard
+     * @return the list of nodes that was in the clipboard
+     */
+    private List<Node> getNodesFromClipboard() {
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        String serializedObject = clipboard.getString();
+
+        // Deserialize the clipboard's content
+        try {
+            ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(serializedObject));
+            ObjectInputStream in = new ObjectInputStream(bais);
+            return (List<Node>)in.readObject();
+        } catch (Exception e) {
+            // TODO: manage exceptions
+            e.printStackTrace();
+            return null;
+        }
     }
     
     private void displayToolSetting(Button button, Popup popup) {
@@ -390,6 +553,25 @@ public class GEMMSStageFXMLController implements Initializable {
         }
     }
     
+    
+    @FXML
+    private void resizeButtonAction(ActionEvent e) {
+        Workspace w = getCurrentWorkspace();
+        if(w != null) {
+            
+            ResizeDialog dialog = new ResizeDialog(w);
+            
+            Optional<Rectangle> result = dialog.showAndWait();
+
+            if(result.isPresent()) {
+                
+                w.resizeCanvas((int)result.get().getWidth(),
+                               (int)result.get().getHeight(),
+                               (int)result.get().getX(), 
+                               (int)result.get().getY());
+            }
+        }
+    }
     
     /**
      * Set the main stage

@@ -11,6 +11,11 @@
     -fx-color-label-visible: false ;
     -fx-background-radius: 0 0 0 0;
 }
+.color-picker.small {
+    -fx-color-rect-width: 15px;
+    -fx-color-rect-height: 15px;
+    -fx-background-padding: 0;
+}
 
 .color-picker.active {
     -fx-background-color: #666;

@@ -14,13 +14,14 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.control.TextArea;
+import javafx.scene.paint.Color;
 
 /**
  * The text tool manages GEMMSTexts, changing their sizes when a user clicks 
  * on it.
  * @author mathieu
  */
-public class TextTool implements Tool, SizeConfigurable {
+public class TextTool implements Tool, SizeConfigurable, ColorConfigurable {
    // The Workspace to work on
    private final Workspace workspace;
    
@@ -176,6 +177,16 @@ public class TextTool implements Tool, SizeConfigurable {
          if (n instanceof GEMMSText) {
             GEMMSText t = (GEMMSText) n;
             t.setFontSize(size);
+         }
+      }
+   }
+
+   @Override
+   public void setColor(Color color) {
+      for (Node n : workspace.getCurrentLayers()) {
+         if (n instanceof GEMMSText) {
+            GEMMSText t = (GEMMSText) n;
+            t.setFill(color);
          }
       }
    }

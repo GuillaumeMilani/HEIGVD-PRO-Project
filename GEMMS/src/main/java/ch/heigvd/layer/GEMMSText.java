@@ -48,7 +48,7 @@ public class GEMMSText extends javafx.scene.text.Text implements Serializable, L
    public void setFontSize(int size) {
       setFont(Font.font(getFont().getFamily(), size));
       setTranslateX(-getBoundsInParent().getWidth() / 2);
-      setTranslateY(-getBoundsInParent().getHeight() / 2);
+      //setTranslateY(-getBoundsInParent().getHeight() / 2);
    }
 
    private void writeObject(ObjectOutputStream s) throws IOException {

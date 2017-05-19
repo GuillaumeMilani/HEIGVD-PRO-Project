@@ -29,6 +29,7 @@ public class ToolSettingsContainer extends Popup {
       hbox.setSpacing(10);
       
       for(ToolSettings s : settings) {
+         s.setAlignment(Pos.CENTER_LEFT);
          hbox.getChildren().add(s);
       }
       

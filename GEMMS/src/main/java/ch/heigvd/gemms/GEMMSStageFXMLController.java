@@ -3,6 +3,7 @@ package ch.heigvd.gemms;
 import ch.heigvd.dialog.ImportImageDialog;
 import ch.heigvd.dialog.NewDocumentDialog;
 import ch.heigvd.dialog.OpenDocumentDialog;
+import ch.heigvd.dialog.ResizeDialog;
 import ch.heigvd.layer.GEMMSText;
 import ch.heigvd.layer.IGEMMSNode;
 import ch.heigvd.workspace.Workspace;
@@ -51,6 +52,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
@@ -239,7 +241,7 @@ public class GEMMSStageFXMLController implements Initializable {
             }
         });
 
-        // Create drag button action
+        // Create text button action
         Button text = createToolButton("", gridModificationTools);
         text.getStyleClass().add(CSSIcons.TEXT_TOOL);
         text.setOnAction((ActionEvent e) -> {
@@ -542,6 +544,25 @@ public class GEMMSStageFXMLController implements Initializable {
         }
     }
     
+    
+    @FXML
+    private void resizeButtonAction(ActionEvent e) {
+        Workspace w = getCurrentWorkspace();
+        if(w != null) {
+            
+            ResizeDialog dialog = new ResizeDialog(w);
+            
+            Optional<Rectangle> result = dialog.showAndWait();
+
+            if(result.isPresent()) {
+                
+                w.resizeCanvas((int)result.get().getWidth(),
+                               (int)result.get().getHeight(),
+                               (int)result.get().getX(), 
+                               (int)result.get().getY());
+            }
+        }
+    }
     
     /**
      * Set the main stage

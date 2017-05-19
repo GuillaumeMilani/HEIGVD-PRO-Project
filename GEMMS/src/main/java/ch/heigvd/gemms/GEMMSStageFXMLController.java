@@ -34,13 +34,9 @@ import ch.heigvd.tool.ColorSet;
 import ch.heigvd.tool.Eraser;
 import ch.heigvd.tool.EyeDropper;
 import ch.heigvd.tool.Selection;
-<<<<<<< HEAD
 import ch.heigvd.tool.TextTool;
 import ch.heigvd.tool.ToolColorSettings;
-=======
-
 import java.util.List;
->>>>>>> b241321673c556123f3a6f3de245ae0748385681
 import ch.heigvd.tool.ToolSettingsContainer;
 import ch.heigvd.tool.ToolSizeSettings;
 import java.io.File;

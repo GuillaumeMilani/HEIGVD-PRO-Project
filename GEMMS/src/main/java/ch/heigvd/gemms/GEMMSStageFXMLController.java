@@ -222,7 +222,7 @@ public class GEMMSStageFXMLController implements Initializable {
             }
         });
 
-        // Create drag button action
+        // Create text button action
         Button text = createToolButton("", gridModificationTools);
         text.getStyleClass().add(CSSIcons.TEXT_TOOL);
         text.setOnAction((ActionEvent e) -> {

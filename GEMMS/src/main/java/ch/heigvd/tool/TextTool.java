@@ -24,11 +24,15 @@ public class TextTool implements Tool, SizeConfigurable {
    public TextTool(Workspace workspace) {
       this.workspace = workspace;
    }
-
-   public void promptTextValue(List<Node> layers) {
+   
+   public static Optional<String> getPromptValue() {
       TextInputDialog dialog = new TextInputDialog();
       dialog.setContentText("Please enter the text value:");
-      Optional<String> result = dialog.showAndWait();
+      return dialog.showAndWait();
+   }
+
+   public static void promptTextValue(List<Node> layers) {
+      Optional<String> result = getPromptValue();
       if (result.isPresent()) {
          for (Node node : layers) {
             if (node instanceof GEMMSText) {
@@ -49,8 +53,15 @@ public class TextTool implements Tool, SizeConfigurable {
    @Override
    public void mouseReleased(double x, double y) {
       List<Node> layers = workspace.getCurrentLayers();
-      if (layers.size() == 1) {
-
+      boolean atLeastOneText = false;
+      for (Node layer : layers) {
+         if (layer instanceof GEMMSText) {
+            atLeastOneText = true;
+         }
+      }
+      
+      if (atLeastOneText) {
+         TextTool.promptTextValue(layers);
       }
 
    }
@@ -59,8 +70,8 @@ public class TextTool implements Tool, SizeConfigurable {
    public void setSize(int size) {
       for (Node n : workspace.getCurrentLayers()) {
          if (n instanceof GEMMSText) {
-            GEMMSText t = (GEMMSText)n;
-            t.setFont(Font.font (t.getFont().getFamily(), size));
+            GEMMSText t = (GEMMSText) n;
+            t.setFontSize(size);
          }
       }
    }

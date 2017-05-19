@@ -42,4 +42,8 @@ public class ToolSizeSettings extends ToolSettings {
       this.target = target;
       target.setSize((int)slider.getValue());
    }
+   
+   public int getSize() {
+      return (int)slider.getValue();
+   }
 }

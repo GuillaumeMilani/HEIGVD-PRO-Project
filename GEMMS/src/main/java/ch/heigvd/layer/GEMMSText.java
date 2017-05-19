@@ -6,10 +6,11 @@ import ch.heigvd.workspace.LayerListable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import javafx.geometry.VPos;
 
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, LayerListable {
 
@@ -42,13 +43,14 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
    public GEMMSText(double x, double y, String text) {
       super(x, y, text);
       setFontSize(DEFAULT_SIZE);
-      setLineSpacing(0);
+      setTextOrigin(VPos.CENTER);
+      setTextAlignment(TextAlignment.CENTER);
    }
 
    public void setFontSize(int size) {
       setFont(Font.font(getFont().getFamily(), size));
       setTranslateX(-getBoundsInParent().getWidth() / 2);
-      //setTranslateY(-getBoundsInParent().getHeight() / 2);
+      setTranslateY((getBoundsInParent().getHeight() - getFont().getSize()) / 2);
    }
 
    private void writeObject(ObjectOutputStream s) throws IOException {

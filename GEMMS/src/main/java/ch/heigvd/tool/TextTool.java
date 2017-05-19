@@ -142,7 +142,14 @@ public class TextTool implements Tool, SizeConfigurable, ColorConfigurable {
    public void mouseReleased(double x, double y) {
       List<Node> layers = workspace.getCurrentLayers();
       if (layers.size() == 1 && layers.get(0) instanceof GEMMSText) {
-         TextTool.dialogTextValue(layers);
+         GEMMSText layer = (GEMMSText)layers.get(0);
+         int layerW = (int)layer.getBoundsInParent().getWidth();
+         int layerH = (int)layer.getBoundsInParent().getHeight();
+         int layerX = (int)(layer.getX() + layer.getTranslateX());
+         int layerY = (int)(layer.getY() + layer.getTranslateY() - layerH/2);
+         if (x >= layerX && y >= layerY && x <= layerX + layerW && y <= layerY + layer.getFont().getSize()) {
+            TextTool.dialogTextValue(layers);
+         }
       }
 
    }

@@ -6,9 +6,6 @@ import java.io.IOException;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
-
-import javafx.scene.Cursor;
 import javafx.scene.SnapshotParameters;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -18,7 +15,7 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements Serializable, LayerListable {
+public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNode, LayerListable {
 
     /**
      * Constructor

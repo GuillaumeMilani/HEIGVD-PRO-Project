@@ -17,7 +17,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 
-public class GEMMSText extends javafx.scene.text.Text implements Serializable, LayerListable {
+public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, LayerListable {
 
     /**
      * Constructor

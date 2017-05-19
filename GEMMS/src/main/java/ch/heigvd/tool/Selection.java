@@ -108,4 +108,8 @@ public class Selection implements Tool {
             workspace.getLayerTool().getChildren().remove(rectangle);
         }
     }
+
+    public Rectangle getRectangle() {
+        return rectangle;
+    }
 }

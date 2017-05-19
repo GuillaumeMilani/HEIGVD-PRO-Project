@@ -14,8 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.image.WritableImage;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -152,6 +151,8 @@ public class Workspace extends StackPane implements Serializable {
       };
 
       addEventFilter(MouseEvent.ANY, dragEventHandler);
+
+      addEventHandler(MouseEvent.ANY, dragEventHandler);
    }
    
    

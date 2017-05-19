@@ -1,4 +1,4 @@
-package ch.heigvd.tool;
+package ch.heigvd.tool.settings;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -11,7 +11,7 @@ import javafx.scene.text.Text;
  */
 public class ToolSizeSettings extends ToolSettings {
    // The target to configure
-   private SizeConfigurable target;
+   private SizeConfigurableTool target;
    // The slider to set the size
    private final Slider slider;
 
@@ -38,8 +38,17 @@ public class ToolSizeSettings extends ToolSettings {
       getChildren().add(textValue);
    }
    
-   public void setTarget(SizeConfigurable target) {
+   public void setTarget(SizeConfigurableTool target) {
       this.target = target;
-      target.setSize((int)slider.getValue());
+      int size = target.getSize();
+      if (size > 0) {
+         slider.setValue(size);
+      } else {
+         target.setSize((int)slider.getValue());
+      }
+   }
+   
+   public int getSize() {
+      return (int)slider.getValue();
    }
 }

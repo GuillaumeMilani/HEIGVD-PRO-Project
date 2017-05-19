@@ -5,8 +5,6 @@ import ch.heigvd.layer.GEMMSImage;
 import ch.heigvd.layer.GEMMSText;
 import ch.heigvd.workspace.Workspace;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.geometry.Point3D;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;

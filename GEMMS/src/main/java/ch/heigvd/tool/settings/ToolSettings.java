@@ -1,4 +1,4 @@
-package ch.heigvd.tool;
+package ch.heigvd.tool.settings;
 
 import javafx.geometry.Insets;
 import javafx.scene.layout.HBox;

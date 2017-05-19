@@ -1,5 +1,6 @@
 package ch.heigvd.tool;
 
+import ch.heigvd.tool.settings.SizeConfigurableTool;
 import ch.heigvd.workspace.Workspace;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -10,7 +11,7 @@ import javafx.scene.paint.Color;
  *
  * @author mathieu
  */
-public class Brush extends LineTool implements SizeConfigurable {
+public class Brush extends LineTool implements SizeConfigurableTool {
 
    // Color of the brush
    Color color;
@@ -22,7 +23,7 @@ public class Brush extends LineTool implements SizeConfigurable {
     * @param workspace the Workspace to work on
     */
    public Brush(Workspace workspace) {
-      this(workspace, ColorSet.getInstance().getColor(), 5);
+      this(workspace, ColorSet.getInstance().getColor(), -1);
    }
 
    /**

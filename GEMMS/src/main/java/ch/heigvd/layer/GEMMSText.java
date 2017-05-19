@@ -6,49 +6,53 @@ import ch.heigvd.workspace.LayerListable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import javafx.geometry.VPos;
 
-import com.sun.javafx.tk.FontMetrics;
-import com.sun.javafx.tk.Toolkit;
-import javafx.application.Platform;
-import javafx.event.EventHandler;
-import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, LayerListable {
 
-    /**
-     * Constructor
-     */
-    public GEMMSText() {
-        super();
-    }
+   public static final int DEFAULT_SIZE = 12;
 
-    /**
-     * Constructor
-     *
-     * @param text text to be contained in the instance
-     */
-    public GEMMSText(String text) {
-        super(text);
+   /**
+    * Constructor
+    */
+   public GEMMSText() {
+      super();
 
-    }
+   }
 
+   /**
+    * Constructor
+    *
+    * @param text text to be contained in the instance
+    */
+   public GEMMSText(String text) {
+      this(0, 0, text);
+   }
 
-    /**
-     * Constructor
-     *
-     * @param x    the horizontal position of the text
-     * @param y    the vertical position of the text
-     * @param text text to be contained in the instance
-     */
-    public GEMMSText(double x, double y, String text) {
-        super(x, y, text);
-    }
+   /**
+    * Constructor
+    *
+    * @param x the horizontal position of the text
+    * @param y the vertical position of the text
+    * @param text text to be contained in the instance
+    */
+   public GEMMSText(double x, double y, String text) {
+      super(x, y, text);
+      setFontSize(DEFAULT_SIZE);
+      setTextOrigin(VPos.CENTER);
+      setTextAlignment(TextAlignment.CENTER);
+   }
 
-    private void writeObject(ObjectOutputStream s) throws IOException {
+   public void setFontSize(int size) {
+      setFont(Font.font(getFont().getFamily(), size));
+      setTranslateX(-getBoundsInParent().getWidth() / 2);
+   }
+
+   private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
 
         // Write the text
@@ -69,18 +73,20 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
         s.writeDouble(getTranslateX());
         s.writeDouble(getTranslateY());
         s.writeDouble(getTranslateZ());
-    }
+}
 
-    @Override
-    public String getLayerName() {
-        return getText();
-    }
+   @Override
+   public String getLayerName() {
+      String[] parts = getText().split(System.lineSeparator());
+      return parts.length >= 0 ? parts[0] : "";
+   }
 
-    public String getThumbnailClass() {
-        return CSSIcons.TEXT;
-    }
+   @Override
+   public String getThumbnailClass() {
+      return CSSIcons.TEXT;
+   }
 
-    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+  private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
         // Set the test
         setText((String) s.readObject());
 
@@ -98,6 +104,6 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
         setTranslateX(s.readDouble());
         setTranslateY(s.readDouble());
         setTranslateZ(s.readDouble());
-    }
+}
 
 }

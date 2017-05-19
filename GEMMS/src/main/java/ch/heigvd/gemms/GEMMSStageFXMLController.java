@@ -34,10 +34,11 @@ import ch.heigvd.tool.ColorSet;
 import ch.heigvd.tool.Eraser;
 import ch.heigvd.tool.EyeDropper;
 import ch.heigvd.tool.Selection;
-
+import ch.heigvd.tool.TextTool;
+import ch.heigvd.tool.settings.ToolColorSettings;
 import java.util.List;
-import ch.heigvd.tool.ToolSettingsContainer;
-import ch.heigvd.tool.ToolSizeSettings;
+import ch.heigvd.tool.settings.ToolSettingsContainer;
+import ch.heigvd.tool.settings.ToolSizeSettings;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -132,12 +133,19 @@ public class GEMMSStageFXMLController implements Initializable {
         colorController.getChildren().add(ColorSet.getInstance().getColorController());
         
         // Create text button action
+        ToolSizeSettings textSizer = new ToolSizeSettings(1, 300, GEMMSText.DEFAULT_SIZE);
         Button textCreation = createToolButton("", gridCreationTools);
         textCreation.getStyleClass().add(CSSIcons.TEXT_CREATION);
         textCreation.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
-                w.addLayer(new GEMMSText(50, 50, "Cliquer pour rentrer du texte"));
+               Optional<String> result = TextTool.getDialogText(null);
+               if (result.isPresent()) {
+                  GEMMSText t = new GEMMSText(w.width()/2, w.height()/2, result.get());
+                  t.setFill(ColorSet.getInstance().getColor());
+                  t.setFontSize(textSizer.getSize());
+                  w.addLayer(t);
+               }
             }
         });
 
@@ -242,21 +250,18 @@ public class GEMMSStageFXMLController implements Initializable {
 
         // Create text button action
         Button text = createToolButton("", gridModificationTools);
+        
+        final ToolColorSettings textColor = new ToolColorSettings(ColorSet.getInstance().getColor());
+        final ToolSettingsContainer textSettings = new ToolSettingsContainer(textSizer, textColor);
         text.getStyleClass().add(CSSIcons.TEXT_TOOL);
         text.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
-                TextInputDialog dialog = new TextInputDialog();
-                dialog.setContentText("Please enter some text:");
-                Optional<String> result = dialog.showAndWait();
-                if(result.isPresent()){
-                    for (Node node : w.getCurrentLayers()) {
-                        if(node instanceof GEMMSText){
-                            ((GEMMSText)node).setText(result.get());
-                        }
-                    }
-                }
-
+               TextTool t = new TextTool(w);
+               w.setCurrentTool(t); 
+               textSizer.setTarget(t);
+               textColor.setTarget(t);
+               displayToolSetting(text, textSettings);
             }
         });
 

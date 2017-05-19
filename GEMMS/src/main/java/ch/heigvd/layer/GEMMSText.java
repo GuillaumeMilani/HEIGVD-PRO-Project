@@ -64,6 +64,11 @@ public class GEMMSText extends javafx.scene.text.Text implements Serializable, L
 
         // Write fill info
         s.writeObject(getFill().toString());
+        
+        // Write translate info
+        s.writeDouble(getTranslateX());
+        s.writeDouble(getTranslateY());
+        s.writeDouble(getTranslateZ());
     }
 
     @Override
@@ -88,6 +93,11 @@ public class GEMMSText extends javafx.scene.text.Text implements Serializable, L
 
         // Set fill info
         setFill(Paint.valueOf((String) s.readObject()));
+        
+        // Set translate info
+        setTranslateX(s.readDouble());
+        setTranslateY(s.readDouble());
+        setTranslateZ(s.readDouble());
     }
 
 }

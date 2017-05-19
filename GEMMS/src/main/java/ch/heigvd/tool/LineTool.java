@@ -1,6 +1,5 @@
 package ch.heigvd.tool;
 
-import ch.heigvd.layer.GEMMSCanvas;
 import ch.heigvd.workspace.Workspace;
 import java.util.List;
 import javafx.scene.Node;
@@ -67,8 +66,8 @@ public abstract class LineTool implements Tool {
 
       while (true) {
          
-         int rx = mapX(x0, canvas);
-         int ry = mapY(y0, canvas);
+         int rx = PositionMapper.mapX(x0, canvas);
+         int ry = PositionMapper.mapY(y0, canvas);
          drawPixel(rx, ry, gc);
          if (x0 == x1 && y0 == y1) {
             break;
@@ -83,14 +82,6 @@ public abstract class LineTool implements Tool {
             y0 += sy;
          }
       }
-   }
-
-   private int mapX(int x, Canvas canvas) {
-      return x - (int)canvas.getLayoutX() - (int)canvas.getTranslateX();
-   }
-
-   private int mapY(int y, Canvas canvas) {
-      return y - (int)canvas.getLayoutY() - (int)canvas.getTranslateY();
    }
 
    /**

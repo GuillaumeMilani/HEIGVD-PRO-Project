@@ -1,7 +1,10 @@
 package ch.heigvd.tool;
 
 import ch.heigvd.workspace.Workspace;
+import javafx.geometry.Point3D;
 import javafx.scene.Node;
+import javafx.scene.transform.NonInvertibleTransformException;
+import javafx.scene.transform.Transform;
 
 import java.util.List;
 
@@ -24,15 +27,28 @@ public class Drag implements Tool{
 
     @Override
     public void mouseDragged(double x, double y) {
-        double newX = x - mouseX;
-        double newY = y - mouseY;
 
         List<Node> layers = workspace.getCurrentLayers();
 
+
         for (Node node : layers) {
 
-            node.setTranslateX(node.getTranslateX() + newX);
-            node.setTranslateY(node.getTranslateY()+newY);
+            double newX = x - mouseX;
+            double newY = y - mouseY;
+
+            Point3D p = new Point3D(newX, newY, 0);
+
+            for (Transform t : node.getTransforms()) {
+                Transform nt;
+               try {
+                    nt = t.createInverse();
+                    p = nt.inverseDeltaTransform(p);
+                } catch (NonInvertibleTransformException ex) {
+                }
+            }
+
+            node.setTranslateX(p.getX() + node.getTranslateX());
+            node.setTranslateY(p.getY() + node.getTranslateY());
         }
 
         mouseX = x;

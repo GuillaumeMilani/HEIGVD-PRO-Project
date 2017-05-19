@@ -5,7 +5,6 @@ import ch.heigvd.dialog.NewDocumentDialog;
 import ch.heigvd.dialog.OpenDocumentDialog;
 import ch.heigvd.layer.GEMMSText;
 import ch.heigvd.tool.Drag;
-import ch.heigvd.tool.ToolDragNode;
 import ch.heigvd.workspace.Workspace;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -13,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import ch.heigvd.layer.GEMMSCanvas;
@@ -120,7 +120,7 @@ public class GEMMSStageFXMLController implements Initializable {
         textCreation.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
-                w.addLayer(new GEMMSText(50, 50, "Ceci est un texte"));
+                w.addLayer(new GEMMSText(50, 50, "Cliquer pour rentrer du texte"));
             }
         });
 
@@ -170,6 +170,7 @@ public class GEMMSStageFXMLController implements Initializable {
             if(w != null) {
                 for (Node node : w.getCurrentLayers()) {
                     node.getTransforms().add(new Rotate(180,node.getBoundsInParent().getWidth()/2,node.getBoundsInParent().getHeight()/2,0,Rotate.X_AXIS));
+
                 }
             }
         });
@@ -227,6 +228,26 @@ public class GEMMSStageFXMLController implements Initializable {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.setCurrentTool(new Drag(w));
+            }
+        });
+
+        // Create text button action
+        Button text = createToolButton("", gridModificationTools);
+        text.getStyleClass().add(CSSIcons.TEXT_TOOL);
+        text.setOnAction((ActionEvent e) -> {
+            Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                TextInputDialog dialog = new TextInputDialog();
+                dialog.setContentText("Please enter some text:");
+                Optional<String> result = dialog.showAndWait();
+                if(result.isPresent()){
+                    for (Node node : w.getCurrentLayers()) {
+                        if(node instanceof GEMMSText){
+                            ((GEMMSText)node).setText(result.get());
+                        }
+                    }
+                }
+
             }
         });
 

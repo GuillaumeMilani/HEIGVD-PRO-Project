@@ -99,28 +99,17 @@ public class TextTool implements Tool, SizeConfigurable, ColorConfigurable {
    private static void dialogTextValue(List<Node> layers) {
       
       // Check if there is only one text selected
-      int numberTexts = 0;
-      String def = null;
-      for (Node layer : layers) {
-         if (layer instanceof GEMMSText) {
-            numberTexts++;
-            def = ((GEMMSText)layer).getText();
-         }
-      }
-      
-      // Get the dialog result
-      Optional<String> result;
-      if (numberTexts == 1 ) {
-         result = getDialogText(def);
-      } else {
-         result = getDialogText(null);
-      }
-      
-      // Modify all GEMMSText layers
-      if (result.isPresent()) {
-         for (Node node : layers) {
-            if (node instanceof GEMMSText) {
-               ((GEMMSText) node).setText(result.get());
+      if (layers.size() == 1) {
+         if (layers.get(0) instanceof GEMMSText) {
+            String def = ((GEMMSText)layers.get(0)).getText();
+            Optional<String> result = getDialogText(def);
+            // Modify all GEMMSText layers
+            if (result.isPresent()) {
+               for (Node node : layers) {
+                  if (node instanceof GEMMSText) {
+                     ((GEMMSText) node).setText(result.get());
+                  }
+               }
             }
          }
       }
@@ -152,14 +141,7 @@ public class TextTool implements Tool, SizeConfigurable, ColorConfigurable {
    @Override
    public void mouseReleased(double x, double y) {
       List<Node> layers = workspace.getCurrentLayers();
-      boolean atLeastOneText = false;
-      for (Node layer : layers) {
-         if (layer instanceof GEMMSText) {
-            atLeastOneText = true;
-         }
-      }
-
-      if (atLeastOneText) {
+      if (layers.size() == 1 && layers.get(0) instanceof GEMMSText) {
          TextTool.dialogTextValue(layers);
       }
 
@@ -171,21 +153,19 @@ public class TextTool implements Tool, SizeConfigurable, ColorConfigurable {
     */
    @Override
    public void setSize(int size) {
-      for (Node n : workspace.getCurrentLayers()) {
-         if (n instanceof GEMMSText) {
-            GEMMSText t = (GEMMSText) n;
+      List<Node> layers = workspace.getCurrentLayers();
+      if (layers.size() == 1 && layers.get(0) instanceof GEMMSText) {
+            GEMMSText t = (GEMMSText) layers.get(0);
             t.setFontSize(size);
-         }
       }
    }
 
    @Override
    public void setColor(Color color) {
-      for (Node n : workspace.getCurrentLayers()) {
-         if (n instanceof GEMMSText) {
-            GEMMSText t = (GEMMSText) n;
+      List<Node> layers = workspace.getCurrentLayers();
+      if (layers.size() == 1 && layers.get(0) instanceof GEMMSText) {
+            GEMMSText t = (GEMMSText) layers.get(0);
             t.setFill(color);
-         }
       }
    }
 

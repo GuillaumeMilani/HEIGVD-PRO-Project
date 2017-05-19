@@ -121,7 +121,7 @@ public class GEMMSStageFXMLController implements Initializable {
         textCreation.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
-               Optional<String> result = TextTool.getPromptValue();
+               Optional<String> result = TextTool.getDialogText(null);
                if (result.isPresent()) {
                   GEMMSText t = new GEMMSText(w.width()/2, w.height()/2, result.get());
                   t.setFontSize(textSizer.getSize());

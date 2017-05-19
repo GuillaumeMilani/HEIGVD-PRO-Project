@@ -42,13 +42,13 @@ public class GEMMSText extends javafx.scene.text.Text implements Serializable, L
    public GEMMSText(double x, double y, String text) {
       super(x, y, text);
       setFontSize(DEFAULT_SIZE);
+      setLineSpacing(0);
    }
 
    public void setFontSize(int size) {
-
       setFont(Font.font(getFont().getFamily(), size));
       setTranslateX(-getBoundsInParent().getWidth() / 2);
-      setTranslateY(-getBoundsInLocal().getHeight() / 2);
+      setTranslateY(-getBoundsInParent().getHeight() / 2);
    }
 
    private void writeObject(ObjectOutputStream s) throws IOException {
@@ -71,7 +71,8 @@ public class GEMMSText extends javafx.scene.text.Text implements Serializable, L
 
    @Override
    public String getLayerName() {
-      return getText();
+      String[] parts = getText().split(System.lineSeparator());
+      return parts.length >= 0 ? parts[0] : "";
    }
 
    public String getThumbnailClass() {

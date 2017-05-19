@@ -231,6 +231,23 @@ public class GEMMSStageFXMLController implements Initializable {
             }
         });
 
+        // Create rotate button action
+        createToolButton("Rotate", gridModificationTools).setOnAction((ActionEvent e) -> {
+            Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                w.setCurrentTool(new ch.heigvd.tool.Rotate(w));
+            }
+        });
+
+
+        // Create resize button action
+        createToolButton("Resize", gridModificationTools).setOnAction((ActionEvent e) -> {
+            Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                w.setCurrentTool(new ch.heigvd.tool.Resize(w));
+            }
+        });
+
         // Create text button action
         Button text = createToolButton("", gridModificationTools);
         text.getStyleClass().add(CSSIcons.TEXT_TOOL);

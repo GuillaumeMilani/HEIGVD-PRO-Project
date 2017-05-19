@@ -28,11 +28,19 @@ public class Rotate implements Tool{
         double newY = y - mouseY;
 
         List<Node> layers = workspace.getCurrentLayers();
-
+        double centerX;
+        double centerY;
         for (Node node : layers) {
+             centerX = node.getBoundsInParent().getWidth()/2;
+             centerY = node.getBoundsInParent().getHeight()/2;
+            //System.out.println("cx : "+ centerX + " , cy : "+centerY);
+            double yx = node.getLocalToSceneTransform().getMyx();
+            double yy = node.getLocalToSceneTransform().getMyy();
 
-            node.setTranslateX(node.getTranslateX() + newX);
-            node.setTranslateY(node.getTranslateY()+newY);
+            System.out.println("yy:"+yy);
+            //node.getTransforms().add(new javafx.scene.transform.Rotate(getAngle(mouseX,mouseY,newX,newY,centerX,centerY),centerX,centerY,0));
+            node.getTransforms().add(new javafx.scene.transform.Rotate(Math.toDegrees(Math.atan2(yx,yy))));
+
         }
 
         mouseX = x;
@@ -43,5 +51,17 @@ public class Rotate implements Tool{
     @Override
     public void mouseReleased(double x, double y) {
 
+    }
+
+    public double getAngle(double pointAX,double pointAY, double pointBX,double pointBY, double centreX, double centreY){
+        double pointAC = Math.sqrt(square(centreX-pointAX)+square(centreY-pointAY));
+        double pointBC = Math.sqrt(square(centreX-pointBX)+square(centreY-pointBY));
+        double pointAB = Math.sqrt(square(pointBX-pointAX)+square(pointBY-pointAY));
+
+        return Math.acos((pointBC*pointBC+pointAC*pointAC-pointAB*pointAB)/(2*pointAC*pointBC));
+    }
+
+    public double square(double x){
+        return x*x;
     }
 }

@@ -3,6 +3,7 @@ package ch.heigvd.gemms;
 import ch.heigvd.dialog.ImportImageDialog;
 import ch.heigvd.dialog.NewDocumentDialog;
 import ch.heigvd.dialog.OpenDocumentDialog;
+import ch.heigvd.dialog.ResizeDialog;
 import ch.heigvd.layer.GEMMSText;
 import ch.heigvd.workspace.Workspace;
 import java.net.URL;
@@ -37,6 +38,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
@@ -384,6 +386,25 @@ public class GEMMSStageFXMLController implements Initializable {
         }
     }
     
+    
+    @FXML
+    private void resizeButtonAction(ActionEvent e) {
+        Workspace w = getCurrentWorkspace();
+        if(w != null) {
+            
+            ResizeDialog dialog = new ResizeDialog(w);
+            
+            Optional<Rectangle> result = dialog.showAndWait();
+
+            if(result.isPresent()) {
+                
+                w.resizeCanvas((int)result.get().getWidth(),
+                               (int)result.get().getHeight(),
+                               (int)result.get().getX(), 
+                               (int)result.get().getY());
+            }
+        }
+    }
     
     /**
      * Set the main stage

@@ -15,7 +15,7 @@ public class Eraser extends LineTool implements SizeConfigurableTool {
     * @param workspace the Workspace to work on
     */
    public Eraser(Workspace workspace) {
-      this(workspace, -1);
+      this(workspace, 5);
    }
    
    /**

@@ -24,7 +24,7 @@ import javafx.scene.text.Font;
  *
  * @author mathieu
  */
-public class TextTool implements Tool, SizeConfigurableTool, ColorConfigurableTool, FontConfigurableTool {
+public class TextTool implements Tool, ColorConfigurableTool, FontConfigurableTool {
 
    // The Workspace to work on
    private final Workspace workspace;
@@ -122,7 +122,7 @@ public class TextTool implements Tool, SizeConfigurableTool, ColorConfigurableTo
                   if (node instanceof GEMMSText) {
                      GEMMSText text = (GEMMSText) node;
                      text.setText(result.get());
-                     text.setFontSize((int) text.getFont().getSize());
+                     text.setTranslateX(-text.getBoundsInParent().getWidth() / 2);
                   }
                }
             }
@@ -177,34 +177,7 @@ public class TextTool implements Tool, SizeConfigurableTool, ColorConfigurableTo
     *
     * @param size
     */
-   @Override
-   public void setSize(int size) {
-      List<Node> layers = workspace.getCurrentLayers();
-      if (layers.size() == 1 && layers.get(0) instanceof GEMMSText) {
-         GEMMSText t = (GEMMSText) layers.get(0);
-         t.setFontSize(size);
-      }
-   }
-
-   @Override
-   public void setColor(Color color) {
-      List<Node> layers = workspace.getCurrentLayers();
-      if (layers.size() == 1 && layers.get(0) instanceof GEMMSText) {
-         GEMMSText t = (GEMMSText) layers.get(0);
-         t.setFill(color);
-      }
-   }
-
-   @Override
-   public int getSize() {
-      List<Node> layers = workspace.getCurrentLayers();
-      if (layers.size() == 1 && layers.get(0) instanceof GEMMSText) {
-         GEMMSText t = (GEMMSText) layers.get(0);
-         return (int) t.getFont().getSize();
-      } else {
-         return -1;
-      }
-   }
+   
 
    @Override
    public Color getColor() {
@@ -218,20 +191,30 @@ public class TextTool implements Tool, SizeConfigurableTool, ColorConfigurableTo
    }
 
    @Override
-   public void setFont(String fontName) {
+   public void setColor(Color color) {
       List<Node> layers = workspace.getCurrentLayers();
       if (layers.size() == 1 && layers.get(0) instanceof GEMMSText) {
          GEMMSText t = (GEMMSText) layers.get(0);
-         t.setFont(Font.font(fontName));
+         t.setFill(color);
       }
    }
 
    @Override
-   public String getFont() {
+   public void setFont(Font font) {
       List<Node> layers = workspace.getCurrentLayers();
       if (layers.size() == 1 && layers.get(0) instanceof GEMMSText) {
          GEMMSText t = (GEMMSText) layers.get(0);
-         return t.getFont().getName();
+         t.setFont(font);
+         t.setTranslateX(-t.getBoundsInParent().getWidth() / 2);
+      }
+   }
+
+   @Override
+   public Font getFont() {
+      List<Node> layers = workspace.getCurrentLayers();
+      if (layers.size() == 1 && layers.get(0) instanceof GEMMSText) {
+         GEMMSText t = (GEMMSText) layers.get(0);
+         return t.getFont();
       } else {
          return null;
       }

@@ -40,12 +40,7 @@ public class ToolSizeSettings extends ToolSettings {
    
    public void setTarget(SizeConfigurableTool target) {
       this.target = target;
-      int size = target.getSize();
-      if (size > 0) {
-         slider.setValue(size);
-      } else {
-         target.setSize((int)slider.getValue());
-      }
+      target.setSize((int)slider.getValue());
    }
    
    public int getSize() {

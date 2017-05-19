@@ -5,14 +5,14 @@
  */
 package ch.heigvd.tool.settings;
 
-import ch.heigvd.layer.GEMMSText;
-import ch.heigvd.workspace.Workspace;
 import java.util.List;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.Node;
+import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Slider;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 /**
  *
@@ -23,10 +23,15 @@ public class ToolFontSettings extends ToolSettings{
    // Tool target
    private FontConfigurableTool target = null;
 
-   //
+   // List of fonts
    private ComboBox<String> cb;
+   
+   private Slider slider;
 
-   public ToolFontSettings() {
+   public ToolFontSettings(int min, int max, int value) {
+      
+      setAlignment(Pos.CENTER_LEFT);
+      
       cb = new ComboBox<>();
 
       List<String> fontFamilies = javafx.scene.text.Font.getFamilies();
@@ -38,25 +43,48 @@ public class ToolFontSettings extends ToolSettings{
          @Override
          public void changed(ObservableValue value, String old_value, String new_value) {
             if (target != null) {
-               target.setFont(new_value);
+               target.setFont(Font.font(cb.getValue(), slider.getValue()));
             }
          }
       });
       
+      
+      // Create the slider
+      slider = new Slider(min, max, value);
+      
+      // Value displayer
+      final Text textValue = new Text(String.valueOf(value));
+      
+      // Create the event on slider change
+      slider.valueProperty().addListener(new ChangeListener<Number>() {
+         @Override
+         public void changed(ObservableValue<? extends Number> ov,
+                 Number old_val, Number new_val) {
+            if (target != null) {
+               textValue.setText(String.format("%d", new_val.intValue()));
+               target.setFont(Font.font(cb.getValue(), slider.getValue()));
+            }
+         }
+      });
+      
+      
+      getChildren().add(slider);
+      getChildren().add(textValue);
       getChildren().add(cb);
    }
    
    public void setTarget(FontConfigurableTool target) {
       this.target = target;
-      String fontName = target.getFont();
-      if (fontName == null) {
-         target.setFont(cb.getValue());
+      Font font = target.getFont();
+      if (font == null) {
+         target.setFont(Font.font(cb.getValue(), slider.getValue()));
       } else {
-         cb.setValue(target.getFont());
+         cb.setValue(font.getFamily());
+         slider.setValue(font.getSize());
       }
    }
    
    public Font getFont() {
-      return Font.font(cb.getValue());
+      return Font.font(cb.getValue(), (int)slider.getValue());
    }
 }

@@ -12,6 +12,6 @@ import javafx.scene.text.Font;
  * @author mathieu
  */
 public interface FontConfigurableTool {
-   public void setFont(String fontName);
-   public String getFont();  
+   public void setFont(Font font);
+   public Font getFont();  
 }

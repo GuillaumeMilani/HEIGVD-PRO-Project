@@ -137,9 +137,8 @@ public class GEMMSStageFXMLController implements Initializable {
         colorController.getChildren().add(ColorSet.getInstance().getColorController());
         
         // Create text button action
-        ToolSizeSettings textSizer = new ToolSizeSettings(1, 300, GEMMSText.DEFAULT_SIZE);
         final ToolColorSettings textColor = new ToolColorSettings(ColorSet.getInstance().getColor());
-        final ToolFontSettings textFont = new ToolFontSettings();
+        final ToolFontSettings textFont = new ToolFontSettings(6, 300, 12);
         Button textCreation = createToolButton("", gridCreationTools);
         textCreation.getStyleClass().add(CSSIcons.TEXT_CREATION);
         textCreation.setOnAction(e -> {
@@ -149,10 +148,24 @@ public class GEMMSStageFXMLController implements Initializable {
                if (result.isPresent()) {
                   GEMMSText t = new GEMMSText(w.width()/2, w.height()/2, result.get());
                   t.setFill(ColorSet.getInstance().getColor());
-                  t.setFont(Font.font(textFont.getFont().getName(), textSizer.getSize()));
-                  t.setFontSize(textSizer.getSize());
+                  t.setFont(textFont.getFont());
+                  t.setTranslateX(-t.getBoundsInParent().getWidth() / 2);
                   w.addLayer(t);
                }
+            }
+        });
+         // Create text button action
+        Button text = createToolButton("", gridModificationTools);
+        final ToolSettingsContainer textSettings = new ToolSettingsContainer(textColor, textFont);
+        text.getStyleClass().add(CSSIcons.TEXT_TOOL);
+        text.setOnAction((ActionEvent e) -> {
+            Workspace w = getCurrentWorkspace();
+            if(w != null) {
+               TextTool t = new TextTool(w);
+               w.setCurrentTool(t); 
+               textColor.setTarget(t);
+               textFont.setTarget(t);
+               displayToolSetting(text, textSettings);
             }
         });
 
@@ -255,22 +268,7 @@ public class GEMMSStageFXMLController implements Initializable {
             }
         });
 
-        // Create text button action
-        Button text = createToolButton("", gridModificationTools);
-        final ToolSettingsContainer textSettings = new ToolSettingsContainer(textSizer, textColor, textFont);
-        text.getStyleClass().add(CSSIcons.TEXT_TOOL);
-        text.setOnAction((ActionEvent e) -> {
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-               TextTool t = new TextTool(w);
-               w.setCurrentTool(t); 
-               textSizer.setTarget(t);
-               textColor.setTarget(t);
-               textFont.setTarget(t);
-               displayToolSetting(text, textSettings);
-            }
-        });
-
+      
         mainAnchorPane.setOnKeyPressed(keyEvent -> {
             // ---------- ESC ----------
 

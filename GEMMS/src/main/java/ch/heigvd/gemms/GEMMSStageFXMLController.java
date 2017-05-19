@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
@@ -271,7 +272,6 @@ public class GEMMSStageFXMLController implements Initializable {
             // Drop the current selected layers
                 getCurrentWorkspace().getCurrentLayers().forEach(n->getCurrentWorkspace().getLayers().remove(n));
             }
-
             // ---------- CTRL + C ----------
             if (Constants.CTRL_C.match(keyEvent)) {
 

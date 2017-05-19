@@ -7,6 +7,7 @@ package ch.heigvd.tool.settings;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -19,7 +20,7 @@ import javafx.stage.Popup;
  * @author mathieu
  */
 public class ToolSettingsContainer extends Popup {
-   public ToolSettingsContainer(ToolSettings... settings) {
+   public ToolSettingsContainer(Node... settings) {
       // Set HBox container
       final HBox hbox = new HBox();
       hbox.setAlignment(Pos.CENTER);
@@ -28,8 +29,8 @@ public class ToolSettingsContainer extends Popup {
       hbox.setPadding(new Insets(5, 5, 5, 5));
       hbox.setSpacing(10);
       
-      for(ToolSettings s : settings) {
-         s.setAlignment(Pos.CENTER_LEFT);
+      for(Node s : settings) {
+         //s.setAlignment(Pos.CENTER_LEFT);
          hbox.getChildren().add(s);
       }
       

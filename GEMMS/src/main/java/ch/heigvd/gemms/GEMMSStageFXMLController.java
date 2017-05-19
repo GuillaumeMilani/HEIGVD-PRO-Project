@@ -24,7 +24,6 @@ import javafx.scene.image.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import ch.heigvd.layer.GEMMSCanvas;
@@ -36,6 +35,7 @@ import ch.heigvd.tool.EyeDropper;
 import ch.heigvd.tool.Selection;
 import ch.heigvd.tool.TextTool;
 import ch.heigvd.tool.settings.ToolColorSettings;
+import ch.heigvd.tool.settings.ToolFontSettings;
 import java.util.List;
 import ch.heigvd.tool.settings.ToolSettingsContainer;
 import ch.heigvd.tool.settings.ToolSizeSettings;
@@ -46,10 +46,12 @@ import java.util.Optional;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.paint.Color;
@@ -58,6 +60,7 @@ import javafx.scene.transform.Rotate;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import javafx.scene.text.Font;
 
 public class GEMMSStageFXMLController implements Initializable {
 
@@ -135,6 +138,8 @@ public class GEMMSStageFXMLController implements Initializable {
         
         // Create text button action
         ToolSizeSettings textSizer = new ToolSizeSettings(1, 300, GEMMSText.DEFAULT_SIZE);
+        final ToolColorSettings textColor = new ToolColorSettings(ColorSet.getInstance().getColor());
+        final ToolFontSettings textFont = new ToolFontSettings();
         Button textCreation = createToolButton("", gridCreationTools);
         textCreation.getStyleClass().add(CSSIcons.TEXT_CREATION);
         textCreation.setOnAction(e -> {
@@ -144,6 +149,7 @@ public class GEMMSStageFXMLController implements Initializable {
                if (result.isPresent()) {
                   GEMMSText t = new GEMMSText(w.width()/2, w.height()/2, result.get());
                   t.setFill(ColorSet.getInstance().getColor());
+                  t.setFont(Font.font(textFont.getFont().getName(), textSizer.getSize()));
                   t.setFontSize(textSizer.getSize());
                   w.addLayer(t);
                }
@@ -251,9 +257,7 @@ public class GEMMSStageFXMLController implements Initializable {
 
         // Create text button action
         Button text = createToolButton("", gridModificationTools);
-        
-        final ToolColorSettings textColor = new ToolColorSettings(ColorSet.getInstance().getColor());
-        final ToolSettingsContainer textSettings = new ToolSettingsContainer(textSizer, textColor);
+        final ToolSettingsContainer textSettings = new ToolSettingsContainer(textSizer, textColor, textFont);
         text.getStyleClass().add(CSSIcons.TEXT_TOOL);
         text.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
@@ -262,6 +266,7 @@ public class GEMMSStageFXMLController implements Initializable {
                w.setCurrentTool(t); 
                textSizer.setTarget(t);
                textColor.setTarget(t);
+               textFont.setTarget(t);
                displayToolSetting(text, textSettings);
             }
         });

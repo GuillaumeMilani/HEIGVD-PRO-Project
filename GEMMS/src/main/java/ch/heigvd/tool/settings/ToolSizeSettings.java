@@ -11,7 +11,7 @@ import javafx.scene.text.Text;
  */
 public class ToolSizeSettings extends ToolSettings {
    // The target to configure
-   private SizeConfigurableTool target;
+   private SizeConfigurableTool target = null;
    // The slider to set the size
    private final Slider slider;
 

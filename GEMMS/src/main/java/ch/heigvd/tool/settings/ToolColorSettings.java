@@ -18,7 +18,7 @@ import javafx.scene.paint.Color;
 public class ToolColorSettings extends ToolSettings {
 
    // The target to configure
-   private ColorConfigurableTool target;
+   private ColorConfigurableTool target = null;
 
    // Color picker
    private ColorPicker cp;

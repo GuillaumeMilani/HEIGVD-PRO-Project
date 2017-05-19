@@ -50,7 +50,6 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
    public void setFontSize(int size) {
       setFont(Font.font(getFont().getFamily(), size));
       setTranslateX(-getBoundsInParent().getWidth() / 2);
-      setTranslateY((getBoundsInParent().getHeight() - getFont().getSize()) / 2);
    }
 
    private void writeObject(ObjectOutputStream s) throws IOException {
@@ -82,6 +81,7 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
       return parts.length >= 0 ? parts[0] : "";
    }
 
+   @Override
    public String getThumbnailClass() {
       return CSSIcons.TEXT;
    }

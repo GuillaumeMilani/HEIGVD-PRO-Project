@@ -38,5 +38,12 @@ public class ToolColorSettings extends ToolSettings {
    }
    public void setTarget(ColorConfigurable target) {
       this.target = target;
+      Color color = target.getColor();
+      if (color != null) {
+         cp.setValue(color);
+      } else {
+         cp.setValue(ColorSet.getInstance().getColor());
+         target.setColor(cp.getValue());
+      }
    }
 }

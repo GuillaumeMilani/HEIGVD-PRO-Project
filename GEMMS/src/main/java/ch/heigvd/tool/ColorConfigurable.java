@@ -13,4 +13,5 @@ import javafx.scene.paint.Color;
  */
 public interface ColorConfigurable {
    public void setColor(Color color);
+   public Color getColor();
 }

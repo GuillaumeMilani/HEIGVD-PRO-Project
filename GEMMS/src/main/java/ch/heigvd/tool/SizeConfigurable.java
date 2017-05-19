@@ -11,4 +11,5 @@ package ch.heigvd.tool;
  */
 public interface SizeConfigurable {
    public void setSize(int size);
+   public int getSize();
 }

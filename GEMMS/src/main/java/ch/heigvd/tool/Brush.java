@@ -22,7 +22,7 @@ public class Brush extends LineTool implements SizeConfigurable {
     * @param workspace the Workspace to work on
     */
    public Brush(Workspace workspace) {
-      this(workspace, ColorSet.getInstance().getColor(), 5);
+      this(workspace, ColorSet.getInstance().getColor(), -1);
    }
 
    /**

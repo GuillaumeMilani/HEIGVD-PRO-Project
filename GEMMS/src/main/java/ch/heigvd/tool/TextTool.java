@@ -79,8 +79,11 @@ public class TextTool implements Tool, SizeConfigurable, ColorConfigurable {
          if (dialogButton == ButtonType.OK) {
             List<CharSequence> ps = text.getParagraphs();
             String result = "";
+            int i = 0;
             for (CharSequence p : ps) {
-               result += p.toString() + System.getProperty("line.separator");;
+               result += p.toString();
+               if (++i < ps.size())
+                  result += "\n";
             }
             return result;
          }
@@ -107,7 +110,9 @@ public class TextTool implements Tool, SizeConfigurable, ColorConfigurable {
             if (result.isPresent()) {
                for (Node node : layers) {
                   if (node instanceof GEMMSText) {
-                     ((GEMMSText) node).setText(result.get());
+                     GEMMSText text = (GEMMSText)node;
+                     text.setText(result.get());
+                     text.setFontSize((int)text.getFont().getSize());
                   }
                }
             }
@@ -147,7 +152,7 @@ public class TextTool implements Tool, SizeConfigurable, ColorConfigurable {
          int layerH = (int)layer.getBoundsInParent().getHeight();
          int layerX = (int)(layer.getX() + layer.getTranslateX());
          int layerY = (int)(layer.getY() + layer.getTranslateY() - layerH/2);
-         if (x >= layerX && y >= layerY && x <= layerX + layerW && y <= layerY + layer.getFont().getSize()) {
+         if (x >= layerX && y >= layerY && x <= layerX + layerW && y <= layerY + layerH) {
             TextTool.dialogTextValue(layers);
          }
       }
@@ -173,6 +178,28 @@ public class TextTool implements Tool, SizeConfigurable, ColorConfigurable {
       if (layers.size() == 1 && layers.get(0) instanceof GEMMSText) {
             GEMMSText t = (GEMMSText) layers.get(0);
             t.setFill(color);
+      }
+   }
+
+   @Override
+   public int getSize() {
+      List<Node> layers = workspace.getCurrentLayers();
+      if (layers.size() == 1 && layers.get(0) instanceof GEMMSText) {
+            GEMMSText t = (GEMMSText) layers.get(0);
+            return (int)t.getFont().getSize();
+      } else {
+         return -1;
+      }
+   }
+
+   @Override
+   public Color getColor() {
+      List<Node> layers = workspace.getCurrentLayers();
+      if (layers.size() == 1 && layers.get(0) instanceof GEMMSText) {
+            GEMMSText t = (GEMMSText) layers.get(0);
+            return (Color)t.getFill();
+      } else {
+         return null;
       }
    }
 

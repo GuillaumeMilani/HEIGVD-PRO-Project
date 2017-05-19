@@ -70,6 +70,11 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements Serializa
                 s.writeDouble(c.getOpacity());
             }
         }
+        
+        // Write translate info
+        s.writeDouble(getTranslateX());
+        s.writeDouble(getTranslateY());
+        s.writeDouble(getTranslateZ());
     }
 
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
@@ -94,6 +99,11 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements Serializa
                 pixelWriter.setColor(x, y, c);
             }
         }
+        
+        // Set translate info
+        setTranslateX(s.readDouble());
+        setTranslateY(s.readDouble());
+        setTranslateZ(s.readDouble());
     }
 
 

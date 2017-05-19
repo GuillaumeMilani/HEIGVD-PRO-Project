@@ -59,13 +59,16 @@ public abstract class LineTool implements Tool {
     * @param y1 the y coordinate of the second point
     * @param gc the GraphicsContext from the canvas to apply the tool on
     */
-   public void line(int x0, int y0, int x1, int y1, GraphicsContext gc) {
+   public void line(int x0, int y0, int x1, int y1, GraphicsContext gc, Canvas canvas) {
       int dx = Math.abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
       int dy = -Math.abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
       int err = dx + dy, e2;
 
       while (true) {
-         drawPixel(x0, y0, gc);
+         
+         int rx = PositionMapper.mapX(x0, canvas);
+         int ry = PositionMapper.mapY(y0, canvas);
+         drawPixel(rx, ry, gc);
          if (x0 == x1 && y0 == y1) {
             break;
          }
@@ -106,7 +109,6 @@ public abstract class LineTool implements Tool {
    public void mouseDragged(double x, double y) {
 
       if (started) {
-
          // Get the selected layers of the workspace
          List<Node> layers = workspace.getCurrentLayers();
 
@@ -116,7 +118,7 @@ public abstract class LineTool implements Tool {
                Canvas canvas = (Canvas) node;
                GraphicsContext gc = canvas.getGraphicsContext2D();
 
-               line((int) this.x, (int) this.y, (int) x, (int) y, gc);
+               line((int) this.x, (int) this.y, (int) x, (int) y, gc, canvas);
 
             }
 

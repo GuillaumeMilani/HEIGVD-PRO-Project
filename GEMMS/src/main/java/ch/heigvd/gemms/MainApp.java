@@ -24,6 +24,7 @@ public class MainApp extends Application {
         scene.getStylesheets().add("/styles/Styles.css");
         scene.getStylesheets().add("/styles/Workspace.css");
         scene.getStylesheets().add("/styles/CSSIcons.css");
+        scene.getStylesheets().add("/styles/ColorSet.css");
         
         stage.setTitle("GEMMS 2017");
         stage.setScene(scene);

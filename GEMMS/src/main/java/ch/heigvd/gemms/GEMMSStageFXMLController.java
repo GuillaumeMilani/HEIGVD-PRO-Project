@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import ch.heigvd.layer.GEMMSCanvas;
@@ -18,6 +19,7 @@ import ch.heigvd.layer.GEMMSImage;
 import ch.heigvd.tool.Brush;
 import ch.heigvd.tool.ColorSet;
 import ch.heigvd.tool.Eraser;
+import ch.heigvd.tool.EyeDropper;
 import ch.heigvd.tool.Selection;
 import ch.heigvd.tool.ToolSettingsContainer;
 import ch.heigvd.tool.ToolSizeSettings;
@@ -117,7 +119,7 @@ public class GEMMSStageFXMLController implements Initializable {
         textCreation.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
-                w.addLayer(new GEMMSText(50, 50, "Ceci est un texte"));
+                w.addLayer(new GEMMSText(50, 50, "Cliquer pour rentrer du texte"));
             }
         });
 
@@ -167,6 +169,7 @@ public class GEMMSStageFXMLController implements Initializable {
             if(w != null) {
                 for (Node node : w.getCurrentLayers()) {
                     node.getTransforms().add(new Rotate(180,node.getBoundsInParent().getWidth()/2,node.getBoundsInParent().getHeight()/2,0,Rotate.X_AXIS));
+
                 }
             }
         });
@@ -201,11 +204,41 @@ public class GEMMSStageFXMLController implements Initializable {
             }
         });
         
-        // Create selection button action
-        createToolButton("Se", gridModificationTools).setOnAction((ActionEvent e) -> {
+        // Create EyeDropper tool
+        Button eyeDropper = createToolButton("", gridDrawingTools);
+        eyeDropper.getStyleClass().add(CSSIcons.EYE_DROPPER);
+        eyeDropper.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
+                w.setCurrentTool(new EyeDropper(w));
+            }
+        });
+
+        // Create selection button action
+        createToolButton("Se", gridModificationTools).setOnAction((ActionEvent e) -> {
+            Workspace w = getCurrentWorkspace();
+            if(w != null) {
                 w.setCurrentTool(new Selection(stage.getScene(), w));
+            }
+        });
+
+        // Create drag button action
+        Button text = createToolButton("", gridModificationTools);
+        text.getStyleClass().add(CSSIcons.TEXT_TOOL);
+        text.setOnAction((ActionEvent e) -> {
+            Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                TextInputDialog dialog = new TextInputDialog();
+                dialog.setContentText("Please enter some text:");
+                Optional<String> result = dialog.showAndWait();
+                if(result.isPresent()){
+                    for (Node node : w.getCurrentLayers()) {
+                        if(node instanceof GEMMSText){
+                            ((GEMMSText)node).setText(result.get());
+                        }
+                    }
+                }
+
             }
         });
     }

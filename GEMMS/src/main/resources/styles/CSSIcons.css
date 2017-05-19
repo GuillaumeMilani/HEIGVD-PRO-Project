@@ -30,6 +30,30 @@
     -fx-background-repeat: no-repeat;
     -fx-background-size: 50%;
 }
+.eraser-icon{
+    -fx-background-image: url("../img/eraser-icon.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 60%;
+}
+.h-symmetry-icon{
+    -fx-background-image: url("../img/h-symmetry-icon.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 50%;
+}
+.v-symmetry-icon{
+    -fx-background-image: url("../img/v-symmetry-icon.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 50%;
+}
+.eye-dropper-icon{
+    -fx-background-image: url("../img/eye-dropper-icon.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 55%;
+}
 
 .text-creation {
     -fx-background-image: url("../img/new-text-icon.png");

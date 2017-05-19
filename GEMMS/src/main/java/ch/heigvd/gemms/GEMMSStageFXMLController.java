@@ -18,7 +18,12 @@ import javafx.scene.layout.RowConstraints;
 import ch.heigvd.layer.GEMMSCanvas;
 import ch.heigvd.layer.GEMMSImage;
 import ch.heigvd.tool.Brush;
+import ch.heigvd.tool.ColorSet;
+import ch.heigvd.tool.Eraser;
+import ch.heigvd.tool.EyeDropper;
 import ch.heigvd.tool.Selection;
+import ch.heigvd.tool.ToolSettingsContainer;
+import ch.heigvd.tool.ToolSizeSettings;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,16 +37,17 @@ import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.transform.Rotate;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
 public class GEMMSStageFXMLController implements Initializable {
-    
+
     // Stage from main
     private Stage stage;
 
-    
     /**
      * GridPanes containing the tools buttons
      */
@@ -65,11 +71,11 @@ public class GEMMSStageFXMLController implements Initializable {
     @FXML
     private GridPane layerController;
     
+    @FXML
+    private AnchorPane colorController;
 
     // List of documents
     private ArrayList<Document> documents;
-   
-    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -79,7 +85,6 @@ public class GEMMSStageFXMLController implements Initializable {
         gridColorTools.getRowConstraints().add(new RowConstraints(Constants.BUTTONS_HEIGHT));
         gridFilterTools.getRowConstraints().add(new RowConstraints(Constants.BUTTONS_HEIGHT));
         gridModificationTools.getRowConstraints().add(new RowConstraints(Constants.BUTTONS_HEIGHT));
-
         // Document list
         documents = new ArrayList<>();
         
@@ -106,6 +111,8 @@ public class GEMMSStageFXMLController implements Initializable {
                 layerController.getChildren().clear();
             }
         });
+        
+        colorController.getChildren().add(ColorSet.getInstance().getColorController());
         
         // Create text button action
         Button textCreation = createToolButton("", gridCreationTools);
@@ -144,7 +151,9 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         // Create symetrie horizontal button action
-        createToolButton("Sym hori", gridModificationTools).setOnAction((ActionEvent e) -> {
+        Button hSym = createToolButton("", gridModificationTools);
+        hSym.getStyleClass().add(CSSIcons.H_SYMMETRY);
+        hSym.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 for (Node node : w.getCurrentLayers()) {
@@ -154,7 +163,9 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         // Create symetrie vertical button action
-        createToolButton("Sym vert", gridModificationTools).setOnAction((ActionEvent e) -> {
+        Button vSym = createToolButton("", gridModificationTools);
+        vSym.getStyleClass().add(CSSIcons.V_SYMMETRY);
+        vSym.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 for (Node node : w.getCurrentLayers()) {
@@ -166,10 +177,40 @@ public class GEMMSStageFXMLController implements Initializable {
         // Create brush tool
         Button brush = createToolButton("", gridDrawingTools);
         brush.getStyleClass().add(CSSIcons.BRUSH);
+        ToolSizeSettings brushSizer = new ToolSizeSettings(1, 150, 5);
+        final ToolSettingsContainer brushSettings = new ToolSettingsContainer(brushSizer);
         brush.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
-                w.setCurrentTool(new Brush(w));
+               Brush b = new Brush(w);
+               w.setCurrentTool(b);
+               brushSizer.setTarget(b);
+               displayToolSetting(brush, brushSettings);
+            }
+        });
+
+        // Create eraser tool
+        Button eraser = createToolButton("", gridDrawingTools);
+        eraser.getStyleClass().add(CSSIcons.ERASER);
+        ToolSizeSettings eraserSizer = new ToolSizeSettings(1, 150, 5);
+        final ToolSettingsContainer eraserSettings = new ToolSettingsContainer(eraserSizer);
+        eraser.setOnAction(e -> {
+           Workspace w = getCurrentWorkspace();
+            if(w != null) {
+               Eraser er = new Eraser(w);
+               w.setCurrentTool(er);
+               eraserSizer.setTarget(er);
+               displayToolSetting(eraser, eraserSettings);
+            }
+        });
+        
+        // Create EyeDropper tool
+        Button eyeDropper = createToolButton("", gridDrawingTools);
+        eyeDropper.getStyleClass().add(CSSIcons.EYE_DROPPER);
+        eyeDropper.setOnAction(e -> {
+           Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                w.setCurrentTool(new EyeDropper(w));
             }
         });
 
@@ -191,6 +232,12 @@ public class GEMMSStageFXMLController implements Initializable {
 
     }
     
+    private void displayToolSetting(Button button, Popup popup) {
+      popup.show(stage);
+      popup.setX(button.localToScreen(button.getBoundsInLocal()).getMinX());
+      popup.setY(button.localToScreen(button.getBoundsInLocal()).getMaxY());
+      popup.setAutoHide(true);
+    }
     
     /**
      * Create a tool button and add it in the corresponding grid pane

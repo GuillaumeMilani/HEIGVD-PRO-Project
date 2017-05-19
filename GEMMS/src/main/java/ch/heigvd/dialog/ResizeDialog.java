@@ -14,14 +14,21 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.util.Pair;
 import javafx.util.converter.IntegerStringConverter;
 
+
+/**
+ * Display a dialog that allow the user to set a resize.
+ */
 public class ResizeDialog {
     
     // Dialog
     private Dialog<Rectangle> dialog;
     
+    
+    /**
+     * Constructor
+     */
     public ResizeDialog(Workspace workspace) {
         dialog = new Dialog<>();
 
@@ -107,7 +114,7 @@ public class ResizeDialog {
     /**
      * Display dialog
      *
-     * @return an optional pair with width and height
+     * @return an optional rectangle
      */
     public Optional<Rectangle> showAndWait() {
         return dialog.showAndWait();

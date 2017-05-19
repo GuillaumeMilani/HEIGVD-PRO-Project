@@ -76,6 +76,8 @@ public class Workspace extends StackPane implements Serializable {
       
       layerTools = new AnchorPane();
       this.getChildren().add(layerTools);
+      
+      clip = new Rectangle(width, height);
 
       //setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
       //setClip(new Rectangle(getPrefWidth(), getPrefHeight()));
@@ -83,7 +85,7 @@ public class Workspace extends StackPane implements Serializable {
       workspace.setId("workspacePane");
       
       // Define the canvas size
-      resizeCanvas(width, height);
+      resizeCanvas(width, height, 0, 0);
       
       layerList = new LayerList(workspace.getChildren());
       
@@ -156,6 +158,15 @@ public class Workspace extends StackPane implements Serializable {
 
       addEventFilter(MouseEvent.ANY, dragEventHandler);
    }
+   
+   @Override
+   public void layoutChildren() {
+      super.layoutChildren();
+      
+      clip.setLayoutX((getWidth() - width) / 2);
+      clip.setLayoutY((getHeight() - height) / 2);
+      setClip(clip);
+   }
 
    public List<Node> getCurrentLayers() {
       return layerList.getSelectionModel().getSelectedItems();
@@ -192,6 +203,8 @@ public class Workspace extends StackPane implements Serializable {
       workspace.setScaleY(workspace.getScaleY() * factor);
       layerTools.setScaleX(layerTools.getScaleX() * factor);
       layerTools.setScaleY(layerTools.getScaleY() * factor);
+      clip.setScaleX(clip.getScaleX() * factor);
+      clip.setScaleY(clip.getScaleY() * factor);
    }
 
    /**
@@ -205,6 +218,8 @@ public class Workspace extends StackPane implements Serializable {
       workspace.setTranslateY(workspace.getTranslateY() + y);
       layerTools.setTranslateX(layerTools.getTranslateX() + x);
       layerTools.setTranslateY(layerTools.getTranslateY() + y);
+      clip.setTranslateX(clip.getTranslateX() + x);
+      clip.setTranslateY(clip.getTranslateY() + y);
    }
 
    /**
@@ -215,7 +230,7 @@ public class Workspace extends StackPane implements Serializable {
    }
    
    
-   public void resizeCanvas(int width, int height) {
+   public void resizeCanvas(int width, int height, int offsetX, int offsetY) {
       this.width = width;
       this.height = height;
 
@@ -223,11 +238,20 @@ public class Workspace extends StackPane implements Serializable {
       workspace.setPrefSize(width, height);
       workspace.setMaxSize(width, height);
       workspace.setMinSize(width, height);
-
+      
       // Stack the layer tool on workspace
       layerTools.setPrefSize(width, height);
       layerTools.setMaxSize(width, height);
       layerTools.setMinSize(width, height);
+      
+      clip.setWidth(width);
+      clip.setHeight(height);
+
+      
+      for(Node n : workspace.getChildren()) {
+          n.setTranslateX(n.getTranslateX() + offsetX);
+          n.setTranslateY(n.getTranslateY() + offsetY);
+      }
    }
 
    public VBox getWorkspaceController() {

@@ -48,6 +48,12 @@
     -fx-background-repeat: no-repeat;
     -fx-background-size: 50%;
 }
+.text-tool-icon {
+    -fx-background-image: url("../img/text-icon.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 45%;
+}
 .eye-dropper-icon{
     -fx-background-image: url("../img/eye-dropper-icon.png");
     -fx-background-position: center;

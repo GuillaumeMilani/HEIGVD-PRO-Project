@@ -6,7 +6,6 @@ import java.io.IOException;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
 import javafx.scene.SnapshotParameters;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -68,6 +67,11 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
                 s.writeDouble(c.getOpacity());
             }
         }
+        
+        // Write translate info
+        s.writeDouble(getTranslateX());
+        s.writeDouble(getTranslateY());
+        s.writeDouble(getTranslateZ());
     }
 
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
@@ -92,7 +96,16 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
                 pixelWriter.setColor(x, y, c);
             }
         }
+        
+        // Set translate info
+        setTranslateX(s.readDouble());
+        setTranslateY(s.readDouble());
+        setTranslateZ(s.readDouble());
     }
+
+
+
+
 
     @Override
     public String getLayerName() {

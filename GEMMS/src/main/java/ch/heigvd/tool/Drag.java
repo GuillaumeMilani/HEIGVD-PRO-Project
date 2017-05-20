@@ -2,6 +2,7 @@ package ch.heigvd.tool;
 
 import ch.heigvd.workspace.Workspace;
 import javafx.geometry.Point3D;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Transform;
@@ -18,9 +19,11 @@ public class Drag implements Tool{
 
     public Drag(Workspace w){
         this.workspace = w;
+
     }
     @Override
     public void mousePressed(double x, double y) {
+        workspace.setCursor(Cursor.CLOSED_HAND);
         mouseX = x;
         mouseY = y;
     }
@@ -43,6 +46,7 @@ public class Drag implements Tool{
                try {
                     p = t.createInverse().inverseDeltaTransform(p);
                 } catch (NonInvertibleTransformException ex) {
+                   ex.printStackTrace();
                 }
             }
 
@@ -57,6 +61,9 @@ public class Drag implements Tool{
 
     @Override
     public void mouseReleased(double x, double y) {
+        workspace.setCursor(Cursor.DEFAULT);
 
     }
+
+
 }

@@ -13,19 +13,16 @@ public class Resize implements Tool {
 
     private final Workspace workspace;
     private double mouseX;
-    private double mouseY;
     private final double FACTEUR = 0.001;
-    Scale s = new Scale();
+
 
     public Resize(Workspace w){
         this.workspace = w;
-        s = new Scale();
     }
 
     @Override
     public void mousePressed(double x, double y) {
         mouseX = x;
-        mouseY = y;
         workspace.setCursor(Cursor.E_RESIZE);
     }
 
@@ -34,13 +31,12 @@ public class Resize implements Tool {
 
 
         double newX = x - mouseX;
-        double newY = y - mouseY;
 
         List<Node> layers = workspace.getCurrentLayers();
 
+        double newScale;
         for (Node node : layers) {
-            double scale = s.getX();
-            double newScale = node.getScaleX() + (newX * FACTEUR)*-1; //*-1 pour changer de sens gauche -> droite
+            newScale = node.getScaleX() + (newX * FACTEUR)*-1; //*-1 pour changer de sens gauche -> droite
             if(newScale>=0) {
                 node.setScaleX(newScale);
                 node.setScaleY(newScale);
@@ -49,7 +45,6 @@ public class Resize implements Tool {
         }
 
         mouseX = x;
-        mouseY = y;
     }
 
     @Override

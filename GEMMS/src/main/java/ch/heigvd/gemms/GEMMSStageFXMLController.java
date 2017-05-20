@@ -3,8 +3,10 @@ package ch.heigvd.gemms;
 import ch.heigvd.dialog.ImportImageDialog;
 import ch.heigvd.dialog.NewDocumentDialog;
 import ch.heigvd.dialog.OpenDocumentDialog;
+import ch.heigvd.dialog.ResizeDialog;
 import ch.heigvd.layer.GEMMSText;
 import ch.heigvd.tool.Drag;
+import ch.heigvd.tool.settings.ToolColorSettings;
 import ch.heigvd.workspace.Workspace;
 
 import java.awt.*;
@@ -247,7 +249,6 @@ public class GEMMSStageFXMLController implements Initializable {
             }
         });
 
-<<<<<<< HEAD
         // Create drag button action
         createToolButton("Drag", gridModificationTools).setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
@@ -273,8 +274,7 @@ public class GEMMSStageFXMLController implements Initializable {
             }
         });
 
-=======
->>>>>>> master
+
         // Create text button action
         Button text = createToolButton("", gridModificationTools);
         
@@ -385,8 +385,7 @@ public class GEMMSStageFXMLController implements Initializable {
             }
         });
 
-<<<<<<< HEAD
-=======
+
     }
 
     /**
@@ -434,7 +433,6 @@ public class GEMMSStageFXMLController implements Initializable {
             e.printStackTrace();
             return null;
         }
->>>>>>> master
     }
     
     private void displayToolSetting(Button button, Popup popup) {

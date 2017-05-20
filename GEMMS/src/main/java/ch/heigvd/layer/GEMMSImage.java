@@ -19,28 +19,16 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
     
     public GEMMSImage() {
         super();
-        init();
     }
     
     public GEMMSImage(Image image) {
         super(image);
-        init();
     }
     
     public GEMMSImage(String url) {
         super(url);
-        init();
     }
 
-    private void init(){
-        rotateX.setAxis(Rotate.X_AXIS);
-        rotateY.setAxis(Rotate.Y_AXIS);
-        rotateY.setAxis(Rotate.Z_AXIS);
-        getTransforms().add(rotateX);
-        getTransforms().add(rotateY);
-        getTransforms().add(rotateZ);
-        getTransforms().add(t);
-    }
     
     private void writeObject(ObjectOutputStream s) throws IOException {
         

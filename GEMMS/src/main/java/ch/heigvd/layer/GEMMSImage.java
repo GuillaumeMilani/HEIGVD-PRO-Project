@@ -14,7 +14,7 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-public class GEMMSImage  extends javafx.scene.image.ImageView implements Serializable, LayerListable {
+public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSNode, LayerListable {
     
     public GEMMSImage() {
         super();
@@ -60,6 +60,11 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements Seriali
         s.writeDouble(r.getMinY());
         s.writeDouble(r.getWidth());
         s.writeDouble(r.getHeight());
+        
+        // Write translate info
+        s.writeDouble(getTranslateX());
+        s.writeDouble(getTranslateY());
+        s.writeDouble(getTranslateZ());
     }
     
     private void readObject(ObjectInputStream s) throws IOException {
@@ -84,6 +89,11 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements Seriali
         setImage(w);
         
         setViewport(new Rectangle2D(s.readDouble(), s.readDouble(), s.readDouble(), s.readDouble()));
+        
+        // Set translate info
+        setTranslateX(s.readDouble());
+        setTranslateY(s.readDouble());
+        setTranslateZ(s.readDouble());
     }
 
     @Override

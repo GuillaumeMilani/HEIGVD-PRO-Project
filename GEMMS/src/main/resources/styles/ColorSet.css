@@ -1,0 +1,28 @@
+
+/* 
+    Created on : May 17, 2017, 7:49:18 PM
+    Author     : mathieu
+*/
+
+.color-picker {
+    -fx-padding: 0;
+    -fx-color-rect-width: 30px;
+    -fx-color-rect-height: 30px;
+    -fx-color-label-visible: false ;
+    -fx-background-radius: 0 0 0 0;
+}
+.color-picker.small {
+    -fx-color-rect-width: 15px;
+    -fx-color-rect-height: 15px;
+    -fx-background-padding: 0;
+}
+
+.color-picker.active {
+    -fx-background-color: #666;
+}
+
+.combo-box-base.color-picker {
+    -fx-background-insets: 0 0 0 0 ;
+}
+
+

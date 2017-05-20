@@ -1,5 +1,6 @@
 package ch.heigvd.tool;
 
+import ch.heigvd.layer.IGEMMSNode;
 import ch.heigvd.workspace.Workspace;
 import javafx.scene.Node;
 
@@ -13,33 +14,68 @@ public class Rotate implements Tool{
     private double mouseY;
     private Workspace workspace;
 
+    List<Node> layers;
+
     public Rotate(Workspace w){
         this.workspace = w;
+
+
     }
     @Override
     public void mousePressed(double x, double y) {
         mouseX = x;
         mouseY = y;
+        layers = workspace.getCurrentLayers();
+//        for (Node node : layers) {
+//
+//            pivotX = node.getBoundsInLocal().getWidth() / 2;
+//            pivotY = node.getBoundsInLocal().getHeight() / 2;
+//            ((IGEMMSNode)node).rotateX.setPivotX(pivotX);
+//            ((IGEMMSNode)node).rotateY.setPivotY(pivotY);
+//
+//        }
     }
 
     @Override
     public void mouseDragged(double x, double y) {
+
         double newX = x - mouseX;
         double newY = y - mouseY;
 
-        List<Node> layers = workspace.getCurrentLayers();
         double centerX;
         double centerY;
         for (Node node : layers) {
-             centerX = node.getBoundsInParent().getWidth()/2;
-             centerY = node.getBoundsInParent().getHeight()/2;
-            //System.out.println("cx : "+ centerX + " , cy : "+centerY);
-            double yx = node.getLocalToSceneTransform().getMyx();
-            double yy = node.getLocalToSceneTransform().getMyy();
+            centerX = node.getBoundsInParent().getWidth()/2;
+            centerY = node.getBoundsInParent().getHeight()/2;
+            double angle = getAngle(mouseX,mouseX,x,y,centerX,centerY);
 
-            System.out.println("yy:"+yy);
-            //node.getTransforms().add(new javafx.scene.transform.Rotate(getAngle(mouseX,mouseY,newX,newY,centerX,centerY),centerX,centerY,0));
-            node.getTransforms().add(new javafx.scene.transform.Rotate(Math.toDegrees(Math.atan2(yx,yy))));
+
+            ((IGEMMSNode)node).rotateX.setAngle((angle ));
+            ((IGEMMSNode)node).rotateY.setAngle((angle));
+
+           // ((IGEMMSNode)node).rotateZ.setAngle(((IGEMMSNode)node).rotateZ.getAngle() - newX);
+
+//            centerX = node.getBoundsInParent().getWidth()/2;
+//            centerY = node.getBoundsInParent().getHeight()/2;
+//            double yx ;
+//            double yy ;
+//            double angle;
+//            if(node.getTransforms().isEmpty()){ //si le noeud n'a pas encore eu de transformation on le rotate normalement
+//                yx = node.getScene().getX();
+//                yy = node.getScene().getY();
+//            }else{
+//                 yx = node.getLocalToSceneTransform().getMyx();
+//                 yy = node.getLocalToSceneTransform().getMyy();
+//                 //convert to degrees
+//
+//            }
+//            angle = (Math.atan2(yx,yy));
+//          //  angle = Math.toDegrees(angle);
+//           // angle = angle < 0 ? angle + 360 : angle;
+//
+//
+//            //node.getTransforms().add(new javafx.scene.transform.Rotate(getAngle(mouseX,mouseY,newX,newY,centerX,centerY),centerX,centerY,0));
+//            node.getTransforms().add(new javafx.scene.transform.Rotate(angle,centerX,centerY));
 
         }
 

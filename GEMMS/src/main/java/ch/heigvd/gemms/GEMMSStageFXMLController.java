@@ -6,7 +6,7 @@ import ch.heigvd.dialog.OpenDocumentDialog;
 import ch.heigvd.dialog.ResizeDialog;
 import ch.heigvd.layer.GEMMSText;
 import ch.heigvd.layer.IGEMMSNode;
-import ch.heigvd.tool.Drag;
+import ch.heigvd.tool.*;
 import ch.heigvd.tool.settings.ToolColorSettings;
 import ch.heigvd.workspace.Workspace;
 
@@ -31,12 +31,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import ch.heigvd.layer.GEMMSCanvas;
 import ch.heigvd.layer.GEMMSImage;
-import ch.heigvd.tool.Brush;
-import ch.heigvd.tool.ColorSet;
-import ch.heigvd.tool.Eraser;
-import ch.heigvd.tool.EyeDropper;
-import ch.heigvd.tool.Selection;
-import ch.heigvd.tool.TextTool;
+
 import java.util.List;
 import ch.heigvd.tool.settings.ToolSettingsContainer;
 import ch.heigvd.tool.settings.ToolSizeSettings;
@@ -257,6 +252,7 @@ public class GEMMSStageFXMLController implements Initializable {
                 w.setCurrentTool(new Drag(w));
             }
         });
+
 
         // Create rotate button action
         createToolButton("Rotate", gridModificationTools).setOnAction((ActionEvent e) -> {

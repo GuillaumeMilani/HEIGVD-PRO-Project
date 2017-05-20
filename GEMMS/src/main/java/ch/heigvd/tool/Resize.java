@@ -4,6 +4,7 @@ import ch.heigvd.layer.GEMMSCanvas;
 import ch.heigvd.workspace.Workspace;
         import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.transform.*;
 
 import java.util.List;
 
@@ -13,6 +14,8 @@ public class Resize implements Tool {
     private final Workspace workspace;
     private double mouseX;
     private double mouseY;
+    Scale s = new Scale();
+
 
 //    private void changeNodeSize(List<Node> layers,double x, double y, double width, double height){
 //       for(Node n : layers){
@@ -28,6 +31,7 @@ public class Resize implements Tool {
 
     public Resize(Workspace w){
         this.workspace = w;
+        s = new Scale();
     }
 
     @Override
@@ -39,18 +43,24 @@ public class Resize implements Tool {
     @Override
     public void mouseDragged(double x, double y) {
 
-        double mouseX = x;
-        double mouseY = y;
+
+        double newX = x - mouseX;
+        double newY = y - mouseY;
 
         List<Node> layers = workspace.getCurrentLayers();
 
         for (Node node : layers) {
-            double scale = node.getScaleX();
-           // double newScale = scale +
-           // node.setScaleX();
-           // node.getTransforms().add(new javafx.scene.transform.Rotate(Math.toDegrees(Math.atan2(yx,yy))));
+            double scale = s.getX();
+           double newScale = scale + newX*0.01;
+           s.setX(newScale);
+           s.setY(newScale);
+           s.setZ(newScale);
 
-        }    }
+        }
+
+        mouseX = x;
+        mouseY = y;
+    }
 
     @Override
     public void mouseReleased(double x, double y) {

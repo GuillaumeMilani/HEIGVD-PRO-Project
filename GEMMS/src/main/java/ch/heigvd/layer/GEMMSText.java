@@ -11,17 +11,19 @@ import javafx.geometry.VPos;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Translate;
 
 public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, LayerListable {
 
    public static final int DEFAULT_SIZE = 12;
+
 
    /**
     * Constructor
     */
    public GEMMSText() {
       super();
-
    }
 
    /**

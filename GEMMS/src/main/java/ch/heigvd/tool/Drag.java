@@ -35,16 +35,13 @@ public class Drag implements Tool{
 
         for (Node node : layers) {
 
-
-
             Point3D p = new Point3D(newX, newY, 0);
 
 
             for (Transform t : node.getTransforms()) {
-                Transform nt;
+
                try {
-                    nt = t.createInverse();
-                    p = nt.inverseDeltaTransform(p);
+                    p = t.createInverse().inverseDeltaTransform(p);
                 } catch (NonInvertibleTransformException ex) {
                 }
             }

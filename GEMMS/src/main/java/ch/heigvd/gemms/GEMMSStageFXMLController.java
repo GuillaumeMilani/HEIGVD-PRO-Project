@@ -31,6 +31,7 @@ import ch.heigvd.layer.GEMMSCanvas;
 import ch.heigvd.layer.GEMMSImage;
 import ch.heigvd.tool.Brush;
 import ch.heigvd.tool.ColorSet;
+import ch.heigvd.tool.Crop;
 import ch.heigvd.tool.Eraser;
 import ch.heigvd.tool.EyeDropper;
 import ch.heigvd.tool.Selection;
@@ -288,6 +289,13 @@ public class GEMMSStageFXMLController implements Initializable {
             }
         });
         
+        // Create crop button action
+        createToolButton("Cr", gridModificationTools).setOnAction((ActionEvent e) -> {
+            Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                w.setCurrentTool(new Crop(w));
+            }
+        });
 
         
         

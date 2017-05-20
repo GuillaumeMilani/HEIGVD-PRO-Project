@@ -317,7 +317,6 @@ public class GEMMSStageFXMLController implements Initializable {
 
                 Workspace w = getCurrentWorkspace();
                 if (w != null) {
-
                     for (Node n : w.getCurrentLayers()) {
                         n.setOpacity(new_val.doubleValue());
                     }
@@ -391,16 +390,18 @@ public class GEMMSStageFXMLController implements Initializable {
         // Create filter button
         createToolButton("Tint", gridFilterTools).setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
-            for (Node n : w.getCurrentLayers()) {
-                //Get hue between 0-360
-                double hue = ColorSet.getInstance().getColor().getHue();
-                //Add 180 and modulo 360 to get target colour
-                hue = (hue + 180) % 360;
-                //Map hue between -1 and 1
-                hue = -1 + 2 * (hue/360);
-                
-                //Finally, set the hue to node
-                getColorAdjust(n).setHue(hue);
+            if (w != null) {
+                for (Node n : w.getCurrentLayers()) {
+                    //Get hue between 0-360
+                    double hue = ColorSet.getInstance().getColor().getHue();
+                    //Add 180 and modulo 360 to get target colour
+                    hue = (hue + 180) % 360;
+                    //Map hue between -1 and 1
+                    hue = -1 + 2 * (hue / 360);
+
+                    //Finally, set the hue to node
+                    getColorAdjust(n).setHue(hue);
+                }
             }
         });
         

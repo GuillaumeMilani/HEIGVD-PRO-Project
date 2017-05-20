@@ -120,7 +120,7 @@ public class TextTool implements Tool, ColorConfigurableTool, FontConfigurableTo
             GEMMSText text = (GEMMSText) layer;
             text.setText(result.get());
             // Recenter the text horizontally
-            text.setTranslateX(-text.getBoundsInParent().getWidth() / 2);
+            //text.setTranslateX(-text.getBoundsInParent().getWidth() / 2);
          }
       }
    }
@@ -208,7 +208,7 @@ public class TextTool implements Tool, ColorConfigurableTool, FontConfigurableTo
       if (layers.size() == 1 && layers.get(0) instanceof GEMMSText) {
          GEMMSText t = (GEMMSText) layers.get(0);
          t.setFont(font);
-         t.setTranslateX(-t.getBoundsInParent().getWidth() / 2);
+         //t.setTranslateX(-t.getBoundsInParent().getWidth() / 2);
       }
    }
 

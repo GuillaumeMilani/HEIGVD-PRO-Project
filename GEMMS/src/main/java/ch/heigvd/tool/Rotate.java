@@ -45,13 +45,11 @@ public class Rotate implements Tool{
         double centerX;
         double centerY;
         for (Node node : layers) {
-            centerX = node.getBoundsInParent().getWidth()/2;
-            centerY = node.getBoundsInParent().getHeight()/2;
-            double angle = getAngle(mouseX,mouseX,x,y,centerX,centerY);
 
-
-            ((IGEMMSNode)node).rotateX.setAngle((angle ));
-            ((IGEMMSNode)node).rotateY.setAngle((angle));
+          //  node.setRotate(angle);
+            ((IGEMMSNode)node).rotateY.setAngle((((IGEMMSNode)node).rotateY.getAngle() - newX ));
+            ((IGEMMSNode)node).rotateX.setAngle((((IGEMMSNode)node).rotateX.getAngle() - newY ));
+//            ((IGEMMSNode)node).rotateY.setAngle((angle));
 
            // ((IGEMMSNode)node).rotateZ.setAngle(((IGEMMSNode)node).rotateZ.getAngle() - newX);
 

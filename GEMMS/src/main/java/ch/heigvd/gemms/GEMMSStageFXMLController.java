@@ -306,21 +306,21 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
 
-        // Create text button action
-        Button text = createToolButton("", gridModificationTools);
-        final ToolColorSettings textColor = new ToolColorSettings(ColorSet.getInstance().getColor());
-        final ToolSettingsContainer textSettings = new ToolSettingsContainer(textSizer, textColor);
-        text.getStyleClass().add(CSSIcons.TEXT_TOOL);
-        text.setOnAction((ActionEvent e) -> {
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-               TextTool t = new TextTool(w);
-               w.setCurrentTool(t); 
-               textSizer.setTarget(t);
-               textColor.setTarget(t);
-               displayToolSetting(text, textSettings);
-            }
-        });
+//        // Create text button action
+//        Button text = createToolButton("", gridModificationTools);
+//        final ToolColorSettings textColor = new ToolColorSettings(ColorSet.getInstance().getColor());
+//        final ToolSettingsContainer textSettings = new ToolSettingsContainer(textSizer, textColor);
+//        text.getStyleClass().add(CSSIcons.TEXT_TOOL);
+//        text.setOnAction((ActionEvent e) -> {
+//            Workspace w = getCurrentWorkspace();
+//            if(w != null) {
+//               TextTool t = new TextTool(w);
+//               w.setCurrentTool(t);
+//               textSizer.setTarget(t);
+//               textColor.setTarget(t);
+//               displayToolSetting(text, textSettings);
+//            }
+//        });
 
 
         mainAnchorPane.setOnKeyPressed(keyEvent -> {

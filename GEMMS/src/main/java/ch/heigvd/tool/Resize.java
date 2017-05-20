@@ -40,7 +40,7 @@ public class Resize implements Tool {
 
         for (Node node : layers) {
             double scale = s.getX();
-            double newScale = node.getScaleX() + newX * FACTEUR;
+            double newScale = node.getScaleX() + (newX * FACTEUR)*-1; //*-1 pour changer de sens gauche -> droite
             if(newScale>=0) {
                 node.setScaleX(newScale);
                 node.setScaleY(newScale);

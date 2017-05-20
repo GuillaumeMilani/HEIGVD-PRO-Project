@@ -3,6 +3,8 @@ package ch.heigvd.dialog;
 import ch.heigvd.workspace.Workspace;
 import java.util.Optional;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
@@ -80,23 +82,28 @@ public class ResizeDialog {
 
         Node loginButton = dialog.getDialogPane().lookupButton(ButtonType.OK);
         loginButton.setDisable(true);
+        
+        ChangeListener<String> listener = (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            
+            String w = width.textProperty().get();
+            String h = height.textProperty().get();
+            String offX = offsetX.textProperty().get();
+            String offY = offsetY.textProperty().get();
+            
+            boolean widthNotValid = w.trim().isEmpty() || (w.matches("[-+]?\\d*\\.?\\d+") && Integer.valueOf(w) <= 0);
+            boolean heightNotValid = h.trim().isEmpty() || (h.matches("[-+]?\\d*\\.?\\d+") && Integer.valueOf(h) <= 0);
+            
+            boolean offsetXNotValide = offX.trim().isEmpty();
+            boolean offsetYNotValide = offY.trim().isEmpty();
+            
+            loginButton.setDisable(widthNotValid || heightNotValid || offsetXNotValide || offsetYNotValide);
+        };
 
         // Field validation
-        width.textProperty().addListener((observable, oldValue, newValue) -> {
-            loginButton.setDisable(newValue.trim().isEmpty());
-        });
-
-        height.textProperty().addListener((observable, oldValue, newValue) -> {
-            loginButton.setDisable(newValue.trim().isEmpty());
-        });
-        
-        offsetX.textProperty().addListener((observable, oldValue, newValue) -> {
-            loginButton.setDisable(newValue.trim().isEmpty());
-        });
-
-        offsetY.textProperty().addListener((observable, oldValue, newValue) -> {
-            loginButton.setDisable(newValue.trim().isEmpty());
-        });
+        width.textProperty().addListener(listener);
+        height.textProperty().addListener(listener);
+        offsetX.textProperty().addListener(listener);
+        offsetY.textProperty().addListener(listener);
         
         // Return result
         dialog.setResultConverter(dialogButton -> {

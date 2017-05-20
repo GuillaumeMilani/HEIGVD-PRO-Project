@@ -24,7 +24,6 @@ import javafx.scene.image.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import ch.heigvd.layer.GEMMSCanvas;
@@ -36,6 +35,7 @@ import ch.heigvd.tool.EyeDropper;
 import ch.heigvd.tool.Selection;
 import ch.heigvd.tool.TextTool;
 import ch.heigvd.tool.settings.ToolColorSettings;
+import ch.heigvd.tool.settings.ToolFontSettings;
 import java.util.List;
 import ch.heigvd.tool.settings.ToolSettingsContainer;
 import ch.heigvd.tool.settings.ToolSizeSettings;
@@ -46,10 +46,12 @@ import java.util.Optional;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
@@ -59,6 +61,7 @@ import javafx.scene.transform.Rotate;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import javafx.scene.text.Font;
 
 public class GEMMSStageFXMLController implements Initializable {
 
@@ -129,7 +132,8 @@ public class GEMMSStageFXMLController implements Initializable {
         colorController.getChildren().add(ColorSet.getInstance().getColorController());
         
         // Create text button action
-        ToolSizeSettings textSizer = new ToolSizeSettings(1, 300, GEMMSText.DEFAULT_SIZE);
+        final ToolColorSettings textColor = new ToolColorSettings(ColorSet.getInstance().getColor());
+        final ToolFontSettings textFont = new ToolFontSettings(6, 300, GEMMSText.DEFAULT_SIZE);
         Button textCreation = createToolButton("", gridCreationTools);
         textCreation.getStyleClass().add(CSSIcons.TEXT_CREATION);
         textCreation.setOnAction(e -> {
@@ -139,9 +143,24 @@ public class GEMMSStageFXMLController implements Initializable {
                if (result.isPresent()) {
                   GEMMSText t = new GEMMSText(w.width()/2, w.height()/2, result.get());
                   t.setFill(ColorSet.getInstance().getColor());
-                  t.setFontSize(textSizer.getSize());
+                  t.setFont(textFont.getFont());
+                  //t.setTranslateX(-t.getBoundsInParent().getWidth() / 2);
                   w.addLayer(t);
                }
+            }
+        });
+         // Create text button action
+        Button text = createToolButton("", gridModificationTools);
+        final ToolSettingsContainer textSettings = new ToolSettingsContainer(textColor, textFont);
+        text.getStyleClass().add(CSSIcons.TEXT_TOOL);
+        text.setOnAction((ActionEvent e) -> {
+            Workspace w = getCurrentWorkspace();
+            if(w != null) {
+               TextTool t = new TextTool(w);
+               w.setCurrentTool(t); 
+               textColor.setTarget(t);
+               textFont.setTarget(t);
+               displayToolSetting(text, textSettings);
             }
         });
 
@@ -176,24 +195,37 @@ public class GEMMSStageFXMLController implements Initializable {
         hSym.getStyleClass().add(CSSIcons.H_SYMMETRY);
         hSym.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
-            if(w != null) {
-                for (Node node : w.getCurrentLayers()) {
-                    node.getTransforms().add(new Rotate(180,node.getBoundsInParent().getWidth()/2,node.getBoundsInParent().getHeight()/2,0,Rotate.Y_AXIS));
-                }
-            }
+           if (w != null) {
+              for (Node node : w.getCurrentLayers()) {
+                 // If the node is a text, use the special formula for GEMMSTexts
+                 if (node instanceof GEMMSText) {
+                    GEMMSText t = (GEMMSText) node;
+                    t.getTransforms().add(new Rotate(180, t.getX() + t.getBoundsInParent().getWidth() / 2, t.getY() + t.getBoundsInParent().getHeight() / 2, 0, Rotate.Y_AXIS));
+
+                 } else {
+                    node.getTransforms().add(new Rotate(180, node.getBoundsInParent().getWidth() / 2, node.getBoundsInParent().getHeight() / 2, 0, Rotate.Y_AXIS));
+                 }
+              }
+           }
         });
 
         // Create symetrie vertical button action
         Button vSym = createToolButton("", gridModificationTools);
         vSym.getStyleClass().add(CSSIcons.V_SYMMETRY);
         vSym.setOnAction((ActionEvent e) -> {
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-                for (Node node : w.getCurrentLayers()) {
-                    node.getTransforms().add(new Rotate(180,node.getBoundsInParent().getWidth()/2,node.getBoundsInParent().getHeight()/2,0,Rotate.X_AXIS));
+           Workspace w = getCurrentWorkspace();
+           if (w != null) {
+              // If the node is a text, use the special formula for GEMMSTexts
+              for (Node node : w.getCurrentLayers()) {
+                 if (node instanceof GEMMSText) {
+                    GEMMSText t = (GEMMSText) node;
+                    t.getTransforms().add(new Rotate(180, t.getX() + t.getBoundsInParent().getWidth() / 2, t.getY() + t.getBoundsInParent().getHeight() / 2, 0, Rotate.X_AXIS));
 
-                }
-            }
+                 } else {
+                    node.getTransforms().add(new Rotate(180, node.getBoundsInParent().getWidth() / 2, node.getBoundsInParent().getHeight() / 2, 0, Rotate.X_AXIS));
+                 }
+              }
+           }
         });
         
         // Create brush tool
@@ -244,23 +276,7 @@ public class GEMMSStageFXMLController implements Initializable {
             }
         });
 
-        // Create text button action
-        Button text = createToolButton("", gridModificationTools);
-        
-        final ToolColorSettings textColor = new ToolColorSettings(ColorSet.getInstance().getColor());
-        final ToolSettingsContainer textSettings = new ToolSettingsContainer(textSizer, textColor);
-        text.getStyleClass().add(CSSIcons.TEXT_TOOL);
-        text.setOnAction((ActionEvent e) -> {
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-               TextTool t = new TextTool(w);
-               w.setCurrentTool(t); 
-               textSizer.setTarget(t);
-               textColor.setTarget(t);
-               displayToolSetting(text, textSettings);
-            }
-        });
-
+      
         mainAnchorPane.setOnKeyPressed(keyEvent -> {
             // ---------- ESC ----------
 

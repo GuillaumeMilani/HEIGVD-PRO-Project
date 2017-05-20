@@ -42,14 +42,8 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
     */
    public GEMMSText(double x, double y, String text) {
       super(x, y, text);
-      setFontSize(DEFAULT_SIZE);
       setTextOrigin(VPos.CENTER);
       setTextAlignment(TextAlignment.CENTER);
-   }
-
-   public void setFontSize(int size) {
-      setFont(Font.font(getFont().getFamily(), size));
-      setTranslateX(-getBoundsInParent().getWidth() / 2);
    }
 
    private void writeObject(ObjectOutputStream s) throws IOException {

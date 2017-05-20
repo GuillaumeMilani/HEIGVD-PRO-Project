@@ -10,17 +10,13 @@ import javafx.scene.paint.Color;
 public interface ColorConfigurableTool {
    /**
     * Set the tool current color
-    * @param color 
+    * @param color the new Color of the tool
     */
    public void setColor(Color color);
    
    /**
-    * This method is used by ToolColorSettings to determine whether they 
-    * should change the tool current color. If the method returns null, they
-    * will set their current color. 
-    * 
-    * If the method return a valid color, they won't update their color.
-    * @return 
+    * This method returns the current Color of the tool.
+    * @return the current Color 
     */
    public Color getColor();
 }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ch.heigvd.tool.settings;
 
 import java.util.List;
@@ -15,30 +10,43 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 /**
- *
- * @author mathieu
+ * ToolFontSettings manage FontConfigurableTools. Its purpose is to offer 
+ * JavaFx control elements to change the size and the family of the targeted 
+ * tool.
+ * 
+ * @author Mathieu Monteverde
  */
 public class ToolFontSettings extends ToolSettings{
 
-   // Tool target
+   // Tool to manage
    private FontConfigurableTool target = null;
 
-   // List of fonts
+   // List of available font for the user
    private ComboBox<String> cb;
    
+   // JavaFx Slider to choose the size of the font
    private Slider slider;
-
+   
+   /**
+    * Constructor. It creates the ComboBox to list available fonts, the slider
+    * to choose font size.
+    * @param min the min value of the Slider
+    * @param max the max value of the Slider
+    * @param value the starting value of the Slider
+    */
    public ToolFontSettings(int min, int max, int value) {
-      
+      // Center elements vertically
       setAlignment(Pos.CENTER_LEFT);
       
+      // Create list of fonts
       cb = new ComboBox<>();
-
       List<String> fontFamilies = javafx.scene.text.Font.getFamilies();
       for (String font : javafx.scene.text.Font.getFamilies()) {
          cb.getItems().add(font);
       }
+      // Choose a font by default
       cb.setValue(fontFamilies.get(0));
+      // Add listener on change of selected property
       cb.valueProperty().addListener(new ChangeListener<String>() {
          @Override
          public void changed(ObservableValue value, String old_value, String new_value) {
@@ -52,7 +60,7 @@ public class ToolFontSettings extends ToolSettings{
       // Create the slider
       slider = new Slider(min, max, value);
       
-      // Value displayer
+      // Text to display the current value of the slider
       final Text textValue = new Text(String.valueOf(value));
       
       // Create the event on slider change
@@ -62,7 +70,7 @@ public class ToolFontSettings extends ToolSettings{
                  Number old_val, Number new_val) {
             if (target != null) {
                textValue.setText(String.format("%d", new_val.intValue()));
-               target.setFont(Font.font(cb.getValue(), slider.getValue()));
+               target.setFont(Font.font(cb.getValue(), new_val.intValue()));
             }
          }
       });
@@ -73,17 +81,32 @@ public class ToolFontSettings extends ToolSettings{
       getChildren().add(cb);
    }
    
+   /**
+    * Set the current targeted tool. The ToolFonSettings instance
+    * checks if the newly targeted tool has a Font, in which case it updates its
+    * own information accordingly. If not, it sets the tool font information using
+    * its current settings.
+    * @param target the new targeted tool
+    */
    public void setTarget(FontConfigurableTool target) {
       this.target = target;
+      
+      // Check if the targeted tool already has a valid font
       Font font = target.getFont();
       if (font == null) {
+         // Set the target font
          target.setFont(Font.font(cb.getValue(), slider.getValue()));
       } else {
+         // Update properties to represent the tool
          cb.setValue(font.getFamily());
          slider.setValue(font.getSize());
       }
    }
-   
+      
+   /**
+    * Get the current ToolFontSettings font parameters.s
+    * @return the current Font used by this instance.
+    */
    public Font getFont() {
       return Font.font(cb.getValue(), (int)slider.getValue());
    }

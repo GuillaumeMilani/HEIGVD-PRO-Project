@@ -138,7 +138,7 @@ public class GEMMSStageFXMLController implements Initializable {
         
         // Create text button action
         final ToolColorSettings textColor = new ToolColorSettings(ColorSet.getInstance().getColor());
-        final ToolFontSettings textFont = new ToolFontSettings(6, 300, 12);
+        final ToolFontSettings textFont = new ToolFontSettings(6, 300, GEMMSText.DEFAULT_SIZE);
         Button textCreation = createToolButton("", gridCreationTools);
         textCreation.getStyleClass().add(CSSIcons.TEXT_CREATION);
         textCreation.setOnAction(e -> {
@@ -200,24 +200,37 @@ public class GEMMSStageFXMLController implements Initializable {
         hSym.getStyleClass().add(CSSIcons.H_SYMMETRY);
         hSym.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
-            if(w != null) {
-                for (Node node : w.getCurrentLayers()) {
-                    node.getTransforms().add(new Rotate(180,node.getBoundsInParent().getWidth()/2,node.getBoundsInParent().getHeight()/2,0,Rotate.Y_AXIS));
-                }
-            }
+           if (w != null) {
+              for (Node node : w.getCurrentLayers()) {
+                 // If the node is a text, use the special formula for GEMMSTexts
+                 if (node instanceof GEMMSText) {
+                    GEMMSText t = (GEMMSText) node;
+                    t.getTransforms().add(new Rotate(180, t.getX() + t.getBoundsInParent().getWidth() / 2, t.getY() + t.getBoundsInParent().getHeight() / 2, 0, Rotate.Y_AXIS));
+
+                 } else {
+                    node.getTransforms().add(new Rotate(180, node.getBoundsInParent().getWidth() / 2, node.getBoundsInParent().getHeight() / 2, 0, Rotate.Y_AXIS));
+                 }
+              }
+           }
         });
 
         // Create symetrie vertical button action
         Button vSym = createToolButton("", gridModificationTools);
         vSym.getStyleClass().add(CSSIcons.V_SYMMETRY);
         vSym.setOnAction((ActionEvent e) -> {
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-                for (Node node : w.getCurrentLayers()) {
-                    node.getTransforms().add(new Rotate(180,node.getBoundsInParent().getWidth()/2,node.getBoundsInParent().getHeight()/2,0,Rotate.X_AXIS));
+           Workspace w = getCurrentWorkspace();
+           if (w != null) {
+              // If the node is a text, use the special formula for GEMMSTexts
+              for (Node node : w.getCurrentLayers()) {
+                 if (node instanceof GEMMSText) {
+                    GEMMSText t = (GEMMSText) node;
+                    t.getTransforms().add(new Rotate(180, t.getX() + t.getBoundsInParent().getWidth() / 2, t.getY() + t.getBoundsInParent().getHeight() / 2, 0, Rotate.X_AXIS));
 
-                }
-            }
+                 } else {
+                    node.getTransforms().add(new Rotate(180, node.getBoundsInParent().getWidth() / 2, node.getBoundsInParent().getHeight() / 2, 0, Rotate.X_AXIS));
+                 }
+              }
+           }
         });
         
         // Create brush tool

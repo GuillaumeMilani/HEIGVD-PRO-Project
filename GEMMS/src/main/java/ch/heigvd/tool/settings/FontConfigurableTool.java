@@ -1,17 +1,24 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ch.heigvd.tool.settings;
 
 import javafx.scene.text.Font;
 
 /**
- *
+ * The FontConfigurableTool represents tools that can change Font settings.
+ * It uses JavaFx javafx.scene.text.font Font instances to represent font-family
+ * and font-sizes for example.
  * @author mathieu
  */
 public interface FontConfigurableTool {
+   /**
+    * Set the new Font of the tool.
+    * @param font the new Font
+    */
    public void setFont(Font font);
+   
+   /**
+    * Get the current font of the tool. This method should be allowed to return
+    * null if the tool doesn't have a current Font available.
+    * @return the current Font
+    */
    public Font getFont();  
 }

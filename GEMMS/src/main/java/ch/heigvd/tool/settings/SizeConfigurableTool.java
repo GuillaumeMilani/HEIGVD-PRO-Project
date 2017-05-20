@@ -1,7 +1,7 @@
 package ch.heigvd.tool.settings;
 
 /**
- * Size configurable objects are objects that can resized. 
+ * SizeConfigurableTools represent tools that can be resized. 
  * @author mathieu
  */
 public interface SizeConfigurableTool {

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ch.heigvd.tool.settings;
 
 import javafx.geometry.Insets;
@@ -16,7 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Popup;
 
 /**
- *
+ * ToolSettingsContainer are meant to contain ToolSettings.
  * @author mathieu
  */
 public class ToolSettingsContainer extends Popup {
@@ -26,10 +21,12 @@ public class ToolSettingsContainer extends Popup {
       hbox.setAlignment(Pos.CENTER);
       hbox.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
       
+      // Set padding and alignement
       hbox.setPadding(new Insets(5, 5, 5, 5));
       hbox.setSpacing(10);
       hbox.setAlignment(Pos.CENTER);
       
+      // Add elements
       for(Node s : settings) {
          hbox.getChildren().add(s);
       }

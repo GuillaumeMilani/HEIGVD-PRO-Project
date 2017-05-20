@@ -1,5 +1,12 @@
+.root {
+    -fx-focus-color: transparent;
+}
+
 .button {
-    -fx-font-weight: bold;
+    -fx-font-weight: bold;  
+}
+
+.leftMenu {
 }
 
 .floatingScrollbar .scroll-bar:vertical {

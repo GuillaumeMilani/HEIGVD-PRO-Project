@@ -2,6 +2,8 @@ package ch.heigvd.dialog;
 
 import java.util.Optional;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
@@ -60,15 +62,22 @@ public class NewDocumentDialog {
 
         Node loginButton = dialog.getDialogPane().lookupButton(ButtonType.OK);
         loginButton.setDisable(true);
-
+        
+        
         // Field validation
-        width.textProperty().addListener((observable, oldValue, newValue) -> {
-            loginButton.setDisable(newValue.trim().isEmpty());
-        });
-
-        height.textProperty().addListener((observable, oldValue, newValue) -> {
-            loginButton.setDisable(newValue.trim().isEmpty());
-        });
+        ChangeListener<String> listener = (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            
+            String w = width.textProperty().get();
+            String h = height.textProperty().get();
+            
+            boolean widthNotValid = w.trim().isEmpty() || (w.matches("[-+]?\\d*\\.?\\d+") && Integer.valueOf(w) <= 0);
+            boolean heightNotValid = h.trim().isEmpty() || (h.matches("[-+]?\\d*\\.?\\d+") && Integer.valueOf(h) <= 0);
+            
+            loginButton.setDisable(widthNotValid || heightNotValid);
+        };
+        
+        width.textProperty().addListener(listener);
+        height.textProperty().addListener(listener);
 
         // Return result
         dialog.setResultConverter(dialogButton -> {

@@ -46,9 +46,9 @@ public class Resize implements Tool {
 
         for (Node node : layers) {
             double scale = node.getScaleX();
-            double newScale = scale + 
-            node.setScaleX();
-            node.getTransforms().add(new javafx.scene.transform.Rotate(Math.toDegrees(Math.atan2(yx,yy))));
+           // double newScale = scale +
+           // node.setScaleX();
+           // node.getTransforms().add(new javafx.scene.transform.Rotate(Math.toDegrees(Math.atan2(yx,yy))));
 
         }    }
 

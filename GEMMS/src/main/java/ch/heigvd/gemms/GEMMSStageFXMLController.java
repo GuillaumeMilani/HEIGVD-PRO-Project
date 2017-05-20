@@ -5,6 +5,7 @@ import ch.heigvd.dialog.NewDocumentDialog;
 import ch.heigvd.dialog.OpenDocumentDialog;
 import ch.heigvd.dialog.ResizeDialog;
 import ch.heigvd.layer.GEMMSText;
+import ch.heigvd.layer.IGEMMSNode;
 import ch.heigvd.tool.Drag;
 import ch.heigvd.tool.settings.ToolColorSettings;
 import ch.heigvd.workspace.Workspace;

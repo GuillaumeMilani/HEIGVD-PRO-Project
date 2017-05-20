@@ -30,13 +30,15 @@ public class Drag implements Tool{
 
         List<Node> layers = workspace.getCurrentLayers();
 
+        double newX = x - mouseX;
+        double newY = y - mouseY;
 
         for (Node node : layers) {
 
-            double newX = x - mouseX;
-            double newY = y - mouseY;
+
 
             Point3D p = new Point3D(newX, newY, 0);
+
 
             for (Transform t : node.getTransforms()) {
                 Transform nt;

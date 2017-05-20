@@ -7,14 +7,15 @@ import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.util.Pair;
 import javafx.util.converter.IntegerStringConverter;
 
 /**
@@ -23,13 +24,15 @@ import javafx.util.converter.IntegerStringConverter;
 public class NewDocumentDialog {
 
     // Dialog
-    private Dialog<Pair<Integer, Integer>> dialog;
+    private Dialog<NewDocument> dialog;
+    private ColorPicker colorPicker;
 
     /**
      * Constructor
      */
     public NewDocumentDialog() {
         dialog = new Dialog<>();
+        colorPicker = new ColorPicker(Color.color(0, 0, 0, 0));
 
         dialog.setTitle("Create a new file");
 
@@ -54,6 +57,8 @@ public class NewDocumentDialog {
         grid.add(width, 1, 1);
         grid.add(new Label("Height:"), 0, 2);
         grid.add(height, 1, 2);
+        grid.add(new Label("Background color:"), 0, 3);
+        grid.add(colorPicker, 1, 3);
 
         dialog.getDialogPane().setContent(grid);
 
@@ -82,7 +87,7 @@ public class NewDocumentDialog {
         // Return result
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == ButtonType.OK) {
-                return new Pair<>(Integer.valueOf(width.getText()), Integer.valueOf(height.getText()));
+                return new NewDocument(Integer.valueOf(width.getText()), Integer.valueOf(height.getText()), colorPicker.getValue());
             }
 
             return null;
@@ -94,7 +99,7 @@ public class NewDocumentDialog {
      *
      * @return an optional pair with width and height
      */
-    public Optional<Pair<Integer, Integer>> showAndWait() {
+    public Optional<NewDocument> showAndWait() {
         return dialog.showAndWait();
     }
 }

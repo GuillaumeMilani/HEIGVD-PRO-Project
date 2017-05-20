@@ -1,6 +1,7 @@
 package ch.heigvd.gemms;
 
 import ch.heigvd.dialog.ImportImageDialog;
+import ch.heigvd.dialog.NewDocument;
 import ch.heigvd.dialog.NewDocumentDialog;
 import ch.heigvd.dialog.OpenDocumentDialog;
 import ch.heigvd.dialog.ResizeDialog;
@@ -51,6 +52,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -463,16 +465,25 @@ public class GEMMSStageFXMLController implements Initializable {
         NewDocumentDialog dialog = new NewDocumentDialog();
         
         // Display dialog
-        Optional<Pair<Integer, Integer>> result = dialog.showAndWait();
+        Optional<NewDocument> result = dialog.showAndWait();
 
         // Dialog OK
         if(result.isPresent()) {
 
+            int width = result.get().getWidth();
+            int height = result.get().getHeiht();
+            Color color = result.get().getColor();
+            
             // Create a new document
-            Document document = new Document(stage, result.get().getKey(), result.get().getValue());
+            Document document = new Document(stage, width, height);
 
             // Get workspace
             Workspace w = document.workspace();
+            
+            GEMMSCanvas canvas = new GEMMSCanvas(width, height);
+            GraphicsContext gc = canvas.getGraphicsContext2D();
+            gc.setFill(color);
+            gc.fillRect(0, 0, width, height);
 
             // Clear
             layerController.getChildren().clear();
@@ -482,6 +493,9 @@ public class GEMMSStageFXMLController implements Initializable {
             Tab tab = new Tab("untitled", w);
             workspaces.getTabs().add(tab);
             workspaces.getSelectionModel().select(tab);
+            
+            // Set background
+            w.addLayer(canvas);
 
             documents.add(document);
         }

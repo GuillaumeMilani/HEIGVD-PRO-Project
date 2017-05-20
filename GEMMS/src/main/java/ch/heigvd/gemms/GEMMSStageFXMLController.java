@@ -52,6 +52,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
@@ -88,7 +89,7 @@ public class GEMMSStageFXMLController implements Initializable {
     
     
     @FXML
-    private GridPane layerController;
+    private VBox layerController;
     
     @FXML
     private AnchorPane colorController;

@@ -34,6 +34,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.Effect;
 import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Paint;
@@ -236,9 +237,15 @@ public class GEMMSStageFXMLController implements Initializable {
                     Number old_val, Number new_val) {
                 Workspace w = getCurrentWorkspace();
                 if (w != null) {
-
+                    SepiaTone s = new SepiaTone(new_val.doubleValue());
                     for (Node n : w.getCurrentLayers()) {
-                        n.setEffect(new SepiaTone(new_val.doubleValue()));
+                        Effect e = n.getEffect();
+                        if(e instanceof ColorAdjust){
+                            ((ColorAdjust) e).setInput(s);
+                        }else{
+                            n.setEffect(s);
+                        }
+                       
                     }
                 }
                 sepiaValue.setText(String.format("%.2f", new_val));
@@ -254,7 +261,16 @@ public class GEMMSStageFXMLController implements Initializable {
                 c.setSaturation(new_val.doubleValue());
                 if (w != null) {
                     for (Node n : w.getCurrentLayers()) {
-                        n.setEffect(c);
+                        Effect e = n.getEffect();
+                        if(e instanceof ColorAdjust){
+                            ((ColorAdjust) e).setSaturation(new_val.doubleValue());
+                        }else if(e instanceof SepiaTone){
+                            if(((SepiaTone) e).getInput() instanceof ColorAdjust){
+                                ((ColorAdjust) ((SepiaTone) e).getInput()).setSaturation(new_val.doubleValue());
+                            }
+                        }else{
+                             n.setEffect(c);
+                        }
                     }
                 }
                 saturationValue.setText(String.format("%.2f", new_val));

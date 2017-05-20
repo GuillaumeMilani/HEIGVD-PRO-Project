@@ -40,6 +40,7 @@ public class Rotate implements Tool{
 //            r.setPivotY(centerY);
 //            r.setAngle(node.getRotate()-newX);
             node.setRotate(node.getRotate()-newX);
+            node.setRotationAxis(javafx.scene.transform.Rotate.Z_AXIS);
         }
 
         mouseX = x;

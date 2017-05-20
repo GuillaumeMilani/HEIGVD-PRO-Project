@@ -106,6 +106,8 @@ public class Selection implements Tool {
             rectangle.setHeight(0);
 
             workspace.getLayerTool().getChildren().remove(rectangle);
+            workspace.setCursor(Cursor.DEFAULT);
+
         }
     }
 

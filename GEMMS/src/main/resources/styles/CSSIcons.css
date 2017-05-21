@@ -81,6 +81,24 @@
     -fx-background-repeat: no-repeat;
     -fx-background-size: 75%;
 }
+.trash-icon {
+    -fx-background-image: url("../img/trash-icon.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 55%;
+}
+.down-icon {
+    -fx-background-image: url("../img/down-icon.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 55%;
+}
+.up-icon {
+    -fx-background-image: url("../img/up-icon.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 55%;
+}
 
 .tool-button {
     -fx-background-color: linear-gradient(#EEE, #DDD);

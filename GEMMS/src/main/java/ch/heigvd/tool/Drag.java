@@ -33,25 +33,29 @@ public class Drag implements Tool{
 
         List<Node> layers = workspace.getCurrentLayers();
 
-        double newX = x - mouseX;
-        double newY = y - mouseY;
+
 
         for (Node node : layers) {
+            Point3D point = PositionMapper.convert(node, x, y, 0);
+            double newX = point.getX() - mouseX;
+            double newY = point.getY() - mouseY;
+            node.setTranslateX(newX + node.getTranslateX());
+            node.setTranslateY(newY + node.getTranslateY());
+//
+//            Point3D p = new Point3D(newX, newY, 0);
+//
+//
+//            for (Transform t : node.getTransforms()) {
+//
+//               try {
+//                    p = t.createInverse().inverseDeltaTransform(p);
+//                } catch (NonInvertibleTransformException ex) {
+//                   ex.printStackTrace();
+//                }
+//            }
+//            node.setTranslateX(p.getX() + node.getTranslateX());
+//            node.setTranslateY(p.getY() + node.getTranslateY());
 
-            Point3D p = new Point3D(newX, newY, 0);
-
-
-            for (Transform t : node.getTransforms()) {
-
-               try {
-                    p = t.createInverse().inverseDeltaTransform(p);
-                } catch (NonInvertibleTransformException ex) {
-                   ex.printStackTrace();
-                }
-            }
-
-            node.setTranslateX(p.getX() + node.getTranslateX());
-            node.setTranslateY(p.getY() + node.getTranslateY());
         }
 
         mouseX = x;

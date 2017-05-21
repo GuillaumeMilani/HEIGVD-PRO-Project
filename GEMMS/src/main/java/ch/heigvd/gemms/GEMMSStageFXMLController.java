@@ -216,36 +216,43 @@ public class GEMMSStageFXMLController implements Initializable {
         hSym.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
            if (w != null) {
+//               Symetry b = new Symetry(w,Rotate.Y_AXIS);
+//               w.setCurrentTool(b);
               for (Node node : w.getCurrentLayers()) {
                  // If the node is a text, use the special formula for GEMMSTexts
                  if (node instanceof GEMMSText) {
                     GEMMSText t = (GEMMSText) node;
-                    t.getTransforms().add(new Rotate(180, t.getX() + t.getBoundsInLocal().getWidth() / 2, t.getY() + t.getBoundsInLocal().getHeight() / 2, 0, Rotate.Y_AXIS));
+
+                    //t.getTransforms().add(new Rotate(180, t.getX() + t.getBoundsInLocal().getWidth() / 2, t.getY() + t.getBoundsInLocal().getHeight() / 2, 0, Rotate.Y_AXIS));
                  } else {
-                    node.getTransforms().add(new Rotate(180, node.getBoundsInLocal().getWidth() / 2, node.getBoundsInLocal().getHeight() / 2, 0, Rotate.Y_AXIS));
+
+                      node.getTransforms().add(new Rotate(180, node.getBoundsInLocal().getWidth() / 2, node.getBoundsInLocal().getHeight() / 2, 0, Rotate.Y_AXIS));
                  }
               }
            }
         });
 
-        // Create symetrie vertical button action
-        Button vSym = createToolButton("", gridModificationTools);
-        vSym.getStyleClass().add(CSSIcons.V_SYMMETRY);
-        vSym.setOnAction((ActionEvent e) -> {
-           Workspace w = getCurrentWorkspace();
-           if (w != null) {
-              // If the node is a text, use the special formula for GEMMSTexts
-              for (Node node : w.getCurrentLayers()) {
-                 if (node instanceof GEMMSText) {
-                    GEMMSText t = (GEMMSText) node;
-                    t.getTransforms().add(new Rotate(180, t.getX() + t.getBoundsInLocal().getWidth() / 2, t.getY() + t.getBoundsInLocal().getHeight() / 2, 0, Rotate.X_AXIS));
-
-                 } else {
-                    node.getTransforms().add(new Rotate(180, node.getBoundsInLocal().getWidth() / 2, node.getBoundsInLocal().getHeight() / 2, 0, Rotate.X_AXIS));
-                 }
-              }
-           }
-        });
+//        // Create symetrie vertical button action
+//        Button vSym = createToolButton("", gridModificationTools);
+//        vSym.getStyleClass().add(CSSIcons.V_SYMMETRY);
+//        vSym.setOnAction((ActionEvent e) -> {
+//           Workspace w = getCurrentWorkspace();
+//           if (w != null) {
+//              // If the node is a text, use the special formula for GEMMSTexts
+//               Symetry b = new Symetry(w,Rotate.X_AXIS);
+//               w.setCurrentTool(b);
+//            //  for (Node node : w.getCurrentLayers()) {
+//
+////                 if (node instanceof GEMMSText) {
+////                    GEMMSText t = (GEMMSText) node;
+////                    t.getTransforms().add(new Rotate(180, t.getX() + t.getBoundsInLocal().getWidth() / 2, t.getY() + t.getBoundsInLocal().getHeight() / 2, 0, Rotate.X_AXIS));
+////
+////                 } else {
+////                    node.getTransforms().add(new Rotate(180, node.getBoundsInLocal().getWidth() / 2, node.getBoundsInLocal().getHeight() / 2, 0, Rotate.X_AXIS));
+////                 }
+//              //}
+//           }
+//        });
         
         // Create brush tool
         Button brush = createToolButton("", gridDrawingTools);

@@ -44,19 +44,11 @@ public class BucketFill implements Tool {
         this.colorToFillWith = colorToFillWith;
     }
 
-//    /**
-//     * Draws a circle around the given pixel. The diameter of the circle is
-//     * the size of the tool.
-//     *
-//     * @param x  the x coordinate of the pixel
-//     * @param y  the y coordinate of the pixel
-//     * @param gc the GraphicsContext of the canvas
-//     */
-//    @Override
-//    protected void drawPixel(int x, int y, GraphicsContext gc) {
-//        gc.setFill(color);
-//        gc.fillOval(x - size / 2.0, y - size / 2.0, size, size);
-//    }
+
+    protected void drawPixel(int x, int y, GraphicsContext gc) {
+        gc.setFill(colorToFillWith);
+        gc.fillOval(x ,y, 1, 1);
+    }
 
 
     public void fill(Point2D begin, Color color, GEMMSCanvas canvas) {
@@ -76,7 +68,7 @@ public class BucketFill implements Tool {
             if (filled(pr, currentPointX, currentPointY)) { //condition de coloriage
                 continue;
             }
-
+            drawPixel(currentPointX,currentPointY,);
             pw.setColor(currentPointX, currentPointY, color);
 
             pushIntoStack(stack, currentPointX - 1, currentPointY - 1, wi);

@@ -6,47 +6,50 @@ import ch.heigvd.workspace.LayerListable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import javafx.geometry.Point3D;
 import javafx.geometry.VPos;
 
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Transform;
+
 
 public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, LayerListable {
 
-   public static final int DEFAULT_SIZE = 12;
+    public static final int DEFAULT_SIZE = 12;
 
-   /**
-    * Constructor
-    */
-   public GEMMSText() {
-      super();
+    /**
+     * Constructor
+     */
+    public GEMMSText() {
+        super();
+    }
 
-   }
+    /**
+     * Constructor
+     *
+     * @param text text to be contained in the instance
+     */
+    public GEMMSText(String text) {
+        this(0, 0, text);
+    }
 
-   /**
-    * Constructor
-    *
-    * @param text text to be contained in the instance
-    */
-   public GEMMSText(String text) {
-      this(0, 0, text);
-   }
-
-   /**
-    * Constructor
-    *
-    * @param x the horizontal position of the text
-    * @param y the vertical position of the text
-    * @param text text to be contained in the instance
-    */
-   public GEMMSText(double x, double y, String text) {
-      super(x, y, text);
-      setTextOrigin(VPos.CENTER);
-      setTextAlignment(TextAlignment.CENTER);
-   }
-
-   private void writeObject(ObjectOutputStream s) throws IOException {
+    /**
+     * Constructor
+     *
+     * @param x the horizontal position of the text
+     * @param y the vertical position of the text
+     * @param text text to be contained in the instance
+     */
+    public GEMMSText(double x, double y, String text) {
+        super(x, y, text);
+        setTextOrigin(VPos.CENTER);
+        setTextAlignment(TextAlignment.CENTER);
+    }
+    
+    private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
 
         // Write the text
@@ -62,25 +65,26 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
 
         // Write fill info
         s.writeObject(getFill().toString());
-        
+
         // Write translate info
         s.writeDouble(getTranslateX());
         s.writeDouble(getTranslateY());
         s.writeDouble(getTranslateZ());
-}
 
-   @Override
-   public String getLayerName() {
-      String[] parts = getText().split(System.lineSeparator());
-      return parts.length >= 0 ? parts[0] : "";
-   }
+        // Write scale info
+        s.writeDouble(getScaleX());
+        s.writeDouble(getScaleY());
+        s.writeDouble(getScaleZ());
 
-   @Override
-   public String getThumbnailClass() {
-      return CSSIcons.TEXT;
-   }
+        // Wrtie rotate info
+        s.writeDouble(getRotate());
+        s.writeDouble(getRotationAxis().getX());
+        s.writeDouble(getRotationAxis().getY());
+        s.writeDouble(getRotationAxis().getZ());
+        
+    }
 
-  private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
         // Set the test
         setText((String) s.readObject());
 
@@ -93,11 +97,32 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
 
         // Set fill info
         setFill(Paint.valueOf((String) s.readObject()));
-        
+
         // Set translate info
         setTranslateX(s.readDouble());
         setTranslateY(s.readDouble());
         setTranslateZ(s.readDouble());
-}
+        
+        // Set scale info
+        setScaleX(s.readDouble());
+        setScaleY(s.readDouble());
+        setScaleZ(s.readDouble());
+        
+        // Set rotate info
+        setRotate(s.readDouble());
+        setRotationAxis(new Point3D(s.readDouble(), s.readDouble(), s.readDouble()));
+        
+    }
+    
+    @Override
+    public String getLayerName() {
+        String[] parts = getText().split(System.lineSeparator());
+        return parts.length >= 0 ? parts[0] : "";
+    }
+
+    @Override
+    public String getThumbnailClass() {
+        return CSSIcons.TEXT;
+    }
 
 }

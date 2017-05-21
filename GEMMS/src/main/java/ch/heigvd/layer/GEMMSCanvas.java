@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import javafx.geometry.Point3D;
 import javafx.scene.SnapshotParameters;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -14,6 +15,8 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Transform;
 
 public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNode, LayerListable {
 
@@ -49,12 +52,17 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
         // Get an image 
         SnapshotParameters sp = new SnapshotParameters();
         sp.setFill(Color.TRANSPARENT);
+        
+        
+        sp.setTransform(getLocalToSceneTransform());
+        
+        
+        
         WritableImage writableImage = new WritableImage(width, height);
         snapshot(sp, writableImage);
-        Image image = (Image) writableImage;
 
         // Get a pixel reader
-        PixelReader pixelReader = image.getPixelReader();
+        PixelReader pixelReader = writableImage.getPixelReader();
 
         // Write the color of every pixel
         for (int y = 0; y < height; ++y) {
@@ -67,11 +75,23 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
                 s.writeDouble(c.getOpacity());
             }
         }
-        
+
         // Write translate info
         s.writeDouble(getTranslateX());
         s.writeDouble(getTranslateY());
         s.writeDouble(getTranslateZ());
+
+        // Write scale info
+        s.writeDouble(getScaleX());
+        s.writeDouble(getScaleY());
+        s.writeDouble(getScaleZ());
+
+        // Write rotate info
+        s.writeDouble(getRotate());
+        s.writeDouble(getRotationAxis().getX());
+        s.writeDouble(getRotationAxis().getY());
+        s.writeDouble(getRotationAxis().getZ());
+        
     }
 
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
@@ -96,16 +116,22 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
                 pixelWriter.setColor(x, y, c);
             }
         }
-        
+
         // Set translate info
         setTranslateX(s.readDouble());
         setTranslateY(s.readDouble());
         setTranslateZ(s.readDouble());
+        
+        // Set scale info
+        setScaleX(s.readDouble());
+        setScaleY(s.readDouble());
+        setScaleZ(s.readDouble());
+        
+        // Set rotate info
+        setRotate(s.readDouble());
+        setRotationAxis(new Point3D(s.readDouble(), s.readDouble(), s.readDouble()));
+       
     }
-
-
-
-
 
     @Override
     public String getLayerName() {

@@ -7,12 +7,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import javafx.geometry.Point3D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Transform;
 
 public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSNode, LayerListable {
     
@@ -27,6 +30,7 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
     public GEMMSImage(String url) {
         super(url);
     }
+
     
     private void writeObject(ObjectOutputStream s) throws IOException {
         
@@ -65,9 +69,21 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
         s.writeDouble(getTranslateX());
         s.writeDouble(getTranslateY());
         s.writeDouble(getTranslateZ());
+        
+        // Write scale info
+        s.writeDouble(getScaleX());
+        s.writeDouble(getScaleY());
+        s.writeDouble(getScaleZ());
+        
+        // Wrtie rotate info
+        s.writeDouble(getRotate());
+        s.writeDouble(getRotationAxis().getX());
+        s.writeDouble(getRotationAxis().getY());
+        s.writeDouble(getRotationAxis().getZ());
+        
     }
     
-    private void readObject(ObjectInputStream s) throws IOException {
+    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
         // Get image size
         int width = s.readInt();
         int height = s.readInt();
@@ -94,6 +110,16 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
         setTranslateX(s.readDouble());
         setTranslateY(s.readDouble());
         setTranslateZ(s.readDouble());
+        
+        // Set scale info
+        setScaleX(s.readDouble());
+        setScaleY(s.readDouble());
+        setScaleZ(s.readDouble());
+        
+        // Set rotate info
+        setRotate(s.readDouble());
+        setRotationAxis(new Point3D(s.readDouble(), s.readDouble(), s.readDouble()));
+           
     }
 
     @Override

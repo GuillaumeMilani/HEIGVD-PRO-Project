@@ -60,4 +60,8 @@ public class PositionMapper {
 
         return point;
     }
+    
+    public static Point3D convert(Node node, Point3D point) { 
+        return convert(node, point.getX(), point.getY(), point.getZ());
+    }
 }

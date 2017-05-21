@@ -47,7 +47,8 @@ public class BucketFill implements Tool {
 
     protected void drawPixel(int x, int y, GraphicsContext gc) {
         gc.setFill(colorToFillWith);
-        gc.fillOval(x ,y, 1, 1);
+        int size = 10;
+        gc.fillOval(x ,y, size   , size);
     }
 
 
@@ -60,17 +61,20 @@ public class BucketFill implements Tool {
         Stack<Point2D> stack = new Stack<>();
         stack.push(begin);
 
+        Color colorBegin = pr.getColor((int)begin.getX(),(int)begin.getY());
         //tant que la stack n'est pas vide, on ajoute tous les voisins de la meme couleurs et on colorit
         while (!stack.isEmpty()) {
+            System.out.println("size: " + stack.size());
             Point2D currentPoint = stack.pop();
             int currentPointX = (int) currentPoint.getX();
             int currentPointY = (int) currentPoint.getY();
+
             if (filled(pr, currentPointX, currentPointY)) { //condition de coloriage
                 continue;
             }
-
             drawPixel(currentPointX,currentPointY,canvas.getGraphicsContext2D());
-            pw.setColor(currentPointX, currentPointY, color);
+
+//            pw.setColor(currentPointX, currentPointY, color);
 
             pushIntoStack(stack, currentPointX - 1, currentPointY - 1, wi);
             pushIntoStack(stack, currentPointX - 1, currentPointY, wi);
@@ -83,6 +87,7 @@ public class BucketFill implements Tool {
 
 
         }
+        System.out.println("FINI");
     }
 
     private void pushIntoStack(Stack<Point2D> stack, int x, int y, WritableImage wi) {
@@ -100,8 +105,8 @@ public class BucketFill implements Tool {
     private boolean isInInterval(Color color, Color colorToFillWith, double gamma) {
         return isInInterval(color.getRed(), colorToFillWith.getRed(), gamma)
                 && isInInterval(color.getBlue(), colorToFillWith.getBlue(), gamma)
-                && isInInterval(color.getGreen(), colorToFillWith.getGreen(), gamma)
-                && isInInterval(color.getOpacity(), colorToFillWith.getOpacity(), gamma);
+                && isInInterval(color.getGreen(), colorToFillWith.getGreen(), gamma);
+                //&& isInInterval(color.getOpacity(), colorToFillWith.getOpacity(), gamma);
     }
 
     private boolean isInInterval(double color, double colorToFillWith, double gamma) {

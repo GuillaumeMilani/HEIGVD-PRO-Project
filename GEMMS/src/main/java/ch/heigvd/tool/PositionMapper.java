@@ -3,8 +3,10 @@ package ch.heigvd.tool;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point3D;
 import javafx.scene.Node;
+import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
+import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
 
 
@@ -45,6 +47,16 @@ public class PositionMapper {
         scale.setPivotY(bounds.getHeight() / 2);
         scale.setPivotZ(bounds.getDepth() / 2);
         point = scale.transform(point);
+        
+        // Transform
+        for(Transform t : node.getTransforms()) {
+            try {
+                Transform inverseTranform = t.createInverse();
+                point = inverseTranform.transform(point);
+            } catch (NonInvertibleTransformException e) {
+                e.printStackTrace();
+            }
+        }
 
         return point;
     }

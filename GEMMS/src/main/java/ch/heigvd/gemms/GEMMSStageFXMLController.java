@@ -52,6 +52,7 @@ import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.geometry.Point3D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -215,13 +216,9 @@ public class GEMMSStageFXMLController implements Initializable {
                  // If the node is a text, use the special formula for GEMMSTexts
                  if (node instanceof GEMMSText) {
                     GEMMSText t = (GEMMSText) node;
-                    t.setRotate(180);
-                    t.setRotationAxis(Rotate.Y_AXIS);
-
+                    t.getTransforms().add(new Rotate(180, t.getX() + t.getBoundsInLocal().getWidth() / 2, t.getY() + t.getBoundsInLocal().getHeight() / 2, 0, Rotate.Y_AXIS));
                  } else {
-                    node.setRotate(180);
-                    node.setRotationAxis(Rotate.Y_AXIS);
-                    //node.getTransforms().add(new Rotate(180, node.getBoundsInParent().getWidth() / 2, node.getBoundsInParent().getHeight() / 2, 0, Rotate.Y_AXIS));
+                    node.getTransforms().add(new Rotate(180, node.getBoundsInLocal().getWidth() / 2, node.getBoundsInLocal().getHeight() / 2, 0, Rotate.Y_AXIS));
                  }
               }
            }
@@ -237,14 +234,10 @@ public class GEMMSStageFXMLController implements Initializable {
               for (Node node : w.getCurrentLayers()) {
                  if (node instanceof GEMMSText) {
                     GEMMSText t = (GEMMSText) node;
-                    t.setRotate(180);
-                    t.setRotationAxis(Rotate.X_AXIS);
-                    //t.getTransforms().add(new Rotate(180, t.getX() + t.getBoundsInParent().getWidth() / 2, t.getY() + t.getBoundsInParent().getHeight() / 2, 0, Rotate.X_AXIS));
+                    t.getTransforms().add(new Rotate(180, t.getX() + t.getBoundsInLocal().getWidth() / 2, t.getY() + t.getBoundsInLocal().getHeight() / 2, 0, Rotate.X_AXIS));
 
                  } else {
-                    node.setRotate(180);
-                    node.setRotationAxis(Rotate.X_AXIS);
-                    //node.getTransforms().add(new Rotate(180, node.getBoundsInParent().getWidth() / 2, node.getBoundsInParent().getHeight() / 2, 0, Rotate.X_AXIS));
+                    node.getTransforms().add(new Rotate(180, node.getBoundsInLocal().getWidth() / 2, node.getBoundsInLocal().getHeight() / 2, 0, Rotate.X_AXIS));
                  }
               }
            }

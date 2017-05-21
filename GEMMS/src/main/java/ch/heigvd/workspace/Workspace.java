@@ -93,15 +93,9 @@ public class Workspace extends StackPane implements Serializable {
          public void handle(MouseEvent event) {
             if (currentTool != null) {
                 
-                // Get mouse position
-                Point3D p = new Point3D(event.getX(), event.getY(), 0);
-                
-                if(getCurrentLayers().size() > 0) {
-                    for(Transform t : getCurrentLayers().get(0).getTransforms()) {
-                        p = t.transform(p.getX(), p.getY(), p.getZ());
-                    }
-                }
-                
+               // Get mouse position
+               Point3D p = new Point3D(event.getX(), event.getY(), 0);
+
                if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
                   currentTool.mousePressed(p.getX(), p.getY());
                } else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {

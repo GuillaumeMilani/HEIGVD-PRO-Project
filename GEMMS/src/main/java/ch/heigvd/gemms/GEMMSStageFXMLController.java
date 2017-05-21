@@ -1,6 +1,7 @@
 package ch.heigvd.gemms;
 
 import ch.heigvd.dialog.ImportImageDialog;
+import ch.heigvd.dialog.NewDocument;
 import ch.heigvd.dialog.NewDocumentDialog;
 import ch.heigvd.dialog.OpenDocumentDialog;
 import ch.heigvd.dialog.ResizeDialog;
@@ -46,7 +47,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
@@ -54,6 +54,16 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.Effect;
+import javafx.scene.effect.SepiaTone;
+import javafx.scene.image.Image;
+import javafx.scene.paint.Paint;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -85,6 +95,8 @@ public class GEMMSStageFXMLController implements Initializable {
     private GridPane gridColorTools;
     @FXML
     private GridPane gridFilterTools;
+    @FXML
+    private GridPane gridSliders;
     @FXML
     private GridPane gridModificationTools;
     
@@ -278,6 +290,62 @@ public class GEMMSStageFXMLController implements Initializable {
                 w.setCurrentTool(new Selection(stage.getScene(), w));
             }
         });
+        
+
+        
+        
+        //Create various sliders
+        final Slider opacity = new Slider(0, 1, 1);
+        final Slider sepia = new Slider(0, 1, 0);
+        final Slider saturation = new Slider(-1, 1, 0);
+        final Slider contrast = new Slider(-1, 1, 0);
+        
+        final Label opacityLabel = new Label("Opacity:");
+        final Label sepiaLabel = new Label("Sepia:");
+        final Label saturationLabel = new Label("Saturation:");
+        final Label contrastLabel = new Label("Contrast:");
+        
+        final Label opacityValue = new Label(
+                Double.toString(opacity.getValue()));
+        final Label sepiaValue = new Label(
+                Double.toString(sepia.getValue()));
+        final Label saturationValue = new Label(
+                Double.toString(saturation.getValue()));
+        final Label contrastValue = new Label(
+                Double.toString(saturation.getValue()));
+
+        opacity.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov,
+                    Number old_val, Number new_val) {
+
+                Workspace w = getCurrentWorkspace();
+                if (w != null) {
+                    for (Node n : w.getCurrentLayers()) {
+                        n.setOpacity(new_val.doubleValue());
+                    }
+                }
+                opacityValue.setText(String.format("%.2f", new_val));
+
+            }
+        });
+
+        sepia.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov,
+                    Number old_val, Number new_val) {
+                Workspace w = getCurrentWorkspace();
+                if (w != null) {
+                    SepiaTone s = new SepiaTone(new_val.doubleValue());
+                    ColorAdjust c = new ColorAdjust();
+                    c.setInput(s);
+                    
+                    for (Node n : w.getCurrentLayers()) {
+                        ((SepiaTone) getColorAdjust(n).getInput()).setLevel(new_val.doubleValue());
+                    }
+                }
+                sepiaValue.setText(String.format("%.2f", new_val));
+            }
+        });
+
 
         // Create drag button action
         createToolButton("Drag", gridModificationTools).setOnAction((ActionEvent e) -> {
@@ -304,7 +372,84 @@ public class GEMMSStageFXMLController implements Initializable {
                 w.setCurrentTool(new ch.heigvd.tool.Resize(w));
             }
         });
+        
+        saturation.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov,
+                    Number old_val, Number new_val) {
+                Workspace w = getCurrentWorkspace();
+                if (w != null) {
+                    for (Node n : w.getCurrentLayers()) {
+                        getColorAdjust(n).setSaturation(new_val.doubleValue());
+                    }
+                }
+                saturationValue.setText(String.format("%.2f", new_val));
+            }
+        });
+        
+        contrast.valueProperty().addListener(new ChangeListener<Number>() {
+                public void changed(ObservableValue<? extends Number> ov,
+                    Number old_val, Number new_val) {
+                Workspace w = getCurrentWorkspace();
+                if (w != null) {
+                    for (Node n : w.getCurrentLayers()) {
+                        getColorAdjust(n).setContrast(new_val.doubleValue());
+                    }
+                }
+                contrastValue.setText(String.format("%.2f", new_val));
+            }
 
+        });
+
+        gridSliders.setPadding(new Insets(10, 10, 10, 10));
+        createSlider(gridSliders, opacityLabel, opacity, opacityValue, 1);
+        createSlider(gridSliders, sepiaLabel, sepia, sepiaValue, 2);
+        createSlider(gridSliders, saturationLabel, saturation, saturationValue, 3);
+        createSlider(gridSliders, contrastLabel, contrast, contrastValue, 4);
+
+        // Create filter button
+        createToolButton("B&W", gridFilterTools).setOnAction((ActionEvent e) -> {
+            Workspace w = getCurrentWorkspace();
+            if (w != null) {
+                for (Node n : w.getCurrentLayers()) {
+                    getColorAdjust(n).setSaturation(-1);
+                    saturation.setValue(-1);
+                }
+            }
+        });
+        
+        // Create filter button
+        createToolButton("Tint", gridFilterTools).setOnAction((ActionEvent e) -> {
+            Workspace w = getCurrentWorkspace();
+            if (w != null) {
+                for (Node n : w.getCurrentLayers()) {
+                    //Get hue between 0-360
+                    double hue = ColorSet.getInstance().getColor().getHue();
+                    //Add 180 and modulo 360 to get target colour
+                    hue = (hue + 180) % 360;
+                    //Map hue between -1 and 1
+                    hue = -1 + 2 * (hue / 360);
+
+                    //Finally, set the hue to node
+                    getColorAdjust(n).setHue(hue);
+                }
+            }
+        });
+        
+        // Create filter button
+        createToolButton("Reset", gridFilterTools).setOnAction((ActionEvent e) -> {
+            Workspace w = getCurrentWorkspace();
+            if (w != null) {
+                for (Node n : w.getCurrentLayers()) {
+                    ColorAdjust c = getColorAdjust(n);
+                    c.setHue(0);
+                }
+                opacity.setValue(1);
+                saturation.setValue(0);
+                sepia.setValue(0);
+                contrast.setValue(0);
+                
+            }
+        });
 
 //        // Create text button action
 //        Button text = createToolButton("", gridModificationTools);
@@ -415,9 +560,9 @@ public class GEMMSStageFXMLController implements Initializable {
                 }
             }
         });
-
-
     }
+
+    
 
     /**
      * Copy a list of nodes in the clipboard
@@ -510,16 +655,25 @@ public class GEMMSStageFXMLController implements Initializable {
         NewDocumentDialog dialog = new NewDocumentDialog();
         
         // Display dialog
-        Optional<Pair<Integer, Integer>> result = dialog.showAndWait();
+        Optional<NewDocument> result = dialog.showAndWait();
 
         // Dialog OK
         if(result.isPresent()) {
 
+            int width = result.get().getWidth();
+            int height = result.get().getHeiht();
+            Color color = result.get().getColor();
+            
             // Create a new document
-            Document document = new Document(stage, result.get().getKey(), result.get().getValue());
+            Document document = new Document(stage, width, height);
 
             // Get workspace
             Workspace w = document.workspace();
+            
+            GEMMSCanvas canvas = new GEMMSCanvas(width, height);
+            GraphicsContext gc = canvas.getGraphicsContext2D();
+            gc.setFill(color);
+            gc.fillRect(0, 0, width, height);
 
             // Clear
             layerController.getChildren().clear();
@@ -529,6 +683,9 @@ public class GEMMSStageFXMLController implements Initializable {
             Tab tab = new Tab("untitled", w);
             workspaces.getTabs().add(tab);
             workspaces.getSelectionModel().select(tab);
+            
+            // Set background
+            w.addLayer(canvas);
 
             documents.add(document);
         }
@@ -663,5 +820,41 @@ public class GEMMSStageFXMLController implements Initializable {
         }
         
         return null;
+    }
+    
+    /**
+     * Creates a slider in a pane at a certain position. Used to create opacity,
+     * sepia and saturation sliders.
+     * @param gridSliders
+     * @param opacityLabel
+     * @param opacity
+     * @param opacityValue 
+     */
+    private void createSlider(GridPane pane, Label label, Slider opacity, Label value, int position) {
+        label.setMinWidth(50);
+        value.setMinWidth(30);
+        GridPane.setConstraints(label, 0, position);
+        pane.getChildren().add(label);
+        GridPane.setConstraints(opacity, 1, position);
+        pane.getChildren().add(opacity);
+        GridPane.setConstraints(value, 2, position);
+        pane.getChildren().add(value);
+
+    }
+    
+    /**
+     * Returns node ColorAdjust effect. If it has none, creates one with
+     * SepiaTone as input.
+     * @param n Node
+     * @return node's ColorAdjust 
+     */
+    private ColorAdjust getColorAdjust(Node n){
+        if(!(n.getEffect() instanceof ColorAdjust)){
+            ColorAdjust c = new ColorAdjust();
+            SepiaTone s = new SepiaTone();
+            c.setInput(s);
+            n.setEffect(c);
+        }
+        return ((ColorAdjust) n.getEffect());
     }
 }

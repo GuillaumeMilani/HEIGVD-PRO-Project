@@ -301,7 +301,7 @@ public class GEMMSStageFXMLController implements Initializable {
         createToolButton("Se", gridModificationTools).setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
-                w.setCurrentTool(new Selection(stage.getScene(), w));
+                w.setCurrentTool(new Selection(w));
             }
         });
         

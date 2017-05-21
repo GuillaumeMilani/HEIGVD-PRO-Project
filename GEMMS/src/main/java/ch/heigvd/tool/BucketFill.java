@@ -5,23 +5,18 @@ import ch.heigvd.workspace.Workspace;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-import javafx.scene.transform.Transform;
 
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by Michael on 21.05.2017.
- */
 public class BucketFill implements Tool {
-    // Color to fill
-    Color colorToFillWith;
-    Workspace workspace;
+
+    private Color colorToFillWith;
+    private Workspace workspace;
     private final double GAMMA = 0.2;
 
     /**
@@ -34,22 +29,14 @@ public class BucketFill implements Tool {
         this(workspace, ColorSet.getInstance().getColor());
     }
 
-    /**
-     * Constructor. Specifies the color and size.
-     *
-     * @param workspace       the Workspace to work on
-     * @param colorToFillWith the color of the bucket
-     */
+
     public BucketFill(Workspace workspace, Color colorToFillWith) {
         this.workspace = workspace;
         this.colorToFillWith = colorToFillWith;
     }
 
-
-
-
-
-    public void fill(Point2D begin, Color color, GEMMSCanvas canvas) {
+    //fill a zone of the same color (plus or less GAMMA value)
+    private void fill(Point2D begin, Color color, GEMMSCanvas canvas) {
         colorToFillWith = (ColorSet.getInstance().getColor());
 
         SnapshotParameters sp = new SnapshotParameters();
@@ -68,8 +55,6 @@ public class BucketFill implements Tool {
         if(colorToFillWith.equals(colorBegin)){
             return;
         }
-
-
         //tant que la fifo n'est pas vide, on ajoute tous les voisins de la meme couleurs et on colorit
         while (!fifo.isEmpty() ) {
             Point2D currentPoint = fifo.removeLast();

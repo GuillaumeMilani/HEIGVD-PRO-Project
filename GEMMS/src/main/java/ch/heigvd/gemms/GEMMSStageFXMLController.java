@@ -215,10 +215,13 @@ public class GEMMSStageFXMLController implements Initializable {
                  // If the node is a text, use the special formula for GEMMSTexts
                  if (node instanceof GEMMSText) {
                     GEMMSText t = (GEMMSText) node;
-                    t.getTransforms().add(new Rotate(180, t.getX() + t.getBoundsInParent().getWidth() / 2, t.getY() + t.getBoundsInParent().getHeight() / 2, 0, Rotate.Y_AXIS));
+                    t.setRotate(180);
+                    t.setRotationAxis(Rotate.Y_AXIS);
 
                  } else {
-                    node.getTransforms().add(new Rotate(180, node.getBoundsInParent().getWidth() / 2, node.getBoundsInParent().getHeight() / 2, 0, Rotate.Y_AXIS));
+                    node.setRotate(180);
+                    node.setRotationAxis(Rotate.Y_AXIS);
+                    //node.getTransforms().add(new Rotate(180, node.getBoundsInParent().getWidth() / 2, node.getBoundsInParent().getHeight() / 2, 0, Rotate.Y_AXIS));
                  }
               }
            }
@@ -234,10 +237,14 @@ public class GEMMSStageFXMLController implements Initializable {
               for (Node node : w.getCurrentLayers()) {
                  if (node instanceof GEMMSText) {
                     GEMMSText t = (GEMMSText) node;
-                    t.getTransforms().add(new Rotate(180, t.getX() + t.getBoundsInParent().getWidth() / 2, t.getY() + t.getBoundsInParent().getHeight() / 2, 0, Rotate.X_AXIS));
+                    t.setRotate(180);
+                    t.setRotationAxis(Rotate.X_AXIS);
+                    //t.getTransforms().add(new Rotate(180, t.getX() + t.getBoundsInParent().getWidth() / 2, t.getY() + t.getBoundsInParent().getHeight() / 2, 0, Rotate.X_AXIS));
 
                  } else {
-                    node.getTransforms().add(new Rotate(180, node.getBoundsInParent().getWidth() / 2, node.getBoundsInParent().getHeight() / 2, 0, Rotate.X_AXIS));
+                    node.setRotate(180);
+                    node.setRotationAxis(Rotate.X_AXIS);
+                    //node.getTransforms().add(new Rotate(180, node.getBoundsInParent().getWidth() / 2, node.getBoundsInParent().getHeight() / 2, 0, Rotate.X_AXIS));
                  }
               }
            }
@@ -360,7 +367,7 @@ public class GEMMSStageFXMLController implements Initializable {
         createToolButton("Rotate", gridModificationTools).setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
-                w.setCurrentTool(new ch.heigvd.tool.Rotate(w));
+                w.setCurrentTool(new ch.heigvd.tool.RotateTool(w));
             }
         });
 

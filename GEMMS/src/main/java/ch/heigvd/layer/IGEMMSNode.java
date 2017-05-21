@@ -1,6 +1,6 @@
 package ch.heigvd.layer;
 
-import ch.heigvd.tool.Rotate;
+import ch.heigvd.tool.RotateTool;
 import javafx.scene.transform.Translate;
 
 import java.io.Serializable;

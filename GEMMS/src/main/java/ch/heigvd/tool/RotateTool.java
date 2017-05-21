@@ -10,13 +10,13 @@ import java.util.List;
 /**
  * Created by Michael on 17.05.2017.
  */
-public class Rotate implements Tool{
+public class RotateTool implements Tool{
     private double mouseX;
     private Workspace workspace;
 
     List<Node> layers;
 
-    public Rotate(Workspace w){
+    public RotateTool(Workspace w){
         this.workspace = w;
     }
 

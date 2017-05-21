@@ -55,7 +55,7 @@ public class BucketFill implements Tool {
         WritableImage wi = new WritableImage((int) canvas.getBoundsInParent().getWidth(), (int) canvas.getBoundsInParent().getHeight());
         WritableImage snapshot = canvas.snapshot(new SnapshotParameters(), wi);
         PixelReader pr = snapshot.getPixelReader();
-        PixelWriter pw = snapshot.getPixelWriter();
+        PixelWriter pw = canvas.getGraphicsContext2D().getPixelWriter();
 
         Stack<Point2D> stack = new Stack<>();
         stack.push(begin);
@@ -68,8 +68,8 @@ public class BucketFill implements Tool {
             if (filled(pr, currentPointX, currentPointY)) { //condition de coloriage
                 continue;
             }
-            drawPixel(currentPointX,currentPointY,);
-            pw.setColor(currentPointX, currentPointY, color);
+            drawPixel(currentPointX,currentPointY,canvas.getGraphicsContext2D());
+            //pw.setColor(currentPointX, currentPointY, color);
 
             pushIntoStack(stack, currentPointX - 1, currentPointY - 1, wi);
             pushIntoStack(stack, currentPointX - 1, currentPointY, wi);

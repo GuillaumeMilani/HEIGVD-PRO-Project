@@ -63,7 +63,6 @@ public class BucketFill implements Tool {
         WritableImage wi = new WritableImage((int) canvas.getBoundsInParent().getWidth(), (int) canvas.getBoundsInParent().getHeight());
         WritableImage snapshot = canvas.snapshot(new SnapshotParameters(), wi);
         PixelReader pr = snapshot.getPixelReader();
-        Color oldColor = pr.getColor((int) begin.getX(), (int) begin.getY());
         PixelWriter pw = snapshot.getPixelWriter();
 
         Stack<Point2D> stack = new Stack<>();

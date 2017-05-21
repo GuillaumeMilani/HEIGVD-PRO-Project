@@ -251,7 +251,7 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         // Create bucket tool
-        Button bucket = createToolButton("", gridDrawingTools);
+        Button bucket = createToolButton("Bucket", gridDrawingTools);
         bucket.setOnAction(e -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {

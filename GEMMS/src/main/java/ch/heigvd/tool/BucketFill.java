@@ -10,6 +10,7 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Transform;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -45,18 +46,18 @@ public class BucketFill implements Tool {
     }
 
 
-    private void drawPixel(int x, int y, GraphicsContext gc) {
-        gc.setFill(colorToFillWith);
-        int size = 10;
-        gc.fillOval(x , y , size, size);
-    }
+
 
 
     public void fill(Point2D begin, Color color, GEMMSCanvas canvas) {
         colorToFillWith = (ColorSet.getInstance().getColor());
 
-        WritableImage wi = new WritableImage((int) canvas.getBoundsInParent().getWidth(), (int) canvas.getBoundsInParent().getHeight());
-        WritableImage snapshot = canvas.snapshot(new SnapshotParameters(), wi);
+        SnapshotParameters sp = new SnapshotParameters();
+        sp.setFill(Color.TRANSPARENT);
+
+        WritableImage writableImage = new WritableImage((int)canvas.getWidth(), (int)canvas.getHeight());
+        WritableImage snapshot = canvas.snapshot(sp, writableImage);
+
         PixelReader pr = snapshot.getPixelReader();
         PixelWriter pw = snapshot.getPixelWriter();
 
@@ -105,8 +106,8 @@ public class BucketFill implements Tool {
     private boolean isSameColorInInterval(Color color, Color colorToFillWith, double gamma) {
         return isInInterval(color.getRed(), colorToFillWith.getRed(), gamma)
                 && isInInterval(color.getBlue(), colorToFillWith.getBlue(), gamma)
-                && isInInterval(color.getGreen(), colorToFillWith.getGreen(), gamma);
-                //&& isInInterval(color.getOpacity(), colorToFillWith.getOpacity(), gamma);
+                && isInInterval(color.getGreen(), colorToFillWith.getGreen(), gamma)
+                && isInInterval(color.getOpacity(), colorToFillWith.getOpacity(), gamma);
     }
     
     private boolean isInInterval(double a, double b, double gamma) {

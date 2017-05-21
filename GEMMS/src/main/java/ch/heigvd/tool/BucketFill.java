@@ -68,8 +68,9 @@ public class BucketFill implements Tool {
             if (filled(pr, currentPointX, currentPointY)) { //condition de coloriage
                 continue;
             }
+
             drawPixel(currentPointX,currentPointY,canvas.getGraphicsContext2D());
-            //pw.setColor(currentPointX, currentPointY, color);
+            pw.setColor(currentPointX, currentPointY, color);
 
             pushIntoStack(stack, currentPointX - 1, currentPointY - 1, wi);
             pushIntoStack(stack, currentPointX - 1, currentPointY, wi);
@@ -99,7 +100,8 @@ public class BucketFill implements Tool {
     private boolean isInInterval(Color color, Color colorToFillWith, double gamma) {
         return isInInterval(color.getRed(), colorToFillWith.getRed(), gamma)
                 && isInInterval(color.getBlue(), colorToFillWith.getBlue(), gamma)
-                && isInInterval(color.getGreen(), colorToFillWith.getGreen(), gamma);
+                && isInInterval(color.getGreen(), colorToFillWith.getGreen(), gamma)
+                && isInInterval(color.getOpacity(), colorToFillWith.getOpacity(), gamma);
     }
 
     private boolean isInInterval(double color, double colorToFillWith, double gamma) {
@@ -131,8 +133,7 @@ public class BucketFill implements Tool {
         List<Node> layers = workspace.getCurrentLayers();
         for (Node n : layers) {
             if (n instanceof GEMMSCanvas) {
-                System.out.println("HELLO");
-                fill(new Point2D(x, y), ColorSet.getInstance().getColor(), (GEMMSCanvas) n);
+                fill(new Point2D(x, y), colorToFillWith, (GEMMSCanvas) n);
             }
         }
     }

@@ -177,9 +177,13 @@ public class Workspace extends StackPane implements Serializable {
     * @param node
     */
    public void addLayer(Node node) {
-      layerList.getItems().add(node);
-      layerList.getSelectionModel().clearSelection();
-      layerList.getSelectionModel().selectLast();
+      workspace.getChildren().add(node);
+      layerList.clearSelection();
+      layerList.selectTopLayer();
+      
+      //layerList.getItems().add(node);
+      //layerList.getSelectionModel().clearSelection();
+      //layerList.getSelectionModel().selectLast();
    }
 
    
@@ -187,12 +191,13 @@ public class Workspace extends StackPane implements Serializable {
     * @param node
     */
    public void removeLayer(Node node) {
-      layerList.getItems().remove(node);
+      workspace.getChildren().remove(node);
+      layerList.selectTopLayer();
    }
    
    
    public List<Node> getCurrentLayers() {
-      return layerList.getSelectionModel().getSelectedItems();
+      return layerList.getSelectedItems();
    }
 
    
@@ -200,7 +205,7 @@ public class Workspace extends StackPane implements Serializable {
     * @return
     */
    public List<Node> getLayers() {
-      return layerList.getItems();
+      return workspace.getChildren();
    }
 
    
@@ -274,19 +279,6 @@ public class Workspace extends StackPane implements Serializable {
 
          // Add the LayerList
          layersController.getChildren().add(layerList);
-
-         // Add a button to delete Layers
-         Button delete = new Button("X");
-         delete.setPrefSize(Constants.BUTTONS_HEIGHT, Constants.BUTTONS_HEIGHT);
-         delete.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent e) {
-               List<Node> items = getCurrentLayers();
-               layerList.getItems().removeAll(items);
-            }
-         });
-         layersController.getChildren().add(delete);
       }
       return layersController;
    }
@@ -334,9 +326,9 @@ public class Workspace extends StackPane implements Serializable {
       s.writeInt(width);
 
       // Number of layer
-      s.writeInt(layerList.getItems().size());
+      s.writeInt(workspace.getChildren().size());
 
-      for (Object n : layerList.getItems()) {
+      for (Object n : workspace.getChildren()) {
          if (Serializable.class.isInstance(n)) {
             s.writeObject(n);
          }

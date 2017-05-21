@@ -47,7 +47,7 @@ public class BucketFill implements Tool {
 
     protected void drawPixel(int x, int y, GraphicsContext gc) {
         gc.setFill(colorToFillWith);
-        int size = 10;
+        int size = 1;
         gc.fillOval(x ,y, size   , size);
     }
 
@@ -58,23 +58,30 @@ public class BucketFill implements Tool {
         PixelReader pr = snapshot.getPixelReader();
         PixelWriter pw = canvas.getGraphicsContext2D().getPixelWriter();
 
+        Color colorBegin = pr.getColor((int)begin.getX(),(int)begin.getY());
         Stack<Point2D> stack = new Stack<>();
         stack.push(begin);
 
-        Color colorBegin = pr.getColor((int)begin.getX(),(int)begin.getY());
+        if(colorToFillWith.equals(colorBegin)){
+            return;
+        }
+
         //tant que la stack n'est pas vide, on ajoute tous les voisins de la meme couleurs et on colorit
         while (!stack.isEmpty()) {
             System.out.println("size: " + stack.size());
             Point2D currentPoint = stack.pop();
             int currentPointX = (int) currentPoint.getX();
             int currentPointY = (int) currentPoint.getY();
+            Color pixelColor = pr.getColor(currentPointX,currentPointY);
 
-            if (filled(pr, currentPointX, currentPointY)) { //condition de coloriage
+            if (isSameColor(pixelColor,colorBegin)) { //Si la couleur du départ et celle de maintenant sont les memes on ajoutes
                 continue;
             }
-            drawPixel(currentPointX,currentPointY,canvas.getGraphicsContext2D());
 
-//            pw.setColor(currentPointX, currentPointY, color);
+
+           // drawPixel(currentPointX,currentPointY,canvas.getGraphicsContext2D());
+
+            pw.setColor(currentPointX, currentPointY, colorToFillWith);
 
             pushIntoStack(stack, currentPointX - 1, currentPointY - 1, wi);
             pushIntoStack(stack, currentPointX - 1, currentPointY, wi);
@@ -87,7 +94,7 @@ public class BucketFill implements Tool {
 
 
         }
-        System.out.println("FINI");
+        //System.out.println("FINI");
     }
 
     private void pushIntoStack(Stack<Point2D> stack, int x, int y, WritableImage wi) {
@@ -96,21 +103,20 @@ public class BucketFill implements Tool {
         }
     }
 
-    private boolean filled(PixelReader pr, int x, int y) {
-        Color color = pr.getColor(x, y);
-        return !isInInterval(color,colorToFillWith,GAMMA);
+    private boolean isSameColor(Color pixelColor, Color colorBegin) {
+        return !isSameColorInInterval(pixelColor,colorBegin,GAMMA);
     }
 
     //Use to know if we color the pixel and neighbourg or not
-    private boolean isInInterval(Color color, Color colorToFillWith, double gamma) {
+    private boolean isSameColorInInterval(Color color, Color colorToFillWith, double gamma) {
         return isInInterval(color.getRed(), colorToFillWith.getRed(), gamma)
                 && isInInterval(color.getBlue(), colorToFillWith.getBlue(), gamma)
                 && isInInterval(color.getGreen(), colorToFillWith.getGreen(), gamma);
                 //&& isInInterval(color.getOpacity(), colorToFillWith.getOpacity(), gamma);
     }
-
-    private boolean isInInterval(double color, double colorToFillWith, double gamma) {
-        return Math.abs(color - colorToFillWith) < gamma;
+    
+    private boolean isInInterval(double a, double b, double gamma) {
+        return Math.abs(a - b) < gamma;
     }
 
 

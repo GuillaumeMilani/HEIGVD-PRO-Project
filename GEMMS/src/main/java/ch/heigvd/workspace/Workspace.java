@@ -1,34 +1,26 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ch.heigvd.workspace;
 
 import ch.heigvd.gemms.Constants;
-import ch.heigvd.tool.Brush;
 import ch.heigvd.tool.Tool;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.image.WritableImage;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Transform;
+
 
 /**
  * @author mathieu
@@ -40,17 +32,23 @@ public class Workspace extends StackPane implements Serializable {
    
    // Layer for object's tool
    private AnchorPane layerTools;
+   
+   // Clip of workspace
+   private Rectangle clip;
 
    // Size of workspace
    private int height;
    private int width;
+   
 
    // Contains layers
    private LayerList layerList;
    private VBox layersController;
 
-   // current selected tool
+   
+   // Current selected tool
    private Tool currentTool;
+  
 
    /**
     * Constructor for a new instance of Workspace. The Workspace extends a Pane
@@ -66,43 +64,26 @@ public class Workspace extends StackPane implements Serializable {
    }
 
    public void init(int width, int height) {
-      this.width = width;
-      this.height = height;
-
       workspace = new AnchorPane();
-      this.getChildren().add(workspace);
+      getChildren().add(workspace);
       
       layerTools = new AnchorPane();
-      this.getChildren().add(layerTools);
-
-      //setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
-      //setClip(new Rectangle(getPrefWidth(), getPrefHeight()));
-      setId("workspaceAnchorPane"); // Set id for CSS styling
-
-      layerList = new LayerList(workspace.getChildren());
-
-      // Set the workspace Pane position to be at the center of pane
-      int posX = (int) ((getPrefWidth() - width) / 2);
-      int posY = (int) ((getPrefHeight() - height) / 2);
-      workspace.setLayoutX(posX);
-      workspace.setLayoutY(posY);
-
-      // Set preferredSize
-      workspace.setPrefSize(width, height);
-      workspace.setMaxSize(width, height);
-      workspace.setMinSize(width, height);
+      getChildren().add(layerTools);
       
+      clip = new Rectangle(width, height);
+      
+      // Define the canvas size
+      resizeCanvas(width, height, 0, 0);
+      
+
+      // Set id for CSS styling
+      setId("workspaceAnchorPane"); 
       workspace.setId("workspacePane");
       
-      
-      // Stack the layer tool on workspace
-      layerTools.setLayoutX(posX);
-      layerTools.setLayoutY(posY);
-      layerTools.setPrefSize(width, height);
-      layerTools.setMaxSize(width, height);
-      layerTools.setMinSize(width, height);
-      
 
+      
+      layerList = new LayerList(workspace.getChildren());
+      
       currentTool = null;
 
       // Add a mouse event to manage the current tool actions
@@ -170,12 +151,28 @@ public class Workspace extends StackPane implements Serializable {
       };
 
       addEventFilter(MouseEvent.ANY, dragEventHandler);
+
+      addEventHandler(MouseEvent.ANY, dragEventHandler);
+   }
+   
+   
+   @Override
+   public void layoutChildren() {
+      super.layoutChildren();
+      
+      // Center the clip
+      clip.setLayoutX(Math.round((getWidth() - width) / 2));
+      clip.setLayoutY(Math.round((getHeight() - height) / 2));
+      setClip(clip);
+   }
+   
+   
+   @Override
+   public WritableImage snapshot(SnapshotParameters params, WritableImage image) {
+      return workspace.snapshot(params, image);
    }
 
-   public List<Node> getCurrentLayers() {
-      return layerList.getSelectionModel().getSelectedItems();
-   }
-
+   
    /**
     * @param node
     */
@@ -185,13 +182,20 @@ public class Workspace extends StackPane implements Serializable {
       layerList.getSelectionModel().selectLast();
    }
 
+   
    /**
     * @param node
     */
    public void removeLayer(Node node) {
       layerList.getItems().remove(node);
    }
+   
+   
+   public List<Node> getCurrentLayers() {
+      return layerList.getSelectionModel().getSelectedItems();
+   }
 
+   
    /**
     * @return
     */
@@ -199,6 +203,7 @@ public class Workspace extends StackPane implements Serializable {
       return layerList.getItems();
    }
 
+   
    /**
     * @param factor
     */
@@ -207,8 +212,11 @@ public class Workspace extends StackPane implements Serializable {
       workspace.setScaleY(workspace.getScaleY() * factor);
       layerTools.setScaleX(layerTools.getScaleX() * factor);
       layerTools.setScaleY(layerTools.getScaleY() * factor);
+      clip.setScaleX(clip.getScaleX() * factor);
+      clip.setScaleY(clip.getScaleY() * factor);
    }
 
+   
    /**
     * Translates the Workspace Pane container by a (x, y) translation vector.
     *
@@ -220,15 +228,44 @@ public class Workspace extends StackPane implements Serializable {
       workspace.setTranslateY(workspace.getTranslateY() + y);
       layerTools.setTranslateX(layerTools.getTranslateX() + x);
       layerTools.setTranslateY(layerTools.getTranslateY() + y);
+      clip.setTranslateX(clip.getTranslateX() + x);
+      clip.setTranslateY(clip.getTranslateY() + y);
    }
 
+   
    /**
     *
     */
    public void crop() {
 
    }
+   
+   
+   public void resizeCanvas(int width, int height, int offsetX, int offsetY) {
+      this.width = width;
+      this.height = height;
 
+      // Set preferredSize
+      workspace.setPrefSize(width, height);
+      workspace.setMaxSize(width, height);
+      workspace.setMinSize(width, height);
+      
+      // Stack the layer tool on workspace
+      layerTools.setPrefSize(width, height);
+      layerTools.setMaxSize(width, height);
+      layerTools.setMinSize(width, height);
+      
+      clip.setWidth(width);
+      clip.setHeight(height);
+
+      
+      for(Node n : workspace.getChildren()) {
+          n.setTranslateX(n.getTranslateX() + offsetX);
+          n.setTranslateY(n.getTranslateY() + offsetY);
+      }
+   }
+
+   
    public VBox getWorkspaceController() {
       if (layersController == null) {
 
@@ -254,35 +291,43 @@ public class Workspace extends StackPane implements Serializable {
       return layersController;
    }
 
+   
    public void setCurrentTool(Tool tool) {
       layerTools.getChildren().clear();
       this.currentTool = tool;
    }
 
+   
    public Tool getCurrentTool() {
       return currentTool;
    }
 
+   
    public int width() {
       return width;
    }
 
+   
    public int height() {
       return height;
    }
+   
    
    public double getWorkspaceScaleX() {
       return workspace.getScaleX();
    }
    
+   
    public double getWorkspaceScaleY() {
       return workspace.getScaleY();
    }
+   
    
    public AnchorPane getLayerTool() {
        return layerTools;
    }
 
+   
    private void writeObject(ObjectOutputStream s) throws IOException {
       // Write size of workspace
       s.writeInt(height);
@@ -299,6 +344,7 @@ public class Workspace extends StackPane implements Serializable {
 
    }
 
+   
    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
       int h = s.readInt();
       int w = s.readInt();
@@ -310,13 +356,5 @@ public class Workspace extends StackPane implements Serializable {
       for (int i = 0; i < nbLayers; ++i) {
          addLayer((Node) s.readObject());
       }
-   }
-
-   /**
-    * Override the default snapshot to take only workspace field
-    */
-   @Override
-   public WritableImage snapshot(SnapshotParameters params, WritableImage image) {
-      return workspace.snapshot(params, image);
    }
 }

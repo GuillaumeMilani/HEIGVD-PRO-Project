@@ -1,5 +1,6 @@
 package ch.heigvd.tool;
 
+import ch.heigvd.tool.settings.SizeConfigurableTool;
 import ch.heigvd.workspace.Workspace;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -7,14 +8,14 @@ import javafx.scene.canvas.GraphicsContext;
  * The Eraser clear canvas pixels content. 
  * @author mathieu
  */
-public class Eraser extends LineTool implements SizeConfigurable {
+public class Eraser extends LineTool implements SizeConfigurableTool {
    
    /**
     * Constructor
     * @param workspace the Workspace to work on
     */
    public Eraser(Workspace workspace) {
-      this(workspace, 10);
+      this(workspace, 5);
    }
    
    /**

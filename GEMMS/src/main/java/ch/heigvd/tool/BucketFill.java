@@ -81,15 +81,10 @@ public class BucketFill implements Tool {
             }
 
             pw.setColor(currentPointX, currentPointY, colorToFillWith);
-           // pushIntoFifo(fifo, currentPointX - 1, currentPointY + 1, canvas, pr,colorBegin);
             pushIntoFifo(fifo, currentPointX, currentPointY + 1, canvas, pr,colorBegin);
-          //  pushIntoFifo(fifo, currentPointX + 1, currentPointY + 1, canvas, pr,colorBegin);
             pushIntoFifo(fifo, currentPointX - 1, currentPointY, canvas, pr,colorBegin);
             pushIntoFifo(fifo, currentPointX + 1, currentPointY, canvas, pr,colorBegin);
-
-          //  pushIntoFifo(fifo, currentPointX - 1, currentPointY - 1, canvas, pr,colorBegin);
             pushIntoFifo(fifo, currentPointX, currentPointY - 1, canvas, pr,colorBegin);
-            //pushIntoFifo(fifo, currentPointX + 1, currentPointY - 1, canvas, pr,colorBegin);
 
 
         }

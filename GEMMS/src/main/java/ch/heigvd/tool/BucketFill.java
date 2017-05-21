@@ -71,7 +71,7 @@ public class BucketFill implements Tool {
 
         //tant que la fifo n'est pas vide, on ajoute tous les voisins de la meme couleurs et on colorit
         while (!fifo.isEmpty() ) {
-            Point2D currentPoint = fifo.removeFirst();
+            Point2D currentPoint = fifo.removeLast();
             int currentPointX = (int) currentPoint.getX();
             int currentPointY = (int) currentPoint.getY();
             Color pixelColor = pr.getColor(currentPointX,currentPointY);

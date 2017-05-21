@@ -7,6 +7,7 @@ import ch.heigvd.dialog.OpenDocumentDialog;
 import ch.heigvd.dialog.ResizeDialog;
 import ch.heigvd.layer.GEMMSText;
 import ch.heigvd.layer.IGEMMSNode;
+import ch.heigvd.tool.*;
 import ch.heigvd.workspace.Workspace;
 
 import java.awt.*;
@@ -29,12 +30,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import ch.heigvd.layer.GEMMSCanvas;
 import ch.heigvd.layer.GEMMSImage;
-import ch.heigvd.tool.Brush;
-import ch.heigvd.tool.ColorSet;
-import ch.heigvd.tool.Eraser;
-import ch.heigvd.tool.EyeDropper;
-import ch.heigvd.tool.Selection;
-import ch.heigvd.tool.TextTool;
 import ch.heigvd.tool.settings.ToolColorSettings;
 import ch.heigvd.tool.settings.ToolFontSettings;
 import java.util.List;
@@ -252,6 +247,16 @@ public class GEMMSStageFXMLController implements Initializable {
                w.setCurrentTool(b);
                brushSizer.setTarget(b);
                displayToolSetting(brush, brushSettings);
+            }
+        });
+
+        // Create bucket tool
+        Button bucket = createToolButton("Bucket", gridDrawingTools);
+        bucket.setOnAction(e -> {
+            Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                BucketFill b = new BucketFill(w);
+                w.setCurrentTool(b);
             }
         });
 
@@ -781,10 +786,10 @@ public class GEMMSStageFXMLController implements Initializable {
     /**
      * Creates a slider in a pane at a certain position. Used to create opacity,
      * sepia and saturation sliders.
-     * @param gridSliders
-     * @param opacityLabel
+     * @param pane
+     * @param label
      * @param opacity
-     * @param opacityValue 
+     * @param position
      */
     private void createSlider(GridPane pane, Label label, Slider opacity, Label value, int position) {
         label.setMinWidth(50);

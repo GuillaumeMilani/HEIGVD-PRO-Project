@@ -86,6 +86,7 @@ public class LayerList<T> extends VBox {
       wrapper.setAlignment(Pos.TOP_CENTER);
       wrapper.setFillWidth(true);
       wrapper.setSpacing(3);
+      layerContainer.setContent(wrapper);
       
       // Add the ScrollPane to the exterior container. The wrapper is for later
       panel.getChildren().add(layerContainer);

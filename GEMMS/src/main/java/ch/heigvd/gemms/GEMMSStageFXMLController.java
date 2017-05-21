@@ -76,8 +76,6 @@ public class GEMMSStageFXMLController implements Initializable {
     @FXML
     private GridPane gridDrawingTools;
     @FXML
-    private GridPane gridColorTools;
-    @FXML
     private GridPane gridFilterTools;
     @FXML
     private GridPane gridSliders;
@@ -98,6 +96,8 @@ public class GEMMSStageFXMLController implements Initializable {
 
     // List of documents
     private ArrayList<Document> documents;
+    
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -148,7 +148,8 @@ public class GEMMSStageFXMLController implements Initializable {
                }
             }
         });
-         // Create text button action
+        
+        // Create text button action
         Button text = createToolButton("", gridModificationTools);
         final ToolSettingsContainer textSettings = new ToolSettingsContainer(textColor, textFont);
         text.getStyleClass().add(CSSIcons.TEXT_TOOL);
@@ -284,7 +285,32 @@ public class GEMMSStageFXMLController implements Initializable {
             }
         });
         
+        // Create drag button action
+        createToolButton("Drag", gridModificationTools).setOnAction((ActionEvent e) -> {
+            Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                w.setCurrentTool(new Drag(w));
+            }
+        });
 
+
+        // Create rotate button action
+        createToolButton("Rotate", gridModificationTools).setOnAction((ActionEvent e) -> {
+            Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                w.setCurrentTool(new ch.heigvd.tool.RotateTool(w));
+            }
+        });
+
+
+        // Create resize button action
+        createToolButton("Resize", gridModificationTools).setOnAction((ActionEvent e) -> {
+            Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                w.setCurrentTool(new ch.heigvd.tool.Resize(w));
+            }
+        });
+        
         
         
         //Create various sliders
@@ -339,33 +365,6 @@ public class GEMMSStageFXMLController implements Initializable {
             }
         });
 
-
-        // Create drag button action
-        createToolButton("Drag", gridModificationTools).setOnAction((ActionEvent e) -> {
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-                w.setCurrentTool(new Drag(w));
-            }
-        });
-
-
-        // Create rotate button action
-        createToolButton("Rotate", gridModificationTools).setOnAction((ActionEvent e) -> {
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-                w.setCurrentTool(new ch.heigvd.tool.RotateTool(w));
-            }
-        });
-
-
-        // Create resize button action
-        createToolButton("Resize", gridModificationTools).setOnAction((ActionEvent e) -> {
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-                w.setCurrentTool(new ch.heigvd.tool.Resize(w));
-            }
-        });
-        
         saturation.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) {
@@ -443,23 +442,6 @@ public class GEMMSStageFXMLController implements Initializable {
                 
             }
         });
-
-//        // Create text button action
-//        Button text = createToolButton("", gridModificationTools);
-//        final ToolColorSettings textColor = new ToolColorSettings(ColorSet.getInstance().getColor());
-//        final ToolSettingsContainer textSettings = new ToolSettingsContainer(textSizer, textColor);
-//        text.getStyleClass().add(CSSIcons.TEXT_TOOL);
-//        text.setOnAction((ActionEvent e) -> {
-//            Workspace w = getCurrentWorkspace();
-//            if(w != null) {
-//               TextTool t = new TextTool(w);
-//               w.setCurrentTool(t);
-//               textSizer.setTarget(t);
-//               textColor.setTarget(t);
-//               displayToolSetting(text, textSettings);
-//            }
-//        });
-
 
         mainAnchorPane.setOnKeyPressed(keyEvent -> {
             // ---------- ESC ----------

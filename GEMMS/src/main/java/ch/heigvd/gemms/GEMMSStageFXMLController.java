@@ -292,7 +292,9 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         // Create crop button action
-        createToolButton("Cr", gridModificationTools).setOnAction((ActionEvent e) -> {
+        Button crop = createToolButton("", gridModificationTools);
+        crop.getStyleClass().add(CSSIcons.CROP);
+        crop.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.setCurrentTool(new Crop(w));

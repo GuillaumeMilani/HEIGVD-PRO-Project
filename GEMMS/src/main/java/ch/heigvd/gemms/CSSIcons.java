@@ -49,5 +49,6 @@ public class CSSIcons {
    public static final String ROTATE = "rotate-icon";
    public static final String SCALE = "scale-icon";
    public static final String SELECTION = "selection-icon";
+   public static final String CROP = "crop-icon";
    
 }

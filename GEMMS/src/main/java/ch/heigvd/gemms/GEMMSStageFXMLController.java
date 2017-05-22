@@ -245,7 +245,7 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         // Create bucket tool
-        Button bucket = createToolButton("Bucket", gridDrawingTools);
+        Button bucket = createToolButton("", gridDrawingTools);
         bucket.getStyleClass().add(CSSIcons.BUCKET);
         bucket.setOnAction(e -> {
             Workspace w = getCurrentWorkspace();
@@ -281,9 +281,9 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         // Create selection button action
-        Button selection = createToolButton("Se", gridModificationTools);
-        selection.getStyleClass().add(CSSIcons.SELECTION);
-        selection.setOnAction((ActionEvent e) -> {
+        Button selectionButton = createToolButton("", gridModificationTools);
+        selectionButton.getStyleClass().add(CSSIcons.SELECTION);
+        selectionButton.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.setCurrentTool(new Selection(w));
@@ -291,7 +291,9 @@ public class GEMMSStageFXMLController implements Initializable {
         });
         
         // Create drag button action
-        createToolButton("Drag", gridModificationTools).setOnAction((ActionEvent e) -> {
+        Button drag = createToolButton("", gridModificationTools);
+        drag.getStyleClass().add(CSSIcons.TRANSLATE);
+        drag.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.setCurrentTool(new Drag(w));
@@ -300,7 +302,9 @@ public class GEMMSStageFXMLController implements Initializable {
 
 
         // Create rotate button action
-        createToolButton("Rotate", gridModificationTools).setOnAction((ActionEvent e) -> {
+        Button rotate = createToolButton("", gridModificationTools);
+        rotate.getStyleClass().add(CSSIcons.ROTATE);
+        rotate.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.setCurrentTool(new ch.heigvd.tool.RotateTool(w));
@@ -309,7 +313,9 @@ public class GEMMSStageFXMLController implements Initializable {
 
 
         // Create resize button action
-        createToolButton("Resize", gridModificationTools).setOnAction((ActionEvent e) -> {
+        Button resize = createToolButton("", gridModificationTools);
+        resize.getStyleClass().add(CSSIcons.SCALE);
+        resize.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.setCurrentTool(new ch.heigvd.tool.Resize(w));

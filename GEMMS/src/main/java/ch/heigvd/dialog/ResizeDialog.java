@@ -30,6 +30,8 @@ public class ResizeDialog {
     
     /**
      * Constructor
+     * 
+     * @param workspace workspace to resize
      */
     public ResizeDialog(Workspace workspace) {
         dialog = new Dialog<>();
@@ -46,72 +48,79 @@ public class ResizeDialog {
         grid.setPadding(new Insets(20, 150, 10, 10));
 
         // Set field
-        TextField width = new TextField();
-        width.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
-        width.setText(String.valueOf(workspace.width()));
+        TextField widthText = new TextField();
+        widthText.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        widthText.setText(String.valueOf(workspace.width()));
         
-        TextField height = new TextField();
-        height.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
-        height.setText(String.valueOf(workspace.height()));
+        TextField heightText = new TextField();
+        heightText.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        heightText.setText(String.valueOf(workspace.height()));
         
-        TextField offsetX = new TextField();
-        offsetX.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
-        offsetX.setText("0");
+        TextField offsetXText = new TextField();
+        offsetXText.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        offsetXText.setText("0");
         
-        TextField offsetY = new TextField();
-        offsetY.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
-        offsetY.setText("0");
+        TextField offsetYText = new TextField();
+        offsetYText.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        offsetYText.setText("0");
 
         Label description = new Label("Document size");
         description.setFont(Font.font(null, FontWeight.BOLD, 13));
         grid.add(description, 0, 0);
         grid.add(new Label("Width:"), 0, 1);
-        grid.add(width, 1, 1);
+        grid.add(widthText, 1, 1);
         grid.add(new Label("Height:"), 0, 2);
-        grid.add(height, 1, 2);
+        grid.add(heightText, 1, 2);
 
         grid.add(new Label("Offset X:"), 0, 3);
-        grid.add(offsetX, 1, 3);
+        grid.add(offsetXText, 1, 3);
         grid.add(new Label("Offset Y:"), 0, 4);
-        grid.add(offsetY, 1, 4);
+        grid.add(offsetYText, 1, 4);
 
         dialog.getDialogPane().setContent(grid);
 
         // Request focus
-        Platform.runLater(() -> width.requestFocus());
+        Platform.runLater(() -> widthText.requestFocus());
 
         Node loginButton = dialog.getDialogPane().lookupButton(ButtonType.OK);
         loginButton.setDisable(true);
         
+        // Field validation
         ChangeListener<String> listener = (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            boolean isError = false;
             
-            String w = width.textProperty().get();
-            String h = height.textProperty().get();
-            String offX = offsetX.textProperty().get();
-            String offY = offsetY.textProperty().get();
+            try {
+                int width = Integer.valueOf(widthText.textProperty().get());
+                int height = Integer.valueOf(heightText.textProperty().get());
+                int offsetX = Integer.valueOf(offsetXText.textProperty().get());
+                int offsetY = Integer.valueOf(offsetYText.textProperty().get());
+                
+                // Check size
+                if(width <= 0 || width > 3000 || height <= 0 || height > 3000) {
+                    isError = true;
+                }
+            }
+            catch(NumberFormatException e) {
+                isError = true;
+            }
+ 
+            loginButton.setDisable(isError);
             
-            boolean widthNotValid = w.trim().isEmpty() || (w.matches("[-+]?\\d*\\.?\\d+") && Integer.valueOf(w) <= 0);
-            boolean heightNotValid = h.trim().isEmpty() || (h.matches("[-+]?\\d*\\.?\\d+") && Integer.valueOf(h) <= 0);
-            
-            boolean offsetXNotValide = offX.trim().isEmpty();
-            boolean offsetYNotValide = offY.trim().isEmpty();
-            
-            loginButton.setDisable(widthNotValid || heightNotValid || offsetXNotValide || offsetYNotValide);
         };
 
         // Field validation
-        width.textProperty().addListener(listener);
-        height.textProperty().addListener(listener);
-        offsetX.textProperty().addListener(listener);
-        offsetY.textProperty().addListener(listener);
+        widthText.textProperty().addListener(listener);
+        heightText.textProperty().addListener(listener);
+        offsetXText.textProperty().addListener(listener);
+        offsetYText.textProperty().addListener(listener);
         
         // Return result
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == ButtonType.OK) {
-                return new Rectangle(Integer.valueOf(offsetX.getText()), 
-                                        Integer.valueOf(offsetY.getText()), 
-                                        Integer.valueOf(width.getText()), 
-                                        Integer.valueOf(height.getText()));
+                return new Rectangle(Integer.valueOf(offsetXText.getText()), 
+                                        Integer.valueOf(offsetYText.getText()), 
+                                        Integer.valueOf(widthText.getText()), 
+                                        Integer.valueOf(heightText.getText()));
             }
 
             return null;

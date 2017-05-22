@@ -433,7 +433,7 @@ public class GEMMSStageFXMLController implements Initializable {
                 }
                 opacity.setValue(1);
                 saturation.setValue(0);
-                sepia.adjustValue(0.0);
+                sepia.setValue(0);
                 contrast.setValue(0);
             }
         });

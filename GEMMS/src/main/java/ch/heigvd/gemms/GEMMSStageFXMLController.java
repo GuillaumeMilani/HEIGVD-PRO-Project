@@ -184,7 +184,7 @@ public class GEMMSStageFXMLController implements Initializable {
                 Image image = dialog.showAndWait();
                 if(image != null) {
                     GEMMSImage i = new GEMMSImage(image);
-                    i.setViewport(new Rectangle2D(0, 0, w.width(), w.height()));
+                    i.setViewport(new Rectangle2D(0, 0, image.getWidth(), image.getHeight()));
                     w.addLayer(i);
                 }
             }

@@ -134,6 +134,7 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
         setRotate(s.readDouble());
         setRotationAxis(new Point3D(s.readDouble(), s.readDouble(), s.readDouble()));
         
+        //Boolean to notify if effects are on their way, if so read them and apply
         if(s.readBoolean()){
             ColorAdjust c = new ColorAdjust();
             c.setContrast(s.readDouble());

@@ -104,7 +104,7 @@ public class Crop  implements Tool {
     public void mouseReleased(double x, double y) {
 
         if(!isMoved) {
-            workspace.resizeCanvas((int)rectangle.getWidth(), (int)rectangle.getHeight(), (int)rectangle.getX(), (int)rectangle.getY());
+            workspace.resizeCanvas((int)rectangle.getWidth(), (int)rectangle.getHeight(), -(int)rectangle.getBoundsInParent().getMinX(), -(int)rectangle.getBoundsInParent().getMinY());
         }
         
         workspace.getLayerTool().setCursor(Cursor.CROSSHAIR);

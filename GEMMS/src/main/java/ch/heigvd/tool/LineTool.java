@@ -2,6 +2,7 @@ package ch.heigvd.tool;
 
 import ch.heigvd.workspace.Workspace;
 import java.util.List;
+import javafx.geometry.Point3D;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -66,9 +67,9 @@ public abstract class LineTool implements Tool {
 
       while (true) {
          
-         int rx = PositionMapper.mapX(x0, canvas);
-         int ry = PositionMapper.mapY(y0, canvas);
-         drawPixel(rx, ry, gc);
+         Point3D point = PositionMapper.convert(canvas, x0, y0, 0);
+         
+         drawPixel((int)point.getX(), (int)point.getY(), gc);
          if (x0 == x1 && y0 == y1) {
             break;
          }

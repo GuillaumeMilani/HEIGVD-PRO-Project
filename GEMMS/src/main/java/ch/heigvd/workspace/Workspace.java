@@ -93,15 +93,9 @@ public class Workspace extends StackPane implements Serializable {
          public void handle(MouseEvent event) {
             if (currentTool != null) {
                 
-                // Get mouse position
-                Point3D p = new Point3D(event.getX(), event.getY(), 0);
-                
-                if(getCurrentLayers().size() > 0) {
-                    for(Transform t : getCurrentLayers().get(0).getTransforms()) {
-                        p = t.transform(p.getX(), p.getY(), p.getZ());
-                    }
-                }
-                
+               // Get mouse position
+               Point3D p = new Point3D(event.getX(), event.getY(), 0);
+
                if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
                   currentTool.mousePressed(p.getX(), p.getY());
                } else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
@@ -177,9 +171,13 @@ public class Workspace extends StackPane implements Serializable {
     * @param node
     */
    public void addLayer(Node node) {
-      layerList.getItems().add(node);
-      layerList.getSelectionModel().clearSelection();
-      layerList.getSelectionModel().selectLast();
+      workspace.getChildren().add(node);
+      layerList.clearSelection();
+      layerList.selectTopLayer();
+      
+      //layerList.getItems().add(node);
+      //layerList.getSelectionModel().clearSelection();
+      //layerList.getSelectionModel().selectLast();
    }
 
    
@@ -187,12 +185,13 @@ public class Workspace extends StackPane implements Serializable {
     * @param node
     */
    public void removeLayer(Node node) {
-      layerList.getItems().remove(node);
+      workspace.getChildren().remove(node);
+      layerList.selectTopLayer();
    }
    
    
    public List<Node> getCurrentLayers() {
-      return layerList.getSelectionModel().getSelectedItems();
+      return layerList.getSelectedItems();
    }
 
    
@@ -200,7 +199,7 @@ public class Workspace extends StackPane implements Serializable {
     * @return
     */
    public List<Node> getLayers() {
-      return layerList.getItems();
+      return workspace.getChildren();
    }
 
    
@@ -274,19 +273,6 @@ public class Workspace extends StackPane implements Serializable {
 
          // Add the LayerList
          layersController.getChildren().add(layerList);
-
-         // Add a button to delete Layers
-         Button delete = new Button("X");
-         delete.setPrefSize(Constants.BUTTONS_HEIGHT, Constants.BUTTONS_HEIGHT);
-         delete.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent e) {
-               List<Node> items = getCurrentLayers();
-               layerList.getItems().removeAll(items);
-            }
-         });
-         layersController.getChildren().add(delete);
       }
       return layersController;
    }
@@ -334,9 +320,9 @@ public class Workspace extends StackPane implements Serializable {
       s.writeInt(width);
 
       // Number of layer
-      s.writeInt(layerList.getItems().size());
+      s.writeInt(workspace.getChildren().size());
 
-      for (Object n : layerList.getItems()) {
+      for (Object n : workspace.getChildren()) {
          if (Serializable.class.isInstance(n)) {
             s.writeObject(n);
          }

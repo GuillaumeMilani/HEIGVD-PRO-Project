@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 import javafx.scene.transform.Transform;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -154,6 +155,7 @@ public class Document {
             
             SnapshotParameters sp = new SnapshotParameters();
             sp.setTransform(Transform.scale(1 / workspace.getWorkspaceScaleX(), 1 / workspace.getWorkspaceScaleX()));
+            sp.setFill(Color.TRANSPARENT);
             
             WritableImage writableImage = new WritableImage((int)workspace.width(), (int)workspace.height());
             workspace.snapshot(sp, writableImage);

@@ -40,4 +40,8 @@ public class CSSIcons {
    public static final String EYE_DROPPER="eye-dropper-icon";
    public static final String TEXT_TOOL = "text-tool-icon";
    
+   public static final String TRASH = "trash-icon";
+   public static final String UP_ARROW = "up-icon";
+   public static final String DOWN_ARROW = "down-icon";
+   
 }

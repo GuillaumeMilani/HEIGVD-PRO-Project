@@ -5,4 +5,6 @@ import java.io.Serializable;
 /**
  * Created by lognaume on 5/16/17.
  */
-public interface IGEMMSNode extends Serializable {}
+public interface IGEMMSNode extends Serializable {
+
+}

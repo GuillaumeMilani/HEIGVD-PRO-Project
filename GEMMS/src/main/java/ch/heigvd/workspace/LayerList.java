@@ -1,43 +1,382 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ch.heigvd.workspace;
 
+import ch.heigvd.gemms.CSSIcons;
+import ch.heigvd.gemms.Constants;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
-import javafx.util.Callback;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 /**
- *
- * @author mathieu
+ * A LayerList object is a UI component that displays the content of a 
+ * targeted ObservableList as a list of layers, each element of the list acting
+ * as a layer. 
+ * 
+ * It's purpose is for a user to be able to control the order appearance 
+ * of Nodes in a given graph tree. One can for example construct a LayerList
+ * by passing it the list of children of a Parent node.
+ * 
+ * Each Node in the given list is represented by an element which must inherit
+ * from the Cell class in the same package. For the user to be able to change
+ * the type of Cells that are used by the LayerList, it is possible to 
+ * set a cell factory for the LayerList to used. It is done by implementing 
+ * the ICellFactory interface and by passing it in the constructor, or
+ * using the appropriate method.
+ * 
+ * @author Mathieu Monteverde
  */
+public class LayerList<T> extends VBox {
 
-/**
- * LayerList is the class who's in charge of controlling the Workspace
- * children. It extends ListView, thus allowing to select, control and safely
- * delete Nodes from the workspace children, while keeping a coherent state 
- * in the controller.
- */
-public class LayerList extends ListView {
+   // List taht the LayerList must observe 
+   private ObservableList<T> targetList;
+   // The cell factory used to create cells in the LayerList panel
+   private ICellFactory factory;
+   // Panel in which to display the layer list and the controls
+   private VBox panel;
+   // The container of the list of layers
+   private ScrollPane layerContainer;
+   // Wrapper to put inside the layersContainer
+   private VBox wrapper;
+   // List of current used cell
+   private LinkedList<Cell<T>> cellList;
+   // List of selected items in the targetList
+   private LinkedList<Cell> selectedCells;
 
-   public LayerList(ObservableList<Node> layers) {
-      super(layers);
-        
-      // Set the CellFactory for this ListView
-      setCellFactory(new Callback<ListView<Node>, ListCell<Node>>() {
+   /**
+    * Constructor. Sets the ObservableList to target. The default cell factory
+    * will be of the DefaultCellFactory class.
+    *
+    * @param targetList the List of elements the LayerList must display
+    */
+   public LayerList(ObservableList<T> targetList) {
+      this(targetList, new DefaultCellFactory<T>());
+   }
+
+   /**
+    * Constructor. Sets the ObservableList to target and the cell factory to use.
+    *
+    * @param targetList the List of elements the LayerList must display
+    * @param factory the ICellFactory implementation to use
+    */
+   public LayerList(ObservableList<T> targetList, ICellFactory<T> factory) {
+      // Set attributes
+      this.targetList = targetList;
+      this.factory = factory;
+
+      // Create visual containers
+      // The exterior container for the controls 
+      panel = new VBox();
+      // The ScrollPane to contain the layer list wrapper
+      layerContainer = new ScrollPane();
+      layerContainer.setPrefHeight(200);
+      layerContainer.setPrefWidth(200);
+      layerContainer.setContent(wrapper);
+      layerContainer.setFitToWidth(true);
+      // The wrapper that will contains the list of Cells representing the layers
+      wrapper = new VBox();
+      wrapper.setAlignment(Pos.TOP_CENTER);
+      wrapper.setFillWidth(true);
+      wrapper.setSpacing(3);
+      layerContainer.setContent(wrapper);
+      
+      // Add the ScrollPane to the exterior container. The wrapper is for later
+      panel.getChildren().add(layerContainer);
+
+      // Create the contianer for control buttons
+      HBox controlButtons = new HBox();
+      controlButtons.setAlignment(Pos.CENTER);
+      controlButtons.setMinHeight(Constants.BUTTONS_HEIGHT);
+      controlButtons.setSpacing(3);
+      
+      // Create a delete button to delete layers
+      Button delete = new Button("");
+      delete.setOnAction(new EventHandler<ActionEvent>() {
+         int count = 0;
          @Override
-         public ListCell<Node> call(ListView<Node> list) {
-            return new LayerListCell();
+         public void handle(ActionEvent t) {
+            
+            // Get currently selected items and delete them
+            List<T> items = LayerList.this.getSelectedItems();
+            for (T item : items) {
+               LayerList.this.targetList.remove(item);
+            }
+            selectedCells.clear();
+            selectTopLayer();
+            
+            // Once every 10 delete, make a clean of unused old Cells 
+            if (++count == 10) {
+               cleanCells();
+               count = 0;
+            }
+         }
+      });
+      delete.getStyleClass().addAll(CSSIcons.TRASH, "tool-button");
+      delete.setPrefSize(Constants.BUTTONS_HEIGHT, Constants.BUTTONS_HEIGHT);
+      
+      // Create a button to move layers up in the list, aka place them further in the list towards the end
+      Button moveUp = new Button("");
+      moveUp.setOnAction(new EventHandler<ActionEvent>() {
+         @Override
+         public void handle(ActionEvent t) {
+            
+            // Declaration of the list to store items from the targetList to move
+            LinkedList<T> itemsToMove = new LinkedList();
+            
+            // Go through the items from end to start, in order to move them in the right order
+            int i = 0;
+            ListIterator<T> it = LayerList.this.targetList.listIterator(LayerList.this.targetList.size());
+            while (it.hasPrevious()) {
+               T item = it.previous();
+               if (getSelectedItems().contains(item)) {
+                  itemsToMove.add(item);
+               }
+            }
+            
+            /*
+             * Maximum boundary past which it is not allowed to move items further
+             * because we are either at the end of the list, or there is only 
+             * items that are being moved as well (thus blocking the movement).
+             */
+            int indexBoundary = LayerList.this.targetList.size() - 1;
+            
+            // For each element to move, remove them and insert them again one position further
+            for (T element : itemsToMove) {
+               int index = LayerList.this.targetList.indexOf(element);
+               if (index < indexBoundary) {
+                  LayerList.this.targetList.remove(element);
+                  LayerList.this.targetList.add(index + 1, element);
+               } else {
+                  indexBoundary--;
+               }
+            }
+         }
+      });
+      moveUp.getStyleClass().addAll(CSSIcons.UP_ARROW, "tool-button");
+      moveUp.setPrefSize(Constants.BUTTONS_HEIGHT, Constants.BUTTONS_HEIGHT);
+      
+      // Create a button to move element down the list, aka place them closer from the beginning
+      Button moveDown = new Button("");
+      moveDown.setOnAction(new EventHandler<ActionEvent>() {
+         @Override
+         public void handle(ActionEvent t) {
+
+            // Declaration of the list to store items from the targetList to move
+            LinkedList<T> itemsToMove = new LinkedList();
+            
+            // Go throught the list from start to end
+            int i = 0;
+            ListIterator<T> it = LayerList.this.targetList.listIterator();
+            while (it.hasNext()) {
+               T item = it.next();
+               if (getSelectedItems().contains(item)) {
+                  itemsToMove.add(0, item);
+               }
+            }
+            
+            
+            /*
+             * Boundary before which it is not possible to move elements any more
+             * because we are either at the beginning of the list, or ther is only 
+             * element that are also being moved before.
+            */
+            int indexBoundary = 0;
+            
+            // For each item, move them down one step if it is possible
+            ListIterator<T> it2 = itemsToMove.listIterator(itemsToMove.size());
+            while (it2.hasPrevious()) {
+               T element = it2.previous();
+               int index = LayerList.this.targetList.indexOf(element);
+               if (index > indexBoundary) {
+                  LayerList.this.targetList.remove(element);
+                  LayerList.this.targetList.add(index - 1, element);
+               } else {
+                  indexBoundary++;
+               }
+            }
+         }
+      });
+      moveDown.getStyleClass().addAll(CSSIcons.DOWN_ARROW, "tool-button");
+      moveDown.setPrefSize(Constants.BUTTONS_HEIGHT, Constants.BUTTONS_HEIGHT);
+      
+      // Add the buttons to the control panel
+      controlButtons.getChildren().addAll(moveUp, moveDown, delete);
+      
+      // Add it to the main container
+      panel.getChildren().add(controlButtons);
+      
+      // Add the container to the VBox
+      getChildren().add(panel);
+      
+      // List of currently selected cells
+      selectedCells = new LinkedList<>();
+      // List of used cells for displaying items from the target list
+      cellList = new LinkedList<>();
+      
+      // Add a listener to display layers again when the list has been modified
+      targetList.addListener(new ListChangeListener<T>() {
+         @Override
+         public void onChanged(ListChangeListener.Change<? extends T> change) {
+            displayChildren();
+         }
+
+      });
+      
+      
+      // Display the children at the beginning
+      displayChildren();
+   }
+
+   /**
+    * Update and display the cells in the LayerList panel.
+    */
+   private void displayChildren() {
+      // Clear the current display of cells
+      wrapper.getChildren().clear();
+      int i = 0;
+      
+      // Display each element from the target list
+      for (final T element : targetList) {
+         
+         // Get the cell representation of the element
+         final Cell cell = getCell(element);
+         // Set its index in the list
+         cell.setIndex(i++);
+         
+         // Add it to the wrapper
+         wrapper.getChildren().add(0, cell);
+      }
+   }
+
+   /**
+    * Returns the Cell that targets this element in the targeList if it already
+    * has been created. If there is none, for example when a new 
+    * layer has been added, it create a new Cell, adds it ti the list of cells, 
+    * and return it.
+    *
+    * @return the Cell instance targeting this element in the list
+    */
+   private Cell<T> getCell(T element) {
+      
+      // Search in existing cells
+      for (Cell<T> cell : cellList) {
+         if (cell.getTarget() == element) {
+            return cell;
          }
       }
-      );
+      
+      // Else create it and return it
+      final Cell<T> cell = factory.createCell(element, targetList);
+      cellList.add(cell);
+      // Add an event listner on the mouse pressed to manage selection
+      cell.setOnMousePressed(new EventHandler<MouseEvent>() {
+         @Override
+         public void handle(MouseEvent t) {
+            if (!t.isControlDown()) {
+               for (Cell c : selectedCells) {
+                  c.deSelect();
+               }
+               selectedCells.clear();
+            }
+            if (cell.isSelected()) {
+               cell.deSelect();
+               selectedCells.remove(cell);
+            } else {
+               cell.select();
+               selectedCells.add(cell);
+            }
+         }
 
-      // Allow multiple selection for this ListView
-      getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+      });
+      return cell;
    }
+   
+   /**
+    * Set the ICellFactory implementation to use
+    * @param factory the cell factory to use
+    */
+   public void setCellFactory(ICellFactory factory) {
+      this.factory = factory;
+   }
+
+   /**
+    * Get a List of currently selected items.
+    * @return a List of currently selected items
+    */
+   public List<T> getSelectedItems() {
+      LinkedList<T> selectedItems = new LinkedList<>();
+
+      for (Cell<T> cell : selectedCells) {
+         selectedItems.add(cell.getTarget());
+      }
+      
+      return selectedItems;
+   }
+
+   /**
+    * Clean unused Cells still present in the cellList List.
+    */
+   private void cleanCells() {
+      LinkedList<Cell> toRemove = new LinkedList<>();
+      for (Cell<T> cell : cellList) {
+         // Wether this Xell target element is still present in the target list
+         boolean stillRelevant = false;
+         for (T element : targetList) {
+            if (cell.getTarget() == element) {
+               stillRelevant = true;
+               break;
+            }
+         }
+         // If not, add it to the list of Cell to remove
+         if (!stillRelevant) {
+            toRemove.add(cell);
+         }
+      }
+      
+      // Delete all cells to remove
+      for (Cell<T> cell : toRemove) {
+         cellList.remove(cell);
+      }
+   }
+   
+   /**
+    * Clear the current selection
+    */
+   public void clearSelection() {
+      for (Cell cell : selectedCells) {
+         cell.deSelect();
+      }
+      selectedCells.clear();
+   }
+   
+   /**
+    * Select the top layer, AKA the last element in the target list.
+    */
+   public void selectTopLayer() {
+      if (targetList.size() > 0) {
+         Cell cell = getCell(targetList.get(targetList.size() - 1));
+         cell.select();
+         selectedCells.add(cell);
+      }
+   }
+   
+   /**
+    * Select the bottom layer, AKA the first element in the target list.
+    */
+   public void selectBottomLayer() {
+      if (targetList.size() > 0) {
+         Cell cell = getCell(targetList.get(0));
+         cell.select();
+         selectedCells.add(cell);
+      }
+   }
+
 }

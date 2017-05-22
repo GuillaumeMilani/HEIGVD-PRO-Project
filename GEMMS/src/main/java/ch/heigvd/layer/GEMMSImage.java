@@ -96,6 +96,25 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
         }else{
             s.writeBoolean(false);
         }
+
+        //Write Transformation
+        s.writeInt(getTransforms().size()); // size
+        for(Transform t : getTransforms()){
+
+            if(t instanceof  javafx.scene.transform.Rotate){
+                s.writeObject(t.getClass().getSimpleName());
+                Rotate rotate = (Rotate)t;
+                s.writeDouble(rotate.getAngle());
+                s.writeDouble(rotate.getPivotX());
+                s.writeDouble(rotate.getPivotY());
+                s.writeDouble(rotate.getPivotZ());
+                s.writeDouble(rotate.getAxis().getX());
+                s.writeDouble(rotate.getAxis().getY());
+                s.writeDouble(rotate.getAxis().getZ());
+            }else{
+                s.writeObject("None");
+            }
+        }
     }
     
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
@@ -144,6 +163,28 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
             c.setBrightness(s.readDouble());
             c.setInput(new SepiaTone(s.readDouble()));
             setEffect(c);
+        }
+
+        //Set Transformation
+        int sizeTransformation = s.readInt();
+        for (int i = 0; i < sizeTransformation; i++) {
+            String classOfTransformation = (String) s.readObject();
+            switch (classOfTransformation) {
+                case "Rotate":
+                    double angle = s.readDouble();
+                    double pivotX = s.readDouble();
+                    double pivotY = s.readDouble();
+                    double pivotZ = s.readDouble();
+                    double pAxisX = s.readDouble();
+                    double pAxisY = s.readDouble();
+                    double pAxisZ = s.readDouble();
+                    Point3D axis = new Point3D(pAxisX, pAxisY, pAxisZ);
+                    getTransforms().add(new Rotate(angle, pivotX, pivotY, pivotZ, axis));
+                    break;
+                default:
+                    System.out.println("Serialisation erreur");
+                    break;
+            }
         }
            
     }

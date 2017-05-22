@@ -96,11 +96,11 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
 
         //Write Transformation
         s.writeInt(getTransforms().size()); // size
-        for(Transform t : getTransforms()){
+        for (Transform t : getTransforms()) {
 
-            if(t instanceof  javafx.scene.transform.Rotate){
+            if (t instanceof javafx.scene.transform.Rotate) {
                 s.writeObject(t.getClass().getSimpleName());
-                Rotate rotate = (Rotate)t;
+                Rotate rotate = (Rotate) t;
                 s.writeDouble(rotate.getAngle());
                 s.writeDouble(rotate.getPivotX());
                 s.writeDouble(rotate.getPivotY());
@@ -108,7 +108,7 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
                 s.writeDouble(rotate.getAxis().getX());
                 s.writeDouble(rotate.getAxis().getY());
                 s.writeDouble(rotate.getAxis().getZ());
-            }else{
+            } else {
                 s.writeObject("None");
             }
         }
@@ -154,26 +154,25 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
 
         //Set Transformation
         int sizeTransformation = s.readInt();
-        for(int i = 0 ; i< sizeTransformation ; i++){
-            String classOfTransformation =(String) s.readObject();
-            switch (classOfTransformation){
+        for (int i = 0; i < sizeTransformation; i++) {
+            String classOfTransformation = (String) s.readObject();
+            switch (classOfTransformation) {
                 case "Rotate":
                     double angle = s.readDouble();
                     double pivotX = s.readDouble();
-                    double pivotY =s.readDouble();
-                    double pivotZ =s.readDouble();
-                    double pAxisX =s.readDouble();
-                    double pAxisY =s.readDouble();
-                    double pAxisZ =s.readDouble();
-                    Point3D axis = new Point3D(pAxisX,pAxisY,pAxisZ);
-                    getTransforms().add(new Rotate(angle,pivotX,pivotY,pivotZ,axis));
+                    double pivotY = s.readDouble();
+                    double pivotZ = s.readDouble();
+                    double pAxisX = s.readDouble();
+                    double pAxisY = s.readDouble();
+                    double pAxisZ = s.readDouble();
+                    Point3D axis = new Point3D(pAxisX, pAxisY, pAxisZ);
+                    getTransforms().add(new Rotate(angle, pivotX, pivotY, pivotZ, axis));
                     break;
-                    default:
-                        System.out.println("Serialisation erreur");
-                        break;
+                default:
+                    System.out.println("Serialisation erreur");
+                    break;
             }
         }
-
 
 
     }

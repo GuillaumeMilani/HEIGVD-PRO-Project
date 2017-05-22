@@ -32,6 +32,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -137,6 +138,7 @@ public class GEMMSStageFXMLController implements Initializable {
         final ToolFontSettings textFont = new ToolFontSettings(6, 300, GEMMSText.DEFAULT_SIZE);
         Button textCreation = createToolButton("", gridCreationTools);
         textCreation.getStyleClass().add(CSSIcons.TEXT_CREATION);
+        setHoverHint(textCreation, "Create a new Text.");
         textCreation.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
@@ -155,6 +157,7 @@ public class GEMMSStageFXMLController implements Initializable {
         Button text = createToolButton("", gridModificationTools);
         final ToolSettingsContainer textSettings = new ToolSettingsContainer(textColor, textFont);
         text.getStyleClass().add(CSSIcons.TEXT_TOOL);
+        setHoverHint(text, "Edit a text properties.");
         text.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
@@ -169,6 +172,7 @@ public class GEMMSStageFXMLController implements Initializable {
         // Create canvas button action
         Button canvasCreation = createToolButton("", gridCreationTools);
         canvasCreation.getStyleClass().add(CSSIcons.CANVAS_CREATION);
+        setHoverHint(canvasCreation, "Create a new painting canvas.");
         canvasCreation.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
@@ -179,6 +183,7 @@ public class GEMMSStageFXMLController implements Initializable {
         // Create image button action
         Button imageCreation = createToolButton("", gridCreationTools);
         imageCreation.getStyleClass().add(CSSIcons.IMAGE_CREATION);
+        setHoverHint(imageCreation, "Import an image.");
         imageCreation.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
@@ -195,6 +200,7 @@ public class GEMMSStageFXMLController implements Initializable {
         // Create symetrie horizontal button action
         Button hSym = createToolButton("", gridModificationTools);
         hSym.getStyleClass().add(CSSIcons.H_SYMMETRY);
+        setHoverHint(hSym, "Apply a horizontal symetry");
         hSym.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
            if (w != null) {
@@ -214,6 +220,7 @@ public class GEMMSStageFXMLController implements Initializable {
         // Create symetrie vertical button action
         Button vSym = createToolButton("", gridModificationTools);
         vSym.getStyleClass().add(CSSIcons.V_SYMMETRY);
+        setHoverHint(vSym, "Apply a vertical symetry");
         vSym.setOnAction((ActionEvent e) -> {
            Workspace w = getCurrentWorkspace();
            if (w != null) {
@@ -234,6 +241,7 @@ public class GEMMSStageFXMLController implements Initializable {
         // Create brush tool
         Button brush = createToolButton("", gridDrawingTools);
         brush.getStyleClass().add(CSSIcons.BRUSH);
+        setHoverHint(brush, "Paint on a canvas.");
         ToolSizeSettings brushSizer = new ToolSizeSettings(1, 150, 5);
         final ToolSettingsContainer brushSettings = new ToolSettingsContainer(brushSizer);
         brush.setOnAction(e -> {
@@ -249,6 +257,7 @@ public class GEMMSStageFXMLController implements Initializable {
         // Create bucket tool
         Button bucket = createToolButton("", gridDrawingTools);
         bucket.getStyleClass().add(CSSIcons.BUCKET);
+        setHoverHint(bucket, "Fill with color.");
         bucket.setOnAction(e -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
@@ -260,6 +269,7 @@ public class GEMMSStageFXMLController implements Initializable {
         // Create eraser tool
         Button eraser = createToolButton("", gridDrawingTools);
         eraser.getStyleClass().add(CSSIcons.ERASER);
+        setHoverHint(eraser, "Erase color from a canvas.");
         ToolSizeSettings eraserSizer = new ToolSizeSettings(1, 150, 5);
         final ToolSettingsContainer eraserSettings = new ToolSettingsContainer(eraserSizer);
         eraser.setOnAction(e -> {
@@ -275,6 +285,7 @@ public class GEMMSStageFXMLController implements Initializable {
         // Create EyeDropper tool
         Button eyeDropper = createToolButton("", gridDrawingTools);
         eyeDropper.getStyleClass().add(CSSIcons.EYE_DROPPER);
+        setHoverHint(eyeDropper, "Pick a color on a layer.");
         eyeDropper.setOnAction(e -> {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
@@ -285,6 +296,7 @@ public class GEMMSStageFXMLController implements Initializable {
         // Create drag button action
         Button drag = createToolButton("", gridModificationTools);
         drag.getStyleClass().add(CSSIcons.TRANSLATE);
+        setHoverHint(drag, "Move a layer around.");
         drag.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
@@ -296,6 +308,7 @@ public class GEMMSStageFXMLController implements Initializable {
         // Create rotate button action
         Button rotate = createToolButton("", gridModificationTools);
         rotate.getStyleClass().add(CSSIcons.ROTATE);
+        setHoverHint(rotate, "Rotate a layer.");
         rotate.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
@@ -306,6 +319,7 @@ public class GEMMSStageFXMLController implements Initializable {
         // Create resize button action
         Button resize = createToolButton("", gridModificationTools);
         resize.getStyleClass().add(CSSIcons.SCALE);
+        setHoverHint(resize, "Resize a layer.");
         resize.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
@@ -315,6 +329,7 @@ public class GEMMSStageFXMLController implements Initializable {
 
         // Create selection button action
         Button selectionButton = createToolButton("", gridModificationTools);
+        setHoverHint(selectionButton, "Select an area on the document.");
         selectionButton.getStyleClass().add(CSSIcons.SELECTION);
         selectionButton.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
@@ -325,6 +340,7 @@ public class GEMMSStageFXMLController implements Initializable {
 
         // Create crop button action
         Button crop = createToolButton("", gridModificationTools);
+        setHoverHint(crop, "Crop the document.");
         crop.getStyleClass().add(CSSIcons.CROP);
         crop.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
@@ -866,5 +882,28 @@ public class GEMMSStageFXMLController implements Initializable {
             n.setEffect(c);
         }
         return ((ColorAdjust) n.getEffect());
+    }
+    
+    private void setHoverHint(Button button, String text) {
+        final ButtonPopupLabel popup = new ButtonPopupLabel(text);
+        button.setOnMouseEntered(new EventHandler<MouseEvent>() {
+          @Override
+          public void handle(MouseEvent t) {
+             popup.show(stage);
+             popup.setX(button.localToScreen(button.getBoundsInLocal()).getMinX());
+             popup.setY(button.localToScreen(button.getBoundsInLocal()).getMaxY());
+             popup.setAutoHide(true);
+          }
+
+       });
+        
+         button.setOnMouseExited(new EventHandler<MouseEvent>() {
+          @Override
+          public void handle(MouseEvent t) {
+             popup.hide();
+          }
+
+       });
+       
     }
 }

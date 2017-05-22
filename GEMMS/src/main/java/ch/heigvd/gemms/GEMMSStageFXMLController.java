@@ -36,6 +36,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.SnapshotParameters;
@@ -889,10 +890,10 @@ public class GEMMSStageFXMLController implements Initializable {
         button.setOnMouseEntered(new EventHandler<MouseEvent>() {
           @Override
           public void handle(MouseEvent t) {
-             popup.show(stage);
-             popup.setX(button.localToScreen(button.getBoundsInLocal()).getMinX());
-             popup.setY(button.localToScreen(button.getBoundsInLocal()).getMaxY());
-             popup.setAutoHide(true);
+             mainAnchorPane.getChildren().add(popup);
+             
+             popup.setLayoutX(button.localToScene(button.getBoundsInLocal()).getMinX());
+             popup.setLayoutY(button.localToScene(button.getBoundsInLocal()).getMaxY());
           }
 
        });
@@ -900,7 +901,7 @@ public class GEMMSStageFXMLController implements Initializable {
          button.setOnMouseExited(new EventHandler<MouseEvent>() {
           @Override
           public void handle(MouseEvent t) {
-             popup.hide();
+             mainAnchorPane.getChildren().remove(popup);
           }
 
        });

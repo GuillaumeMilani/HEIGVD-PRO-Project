@@ -23,26 +23,23 @@ import javafx.stage.Stage;
  *
  * @author mathieu
  */
-public class ButtonPopupLabel extends Popup {
+public class ButtonPopupLabel extends HBox {
    
    private Button target;
    
    public ButtonPopupLabel(String text) {
       
       // Set HBox container
-      final HBox hbox = new HBox();
-      hbox.setAlignment(Pos.CENTER);
-      hbox.setBackground(new Background(new BackgroundFill(Color.web("#cdcdcd"), CornerRadii.EMPTY, Insets.EMPTY)));
+      setAlignment(Pos.CENTER);
+      setBackground(new Background(new BackgroundFill(Color.web("#cdcdcd"), CornerRadii.EMPTY, Insets.EMPTY)));
       
       // Set padding and alignement
-      hbox.setPadding(new Insets(5, 5, 5, 5));
-      hbox.setAlignment(Pos.CENTER);
+      setPadding(new Insets(5, 5, 5, 5));
+      setAlignment(Pos.CENTER);
       
-      hbox.setStyle("-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.1) , 1 ,0 , 2 , 2 );");
+      setStyle("-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.25) , 1 ,0 , 1 , 1 );");
       
       // Add elements
-      hbox.getChildren().add(new Label(text));
-      
-      getContent().add(hbox);
+      getChildren().add(new Label(text));
    }
 }

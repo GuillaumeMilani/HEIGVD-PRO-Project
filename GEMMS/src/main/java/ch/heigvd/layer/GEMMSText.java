@@ -6,6 +6,7 @@ import ch.heigvd.workspace.LayerListable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
 import javafx.geometry.Point3D;
 import javafx.geometry.VPos;
 
@@ -39,8 +40,8 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
     /**
      * Constructor
      *
-     * @param x the horizontal position of the text
-     * @param y the vertical position of the text
+     * @param x    the horizontal position of the text
+     * @param y    the vertical position of the text
      * @param text text to be contained in the instance
      */
     public GEMMSText(double x, double y, String text) {
@@ -48,7 +49,7 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
         setTextOrigin(VPos.CENTER);
         setTextAlignment(TextAlignment.CENTER);
     }
-    
+
     private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
 
@@ -81,7 +82,25 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
         s.writeDouble(getRotationAxis().getX());
         s.writeDouble(getRotationAxis().getY());
         s.writeDouble(getRotationAxis().getZ());
-        
+
+        //Write Transformation
+        s.writeInt(getTransforms().size()); // size
+        for (Transform t : getTransforms()) {
+
+            if (t instanceof javafx.scene.transform.Rotate) {
+                s.writeObject(t.getClass().getSimpleName());
+                Rotate rotate = (Rotate) t;
+                s.writeDouble(rotate.getAngle());
+                s.writeDouble(rotate.getPivotX());
+                s.writeDouble(rotate.getPivotY());
+                s.writeDouble(rotate.getPivotZ());
+                s.writeDouble(rotate.getAxis().getX());
+                s.writeDouble(rotate.getAxis().getY());
+                s.writeDouble(rotate.getAxis().getZ());
+            } else {
+                s.writeObject("None");
+            }
+        }
     }
 
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
@@ -102,18 +121,41 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
         setTranslateX(s.readDouble());
         setTranslateY(s.readDouble());
         setTranslateZ(s.readDouble());
-        
+
         // Set scale info
         setScaleX(s.readDouble());
         setScaleY(s.readDouble());
         setScaleZ(s.readDouble());
-        
+
         // Set rotate info
         setRotate(s.readDouble());
         setRotationAxis(new Point3D(s.readDouble(), s.readDouble(), s.readDouble()));
-        
+
+
+        //Set Transformation
+        int sizeTransformation = s.readInt();
+        for (int i = 0; i < sizeTransformation; i++) {
+            String classOfTransformation = (String) s.readObject();
+            switch (classOfTransformation) {
+                case "Rotate":
+                    double angle = s.readDouble();
+                    double pivotX = s.readDouble();
+                    double pivotY = s.readDouble();
+                    double pivotZ = s.readDouble();
+                    double pAxisX = s.readDouble();
+                    double pAxisY = s.readDouble();
+                    double pAxisZ = s.readDouble();
+                    Point3D axis = new Point3D(pAxisX, pAxisY, pAxisZ);
+                    getTransforms().add(new Rotate(angle, pivotX, pivotY, pivotZ, axis));
+                    break;
+                default:
+                    System.out.println("Serialisation erreur");
+                    break;
+            }
+        }
+
     }
-    
+
     @Override
     public String getLayerName() {
         String[] parts = getText().split(System.lineSeparator());

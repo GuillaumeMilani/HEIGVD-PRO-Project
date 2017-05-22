@@ -51,4 +51,7 @@ public class CSSIcons {
    public static final String SELECTION = "selection-icon";
    public static final String CROP = "crop-icon";
    
+   public static final String HIDDEN = "hidden-icon";
+   public static final String VISIBLE = "visible-icon";
+   
 }

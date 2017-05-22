@@ -339,11 +339,13 @@ public class GEMMSStageFXMLController implements Initializable {
         final Slider sepia = new Slider(0, 1, 0);
         final Slider saturation = new Slider(-1, 1, 0);
         final Slider contrast = new Slider(-1, 1, 0);
+        final Slider brightness = new Slider(-1, 1, 0);
         
         final Label opacityLabel = new Label("Opacity:");
         final Label sepiaLabel = new Label("Sepia:");
         final Label saturationLabel = new Label("Saturation:");
         final Label contrastLabel = new Label("Contrast:");
+        final Label brightnessLabel = new Label("Brightness:");
         
         final Label opacityValue = new Label(
                 Double.toString(opacity.getValue()));
@@ -353,6 +355,8 @@ public class GEMMSStageFXMLController implements Initializable {
                 Double.toString(saturation.getValue()));
         final Label contrastValue = new Label(
                 Double.toString(contrast.getValue()));
+        final Label brightnessValue = new Label(
+                Double.toString(brightness.getValue()));
 
         opacity.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov,
@@ -406,7 +410,19 @@ public class GEMMSStageFXMLController implements Initializable {
                 }
                 contrastValue.setText(String.format("%.2f", new_val));
             }
-
+        });
+        
+        brightness.valueProperty().addListener(new ChangeListener<Number>() {
+                public void changed(ObservableValue<? extends Number> ov,
+                    Number old_val, Number new_val) {
+                Workspace w = getCurrentWorkspace();
+                if (w != null) {
+                    for (Node n : w.getCurrentLayers()) {
+                        getColorAdjust(n).setBrightness(new_val.doubleValue());
+                    }
+                }
+                brightnessValue.setText(String.format("%.2f", new_val));
+            }
         });
 
         gridSliders.setPadding(new Insets(10, 10, 10, 10));
@@ -414,6 +430,7 @@ public class GEMMSStageFXMLController implements Initializable {
         createSlider(gridSliders, sepiaLabel, sepia, sepiaValue, 2);
         createSlider(gridSliders, saturationLabel, saturation, saturationValue, 3);
         createSlider(gridSliders, contrastLabel, contrast, contrastValue, 4);
+        createSlider(gridSliders, brightnessLabel, brightness, brightnessValue, 5);
 
         // Create filter button
         createToolButton("B&W", gridFilterTools).setOnAction((ActionEvent e) -> {
@@ -456,6 +473,7 @@ public class GEMMSStageFXMLController implements Initializable {
                 saturation.setValue(0);
                 sepia.setValue(0);
                 contrast.setValue(0);
+                brightness.setValue(0);
             }
         });
 

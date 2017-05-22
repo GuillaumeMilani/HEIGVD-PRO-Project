@@ -91,6 +91,7 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
             s.writeDouble(c.getContrast());
             s.writeDouble(c.getHue());
             s.writeDouble(c.getSaturation());
+            s.writeDouble(c.getBrightness());
             s.writeDouble(((SepiaTone) c.getInput()).getLevel());
         }else{
             s.writeBoolean(false);
@@ -140,6 +141,7 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
             c.setContrast(s.readDouble());
             c.setHue(s.readDouble());
             c.setSaturation(s.readDouble());
+            c.setBrightness(s.readDouble());
             c.setInput(new SepiaTone(s.readDouble()));
             setEffect(c);
         }

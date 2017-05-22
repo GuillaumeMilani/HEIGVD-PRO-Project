@@ -1,30 +1,26 @@
 package ch.heigvd.tool;
 
 import ch.heigvd.workspace.Workspace;
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.Cursor;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
 
-public class Selection implements Tool {
-
+public class Crop  implements Tool {
+    
     private final Rectangle rectangle;
     private final Workspace workspace;
     
     private double lastX;
     private double lastY;
     
-    private boolean isMoved;
-    private boolean isDragged;
+    private boolean isMoving;
+    private boolean isDragging;
     
-
-    public Selection(Workspace w) {
+    private boolean isMoved;
+    
+    public Crop(Workspace w) {
         workspace = w;
         
         // Set the cursor
@@ -36,39 +32,6 @@ public class Selection implements Tool {
         rectangle.setFill(Color.TRANSPARENT);
         rectangle.setStroke(Color.BLACK);
         rectangle.setStrokeWidth(1.8);
-        rectangle.getStrokeDashArray().addAll(4d, 12d);
-        
-
-        // Stroke animation
-        final double maxOffset
-                = rectangle.getStrokeDashArray().stream()
-                        .reduce(
-                                0d,
-                                (a, b) -> a + b
-                        );
-
-        Timeline timeline = new Timeline(
-                new KeyFrame(
-                        Duration.ZERO,
-                        new KeyValue(
-                                rectangle.strokeDashOffsetProperty(),
-                                0,
-                                Interpolator.LINEAR
-                        )
-                ),
-                new KeyFrame(
-                        Duration.seconds(1),
-                        new KeyValue(
-                                rectangle.strokeDashOffsetProperty(),
-                                maxOffset,
-                                Interpolator.LINEAR
-                        )
-                )
-        );
-
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
-
     }
 
     @Override
@@ -87,12 +50,12 @@ public class Selection implements Tool {
             
             workspace.getLayerTool().setCursor(Cursor.NE_RESIZE);
 
-            isDragged = true;
+            isDragging = true;
         }
         else {
             workspace.getLayerTool().setCursor(Cursor.MOVE);
             
-            isMoved = true;
+            isMoving = true;
         }
 
         lastX = x; 
@@ -101,7 +64,7 @@ public class Selection implements Tool {
 
     @Override
     public void mouseDragged(double x, double y) {
-        if(isDragged) {
+        if(isDragging) {
             double width = x - rectangle.getX();
             double height = y - rectangle.getY();
 
@@ -119,9 +82,11 @@ public class Selection implements Tool {
 
             rectangle.setWidth(Math.abs(width));
             rectangle.setHeight(Math.abs(height));
+            
+            isMoved = true;
         }
         
-        else if(isMoved) {
+        else if(isMoving) {
             double addX = x - lastX;
             double addY = y - lastY;
 
@@ -130,18 +95,27 @@ public class Selection implements Tool {
             
             lastX = x; 
             lastY = y;
+            
+            isMoved = true;
         }
     }
 
     @Override
     public void mouseReleased(double x, double y) {
-        isDragged = false;
-        isMoved = false;
-        
-        workspace.getLayerTool().setCursor(Cursor.DEFAULT);
-    }
 
-    public Rectangle getRectangle() {
-        return rectangle;
+        if(!isMoved) {
+            workspace.resizeCanvas((int)rectangle.getWidth(), (int)rectangle.getHeight(), -(int)rectangle.getBoundsInParent().getMinX(), -(int)rectangle.getBoundsInParent().getMinY());
+            rectangle.setWidth(0);
+            rectangle.setHeight(0);
+            rectangle.setX(0);
+            rectangle.setY(0);
+        }
+        
+        workspace.getLayerTool().setCursor(Cursor.CROSSHAIR);
+        
+        isDragging = false;
+        isMoving = false;
+        isMoved = false;
     }
+    
 }

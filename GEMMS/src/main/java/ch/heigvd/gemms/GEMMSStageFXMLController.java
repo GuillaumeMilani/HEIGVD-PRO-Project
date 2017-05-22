@@ -60,6 +60,7 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 
+
 public class GEMMSStageFXMLController implements Initializable {
 
     // Stage from main
@@ -184,7 +185,7 @@ public class GEMMSStageFXMLController implements Initializable {
                 Image image = dialog.showAndWait();
                 if(image != null) {
                     GEMMSImage i = new GEMMSImage(image);
-                    i.setViewport(new Rectangle2D(0, 0, w.width(), w.height()));
+                    i.setViewport(new Rectangle2D(0, 0, image.getWidth(), image.getHeight()));
                     w.addLayer(i);
                 }
             }
@@ -202,7 +203,8 @@ public class GEMMSStageFXMLController implements Initializable {
                     GEMMSText t = (GEMMSText) node;
                     t.getTransforms().add(new Rotate(180, t.getX() + t.getBoundsInLocal().getWidth() / 2, t.getY() + t.getBoundsInLocal().getHeight() / 2, 0, Rotate.Y_AXIS));
                  } else {
-                    node.getTransforms().add(new Rotate(180, node.getBoundsInLocal().getWidth() / 2, node.getBoundsInLocal().getHeight() / 2, 0, Rotate.Y_AXIS));
+
+                      node.getTransforms().add(new Rotate(180, node.getBoundsInLocal().getWidth() / 2, node.getBoundsInLocal().getHeight() / 2, 0, Rotate.Y_AXIS));
                  }
               }
            }
@@ -215,7 +217,8 @@ public class GEMMSStageFXMLController implements Initializable {
            Workspace w = getCurrentWorkspace();
            if (w != null) {
               // If the node is a text, use the special formula for GEMMSTexts
-              for (Node node : w.getCurrentLayers()) {
+             for (Node node : w.getCurrentLayers()) {
+
                  if (node instanceof GEMMSText) {
                     GEMMSText t = (GEMMSText) node;
                     t.getTransforms().add(new Rotate(180, t.getX() + t.getBoundsInLocal().getWidth() / 2, t.getY() + t.getBoundsInLocal().getHeight() / 2, 0, Rotate.X_AXIS));
@@ -284,7 +287,15 @@ public class GEMMSStageFXMLController implements Initializable {
                 w.setCurrentTool(new Selection(w));
             }
         });
-        
+
+        // Create crop button action
+        createToolButton("Cr", gridModificationTools).setOnAction((ActionEvent e) -> {
+            Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                w.setCurrentTool(new Crop(w));
+            }
+        });
+
         // Create drag button action
         createToolButton("Drag", gridModificationTools).setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
@@ -301,7 +312,6 @@ public class GEMMSStageFXMLController implements Initializable {
                 w.setCurrentTool(new ch.heigvd.tool.RotateTool(w));
             }
         });
-
 
         // Create resize button action
         createToolButton("Resize", gridModificationTools).setOnAction((ActionEvent e) -> {
@@ -541,6 +551,7 @@ public class GEMMSStageFXMLController implements Initializable {
     private void saveNodesToClipboard(List<Node> nodes) {
         Clipboard clipboard = Clipboard.getSystemClipboard();
         ClipboardContent cc = new ClipboardContent();
+
 
         // Serialize each node
         try {

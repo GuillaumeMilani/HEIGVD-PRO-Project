@@ -34,13 +34,8 @@ public class RotateTool implements Tool{
         double newX = x - mouseX;
 
         for (Node node : layers) {
-//            centerX = node.getBoundsInParent().getWidth()/2;
-//            centerY = node.getBoundsInParent().getHeight()/2;
-//            r.setPivotX(centerX);
-//            r.setPivotY(centerY);
-//            r.setAngle(node.getRotate()-newX);
-            node.setRotate(node.getRotate()-newX);
             node.setRotationAxis(javafx.scene.transform.Rotate.Z_AXIS);
+            node.setRotate(node.getRotate()-newX);
         }
 
         mouseX = x;

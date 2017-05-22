@@ -60,6 +60,7 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 
+
 public class GEMMSStageFXMLController implements Initializable {
 
     // Stage from main
@@ -289,7 +290,15 @@ public class GEMMSStageFXMLController implements Initializable {
                 w.setCurrentTool(new Selection(w));
             }
         });
-        
+
+        // Create crop button action
+        createToolButton("Cr", gridModificationTools).setOnAction((ActionEvent e) -> {
+            Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                w.setCurrentTool(new Crop(w));
+            }
+        });
+
         // Create drag button action
         Button drag = createToolButton("", gridModificationTools);
         drag.getStyleClass().add(CSSIcons.TRANSLATE);
@@ -310,7 +319,6 @@ public class GEMMSStageFXMLController implements Initializable {
                 w.setCurrentTool(new ch.heigvd.tool.RotateTool(w));
             }
         });
-
 
         // Create resize button action
         Button resize = createToolButton("", gridModificationTools);

@@ -9,6 +9,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import javafx.geometry.Point3D;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
@@ -81,6 +83,19 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
         s.writeDouble(getRotationAxis().getY());
         s.writeDouble(getRotationAxis().getZ());
         
+        //Write effect info
+        ColorAdjust c;
+        if(getEffect() instanceof ColorAdjust){
+            s.writeBoolean(true);
+            c = ((ColorAdjust) getEffect());
+            s.writeDouble(c.getContrast());
+            s.writeDouble(c.getHue());
+            s.writeDouble(c.getSaturation());
+            s.writeDouble(c.getBrightness());
+            s.writeDouble(((SepiaTone) c.getInput()).getLevel());
+        }else{
+            s.writeBoolean(false);
+        }
     }
     
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
@@ -119,6 +134,17 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
         // Set rotate info
         setRotate(s.readDouble());
         setRotationAxis(new Point3D(s.readDouble(), s.readDouble(), s.readDouble()));
+        
+        //Boolean to notify if effects are on their way, if so read them and apply
+        if(s.readBoolean()){
+            ColorAdjust c = new ColorAdjust();
+            c.setContrast(s.readDouble());
+            c.setHue(s.readDouble());
+            c.setSaturation(s.readDouble());
+            c.setBrightness(s.readDouble());
+            c.setInput(new SepiaTone(s.readDouble()));
+            setEffect(c);
+        }
            
     }
 

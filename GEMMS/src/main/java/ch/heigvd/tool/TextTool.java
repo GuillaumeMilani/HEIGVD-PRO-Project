@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -35,6 +36,7 @@ public class TextTool implements Tool, ColorConfigurableTool, FontConfigurableTo
     */
    public TextTool(Workspace workspace) {
       this.workspace = workspace;
+      workspace.getLayerTool().setCursor(Cursor.TEXT);
    }
 
    /**

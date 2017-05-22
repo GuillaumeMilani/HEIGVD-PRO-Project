@@ -60,6 +60,7 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 
+
 public class GEMMSStageFXMLController implements Initializable {
 
     // Stage from main
@@ -245,7 +246,8 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         // Create bucket tool
-        Button bucket = createToolButton("Bucket", gridDrawingTools);
+        Button bucket = createToolButton("", gridDrawingTools);
+        bucket.getStyleClass().add(CSSIcons.BUCKET);
         bucket.setOnAction(e -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
@@ -279,16 +281,10 @@ public class GEMMSStageFXMLController implements Initializable {
             }
         });
 
-        // Create selection button action
-        createToolButton("Se", gridModificationTools).setOnAction((ActionEvent e) -> {
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-                w.setCurrentTool(new Selection(w));
-            }
-        });
-        
         // Create drag button action
-        createToolButton("Drag", gridModificationTools).setOnAction((ActionEvent e) -> {
+        Button drag = createToolButton("", gridModificationTools);
+        drag.getStyleClass().add(CSSIcons.TRANSLATE);
+        drag.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.setCurrentTool(new Drag(w));
@@ -297,19 +293,42 @@ public class GEMMSStageFXMLController implements Initializable {
 
 
         // Create rotate button action
-        createToolButton("Rotate", gridModificationTools).setOnAction((ActionEvent e) -> {
+        Button rotate = createToolButton("", gridModificationTools);
+        rotate.getStyleClass().add(CSSIcons.ROTATE);
+        rotate.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.setCurrentTool(new ch.heigvd.tool.RotateTool(w));
             }
         });
 
-
         // Create resize button action
-        createToolButton("Resize", gridModificationTools).setOnAction((ActionEvent e) -> {
+        Button resize = createToolButton("", gridModificationTools);
+        resize.getStyleClass().add(CSSIcons.SCALE);
+        resize.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.setCurrentTool(new ch.heigvd.tool.Resize(w));
+            }
+        });
+
+        // Create selection button action
+        Button selectionButton = createToolButton("", gridModificationTools);
+        selectionButton.getStyleClass().add(CSSIcons.SELECTION);
+        selectionButton.setOnAction((ActionEvent e) -> {
+            Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                w.setCurrentTool(new Selection(w));
+            }
+        });
+
+        // Create crop button action
+        Button crop = createToolButton("", gridModificationTools);
+        crop.getStyleClass().add(CSSIcons.CROP);
+        crop.setOnAction((ActionEvent e) -> {
+            Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                w.setCurrentTool(new Crop(w));
             }
         });
         
@@ -320,11 +339,13 @@ public class GEMMSStageFXMLController implements Initializable {
         final Slider sepia = new Slider(0, 1, 0);
         final Slider saturation = new Slider(-1, 1, 0);
         final Slider contrast = new Slider(-1, 1, 0);
+        final Slider brightness = new Slider(-1, 1, 0);
         
         final Label opacityLabel = new Label("Opacity:");
         final Label sepiaLabel = new Label("Sepia:");
         final Label saturationLabel = new Label("Saturation:");
         final Label contrastLabel = new Label("Contrast:");
+        final Label brightnessLabel = new Label("Brightness:");
         
         final Label opacityValue = new Label(
                 Double.toString(opacity.getValue()));
@@ -333,7 +354,9 @@ public class GEMMSStageFXMLController implements Initializable {
         final Label saturationValue = new Label(
                 Double.toString(saturation.getValue()));
         final Label contrastValue = new Label(
-                Double.toString(saturation.getValue()));
+                Double.toString(contrast.getValue()));
+        final Label brightnessValue = new Label(
+                Double.toString(brightness.getValue()));
 
         opacity.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov,
@@ -355,10 +378,6 @@ public class GEMMSStageFXMLController implements Initializable {
                     Number old_val, Number new_val) {
                 Workspace w = getCurrentWorkspace();
                 if (w != null) {
-                    SepiaTone s = new SepiaTone(new_val.doubleValue());
-                    ColorAdjust c = new ColorAdjust();
-                    c.setInput(s);
-                    
                     for (Node n : w.getCurrentLayers()) {
                         ((SepiaTone) getColorAdjust(n).getInput()).setLevel(new_val.doubleValue());
                     }
@@ -391,7 +410,19 @@ public class GEMMSStageFXMLController implements Initializable {
                 }
                 contrastValue.setText(String.format("%.2f", new_val));
             }
-
+        });
+        
+        brightness.valueProperty().addListener(new ChangeListener<Number>() {
+                public void changed(ObservableValue<? extends Number> ov,
+                    Number old_val, Number new_val) {
+                Workspace w = getCurrentWorkspace();
+                if (w != null) {
+                    for (Node n : w.getCurrentLayers()) {
+                        getColorAdjust(n).setBrightness(new_val.doubleValue());
+                    }
+                }
+                brightnessValue.setText(String.format("%.2f", new_val));
+            }
         });
 
         gridSliders.setPadding(new Insets(10, 10, 10, 10));
@@ -399,6 +430,7 @@ public class GEMMSStageFXMLController implements Initializable {
         createSlider(gridSliders, sepiaLabel, sepia, sepiaValue, 2);
         createSlider(gridSliders, saturationLabel, saturation, saturationValue, 3);
         createSlider(gridSliders, contrastLabel, contrast, contrastValue, 4);
+        createSlider(gridSliders, brightnessLabel, brightness, brightnessValue, 5);
 
         // Create filter button
         createToolButton("B&W", gridFilterTools).setOnAction((ActionEvent e) -> {
@@ -441,7 +473,7 @@ public class GEMMSStageFXMLController implements Initializable {
                 saturation.setValue(0);
                 sepia.setValue(0);
                 contrast.setValue(0);
-                
+                brightness.setValue(0);
             }
         });
 
@@ -802,19 +834,19 @@ public class GEMMSStageFXMLController implements Initializable {
     
     /**
      * Creates a slider in a pane at a certain position. Used to create opacity,
-     * sepia and saturation sliders.
+     * sepia, saturation and contrast sliders.
      * @param pane
      * @param label
-     * @param opacity
+     * @param slider
      * @param position
      */
-    private void createSlider(GridPane pane, Label label, Slider opacity, Label value, int position) {
+    private void createSlider(GridPane pane, Label label, Slider slider, Label value, int position) {
         label.setMinWidth(50);
         value.setMinWidth(30);
         GridPane.setConstraints(label, 0, position);
         pane.getChildren().add(label);
-        GridPane.setConstraints(opacity, 1, position);
-        pane.getChildren().add(opacity);
+        GridPane.setConstraints(slider, 1, position);
+        pane.getChildren().add(slider);
         GridPane.setConstraints(value, 2, position);
         pane.getChildren().add(value);
 
@@ -824,12 +856,12 @@ public class GEMMSStageFXMLController implements Initializable {
      * Returns node ColorAdjust effect. If it has none, creates one with
      * SepiaTone as input.
      * @param n Node
-     * @return node's ColorAdjust 
+     * @return node's ColorAdjust
      */
     private ColorAdjust getColorAdjust(Node n){
         if(!(n.getEffect() instanceof ColorAdjust)){
             ColorAdjust c = new ColorAdjust();
-            SepiaTone s = new SepiaTone();
+            SepiaTone s = new SepiaTone(0);
             c.setInput(s);
             n.setEffect(c);
         }

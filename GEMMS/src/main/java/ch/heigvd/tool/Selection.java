@@ -138,7 +138,7 @@ public class Selection implements Tool {
         isDragged = false;
         isMoved = false;
         
-        workspace.getLayerTool().setCursor(Cursor.CROSSHAIR);
+        workspace.getLayerTool().setCursor(Cursor.DEFAULT);
     }
 
     public Rectangle getRectangle() {

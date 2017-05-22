@@ -244,6 +244,7 @@ public class GEMMSStageFXMLController implements Initializable {
 
         // Create bucket tool
         Button bucket = createToolButton("Bucket", gridDrawingTools);
+        bucket.getStyleClass().add(CSSIcons.BUCKET);
         bucket.setOnAction(e -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
@@ -278,7 +279,9 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         // Create selection button action
-        createToolButton("Se", gridModificationTools).setOnAction((ActionEvent e) -> {
+        Button selection = createToolButton("Se", gridModificationTools);
+        selection.getStyleClass().add(CSSIcons.SELECTION);
+        selection.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.setCurrentTool(new Selection(w));

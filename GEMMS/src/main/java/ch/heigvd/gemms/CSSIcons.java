@@ -44,4 +44,10 @@ public class CSSIcons {
    public static final String UP_ARROW = "up-icon";
    public static final String DOWN_ARROW = "down-icon";
    
+   public static final String BUCKET = "bucket-icon";
+   public static final String TRANSLATE = "translate-icon";
+   public static final String ROTATE = "rotate-icon";
+   public static final String SCALE = "scale-icon";
+   public static final String SELECTION = "selection-icon";
+   
 }

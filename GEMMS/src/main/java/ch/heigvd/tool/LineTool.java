@@ -66,10 +66,10 @@ public abstract class LineTool implements Tool {
       int err = dx + dy, e2;
 
       while (true) {
-         
+
          Point3D point = PositionMapper.convert(canvas, x0, y0, 0);
-         
-         drawPixel((int)point.getX(), (int)point.getY(), gc);
+
+         drawPixel((int) point.getX(), (int) point.getY(), gc);
          if (x0 == x1 && y0 == y1) {
             break;
          }
@@ -134,14 +134,30 @@ public abstract class LineTool implements Tool {
    }
 
    /**
-    * Method to call at the end of the drag movement.
+    * Method to call at the end of the drag movement. Draws a single point.
     *
     * @param x the x coordinate of the event
     * @param y the y coordinate of the event
     */
    @Override
    public void mouseReleased(double x, double y) {
+      // Get the selected layers of the workspace
+      List<Node> layers = workspace.getCurrentLayers();
 
+      // For each node, draw on it
+      for (Node node : layers) {
+         if (Canvas.class.isInstance(node)) {
+            Canvas canvas = (Canvas) node;
+            GraphicsContext gc = canvas.getGraphicsContext2D();
+            
+            
+            Point3D point = PositionMapper.convert(canvas, x, y, 0);
+            
+            drawPixel((int)point.getX(), (int)point.getY(), gc);
+
+         }
+
+      }
    }
 
    /**

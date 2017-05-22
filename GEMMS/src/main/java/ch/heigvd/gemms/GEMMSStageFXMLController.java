@@ -145,7 +145,7 @@ public class GEMMSStageFXMLController implements Initializable {
                   GEMMSText t = new GEMMSText(w.width()/2, w.height()/2, result.get());
                   t.setFill(ColorSet.getInstance().getColor());
                   t.setFont(textFont.getFont());
-                  //t.setTranslateX(-t.getBoundsInParent().getWidth() / 2);
+                  t.setTranslateX(-t.getBoundsInParent().getWidth() / 2);
                   w.addLayer(t);
                }
             }

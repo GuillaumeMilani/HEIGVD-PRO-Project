@@ -4,7 +4,13 @@ import ch.heigvd.layer.GEMMSCanvas;
 import ch.heigvd.layer.GEMMSImage;
 import ch.heigvd.layer.GEMMSText;
 import ch.heigvd.workspace.Workspace;
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Point3D;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
@@ -14,6 +20,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Transform;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -46,27 +53,23 @@ public class EyeDropper implements Tool {
       if (GEMMSText.class.isInstance(layer)) {
          return ((GEMMSText) layer).getFill();
       } else if (GEMMSCanvas.class.isInstance(layer) || GEMMSImage.class.isInstance(layer)) {
-
-         WritableImage wi = new WritableImage((int) layer.getBoundsInParent().getWidth(), (int) layer.getBoundsInParent().getHeight());
- 
-         WritableImage snapshot = layer.snapshot(new SnapshotParameters(), wi);
          
-         Point3D p = new Point3D(x, y, 0);
-
-         for (Transform t : layer.getTransforms()) {
-            Transform nt;
-            try {
-               nt = t.createInverse();
-               p = nt.transform(p.getX(), p.getY(), p.getZ());
-            } catch (NonInvertibleTransformException ex) {
-               return null;
-            }
+         
+         // Write a snapshot of the canvas or image to be able to look up pixels
+         WritableImage wi = new WritableImage((int) layer.getBoundsInParent().getWidth(), (int) layer.getBoundsInParent().getHeight());
+         SnapshotParameters sp = new SnapshotParameters();
+         sp.setFill(Color.TRANSPARENT);
+         WritableImage snapshot = layer.snapshot(sp, wi);
+         
+         // Map to the beginning of the image
+         double pickX = x - layer.getBoundsInParent().getMinX();
+         double pickY = y - layer.getBoundsInParent().getMinY();
+         
+         // If inside, look up pixel colors
+         if (pickX >= 0 && pickX <= wi.getWidth() && pickY >= 0 && pickY <= wi.getHeight()) {
+            PixelReader pr = snapshot.getPixelReader();
+            return pr.getColor((int) pickX, (int) pickY);
          }
-
-         PixelReader pr = snapshot.getPixelReader();
-
-         return pr.getColor((int) p.getX(), (int) p.getY());
-
       }
 
       return null;

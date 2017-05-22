@@ -5,33 +5,39 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
 import javafx.scene.Cursor;
-import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
-// TODO : Move selection
 public class Selection implements Tool {
 
-    private final Scene scene;
+    private final Rectangle rectangle;
+    private final Workspace workspace;
+    
+    private double lastX;
+    private double lastY;
+    
+    private boolean isMoved;
+    private boolean isDragged;
+    
 
-    private Rectangle rectangle;
-
-    private Workspace workspace;
-
-    // TODO : Layer and clipboard injection dependency
-    public Selection(Scene s, Workspace w) {
-        scene = s;
-        scene.setCursor(Cursor.CROSSHAIR);
-
+    public Selection(Workspace w) {
         workspace = w;
+        
+        // Set the cursor
+        workspace.getLayerTool().setCursor(Cursor.CROSSHAIR);
 
-        rectangle = new Rectangle(0, 0, 20, 20);
-        rectangle.setVisible(false);
+        // Create selection box
+        rectangle = new Rectangle(0, 0, 0, 0);
+        rectangle.setVisible(true);
         rectangle.setFill(Color.TRANSPARENT);
         rectangle.setStroke(Color.BLACK);
-        rectangle.getStrokeDashArray().addAll(4d, 15d);
+        rectangle.setStrokeWidth(1.8);
+        rectangle.getStrokeDashArray().addAll(4d, 12d);
+        
 
         // Stroke animation
         final double maxOffset
@@ -51,7 +57,7 @@ public class Selection implements Tool {
                         )
                 ),
                 new KeyFrame(
-                        Duration.seconds(2),
+                        Duration.seconds(1),
                         new KeyValue(
                                 rectangle.strokeDashOffsetProperty(),
                                 maxOffset,
@@ -62,53 +68,77 @@ public class Selection implements Tool {
 
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
+
     }
 
     @Override
     public void mousePressed(double x, double y) {
-        if (!rectangle.isVisible()) {
+        
+        Point3D p = PositionMapper.convert(rectangle, new Point3D(x, y, 0));
+        
+        if (!rectangle.contains(new Point2D(p.getX(), p.getY()))) {
+            
+            workspace.getLayerTool().getChildren().remove(rectangle);
             workspace.getLayerTool().getChildren().add(rectangle);
+            rectangle.setWidth(0);
+            rectangle.setHeight(0);
+            rectangle.setX(x);
+            rectangle.setY(y);
+            
+            workspace.getLayerTool().setCursor(Cursor.NE_RESIZE);
+
+            isDragged = true;
+        }
+        else {
+            workspace.getLayerTool().setCursor(Cursor.MOVE);
+            
+            isMoved = true;
         }
 
-        rectangle.setVisible(true);
-        rectangle.setWidth(0);
-        rectangle.setHeight(0);
-        rectangle.setX(x);
-        rectangle.setY(y);
+        lastX = x; 
+        lastY = y;
     }
 
     @Override
     public void mouseDragged(double x, double y) {
-        double width = x - rectangle.getX();
-        double height = y - rectangle.getY();
+        if(isDragged) {
+            double width = x - rectangle.getX();
+            double height = y - rectangle.getY();
 
-        if (width < 0) {
-            rectangle.setTranslateX(x - rectangle.getX());
-        } else {
-            rectangle.setTranslateX(0);
+            if (width < 0) {
+                rectangle.setTranslateX(x - rectangle.getX());
+            } else {
+                rectangle.setTranslateX(0);
+            }
+
+            if (height < 0) {
+                rectangle.setTranslateY(y - rectangle.getY());
+            } else {
+                rectangle.setTranslateY(0);
+            }
+
+            rectangle.setWidth(Math.abs(width));
+            rectangle.setHeight(Math.abs(height));
         }
+        
+        else if(isMoved) {
+            double addX = x - lastX;
+            double addY = y - lastY;
 
-        if (height < 0) {
-            rectangle.setTranslateY(y - rectangle.getY());
-        } else {
-            rectangle.setTranslateY(0);
+            rectangle.setTranslateX(rectangle.getTranslateX() + addX);
+            rectangle.setTranslateY(rectangle.getTranslateY() + addY);
+            
+            lastX = x; 
+            lastY = y;
         }
-
-        rectangle.setWidth(Math.abs(width));
-        rectangle.setHeight(Math.abs(height));
     }
 
     @Override
     public void mouseReleased(double x, double y) {
-        if (rectangle.getWidth() == 0 || rectangle.getHeight() == 0) {
-            rectangle.setVisible(false);
-            rectangle.setWidth(0);
-            rectangle.setHeight(0);
-
-            workspace.getLayerTool().getChildren().remove(rectangle);
-            workspace.setCursor(Cursor.DEFAULT);
-
-        }
+        isDragged = false;
+        isMoved = false;
+        
+        workspace.getLayerTool().setCursor(Cursor.CROSSHAIR);
     }
 
     public Rectangle getRectangle() {

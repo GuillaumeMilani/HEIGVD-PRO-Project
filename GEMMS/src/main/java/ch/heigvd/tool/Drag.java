@@ -31,7 +31,7 @@ public class Drag implements Tool{
         double offsetX = x - lastX;
         double offsetY = y - lastY;
 
-        for(Node n : workspace.getLayers()) {
+        for(Node n : workspace.getCurrentLayers()) {
 
             n.setTranslateX(n.getTranslateX() + offsetX);
             n.setTranslateY(n.getTranslateY() + offsetY);

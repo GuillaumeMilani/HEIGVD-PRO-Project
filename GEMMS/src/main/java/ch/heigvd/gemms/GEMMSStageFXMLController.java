@@ -352,7 +352,7 @@ public class GEMMSStageFXMLController implements Initializable {
         final Label saturationValue = new Label(
                 Double.toString(saturation.getValue()));
         final Label contrastValue = new Label(
-                Double.toString(saturation.getValue()));
+                Double.toString(contrast.getValue()));
 
         opacity.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov,
@@ -374,10 +374,6 @@ public class GEMMSStageFXMLController implements Initializable {
                     Number old_val, Number new_val) {
                 Workspace w = getCurrentWorkspace();
                 if (w != null) {
-                    SepiaTone s = new SepiaTone(new_val.doubleValue());
-                    ColorAdjust c = new ColorAdjust();
-                    c.setInput(s);
-                    
                     for (Node n : w.getCurrentLayers()) {
                         ((SepiaTone) getColorAdjust(n).getInput()).setLevel(new_val.doubleValue());
                     }
@@ -460,7 +456,6 @@ public class GEMMSStageFXMLController implements Initializable {
                 saturation.setValue(0);
                 sepia.setValue(0);
                 contrast.setValue(0);
-                
             }
         });
 
@@ -821,19 +816,19 @@ public class GEMMSStageFXMLController implements Initializable {
     
     /**
      * Creates a slider in a pane at a certain position. Used to create opacity,
-     * sepia and saturation sliders.
+     * sepia, saturation and contrast sliders.
      * @param pane
      * @param label
-     * @param opacity
+     * @param slider
      * @param position
      */
-    private void createSlider(GridPane pane, Label label, Slider opacity, Label value, int position) {
+    private void createSlider(GridPane pane, Label label, Slider slider, Label value, int position) {
         label.setMinWidth(50);
         value.setMinWidth(30);
         GridPane.setConstraints(label, 0, position);
         pane.getChildren().add(label);
-        GridPane.setConstraints(opacity, 1, position);
-        pane.getChildren().add(opacity);
+        GridPane.setConstraints(slider, 1, position);
+        pane.getChildren().add(slider);
         GridPane.setConstraints(value, 2, position);
         pane.getChildren().add(value);
 
@@ -843,12 +838,12 @@ public class GEMMSStageFXMLController implements Initializable {
      * Returns node ColorAdjust effect. If it has none, creates one with
      * SepiaTone as input.
      * @param n Node
-     * @return node's ColorAdjust 
+     * @return node's ColorAdjust
      */
     private ColorAdjust getColorAdjust(Node n){
         if(!(n.getEffect() instanceof ColorAdjust)){
             ColorAdjust c = new ColorAdjust();
-            SepiaTone s = new SepiaTone();
+            SepiaTone s = new SepiaTone(0);
             c.setInput(s);
             n.setEffect(c);
         }

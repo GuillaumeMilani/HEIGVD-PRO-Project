@@ -40,10 +40,10 @@ public class Drag implements Tool{
             Point3D point = PositionMapper.convert(node, x, y, 0);
             Point3D point2 = PositionMapper.convert(node, mouseX, mouseY, 0);
 
-            double newX = point.getX() - point2.getX();
-            double newY = point.getY() - point2.getY();
-            node.setTranslateX(newX + x);
-            node.setTranslateY(newY + y);
+            double newX =x - point2.getX();
+            double newY = y - point2.getY();
+            node.setTranslateX(newX + point.getX());
+            node.setTranslateY(newY + point.getY());
 
             //Essaie 2
 //            Point3D point = PositionMapper.convert(node, x, y, 0);

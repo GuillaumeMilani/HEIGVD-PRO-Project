@@ -35,6 +35,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Point3D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
@@ -515,11 +516,10 @@ public class GEMMSStageFXMLController implements Initializable {
                         /**
                          * The viewport (part of node that will be snapshoted) must be in the
                          * node that will be snapshoted parent's coordinate system.
-                         * Passing by the scene coordinate we are able to convert to the node parent's coordinate system.
+                         * Passing by BoundsInParent coordinate system gives us the right coordinates.
                          */
-                        double posXWCoord = n.sceneToLocal(getCurrentWorkspace().getLayerTool().localToScene(selection.getRectangle().getBoundsInParent())).getMinX();
-                        double posYWCoord = n.sceneToLocal(getCurrentWorkspace().getLayerTool().localToScene(selection.getRectangle().getBoundsInParent())).getMinY();
-
+                        double posXWCoord = selection.getRectangle().getBoundsInParent().getMinX();
+                        double posYWCoord = selection.getRectangle().getBoundsInParent().getMinY();
                         /**
                          * The viewport will define the part of the node that will be snapshoted (the selection actually)
                          */

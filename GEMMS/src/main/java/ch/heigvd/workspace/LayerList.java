@@ -291,7 +291,7 @@ public class LayerList<T> extends VBox {
                selectedCells.remove(cell);
             } else {
                cell.select();
-               selectedCells.add(cell);
+               addSelectedCellSorted(cell);
             }
          }
 
@@ -319,6 +319,25 @@ public class LayerList<T> extends VBox {
       }
       
       return selectedItems;
+   }
+   
+   /**
+    * Add a cell to the list of select cells keeping the list sorted from 
+    * the bottom layer at the beginning to the top layer at the end
+    * @param cell the cell to add
+    */
+   private void addSelectedCellSorted(Cell<T> cell) {
+      int i = 0; 
+      ListIterator<Cell> it = selectedCells.listIterator();
+      while (it.hasNext()) {
+         Cell<T> c = it.next();
+         if (cell.getIndex() > c.getIndex()) {
+            ++i;
+         } else {
+            break;
+         }
+      }
+      selectedCells.add(i, cell);
    }
 
    /**
@@ -364,7 +383,7 @@ public class LayerList<T> extends VBox {
       if (targetList.size() > 0) {
          Cell cell = getCell(targetList.get(targetList.size() - 1));
          cell.select();
-         selectedCells.add(cell);
+         addSelectedCellSorted(cell);
       }
    }
    
@@ -375,7 +394,7 @@ public class LayerList<T> extends VBox {
       if (targetList.size() > 0) {
          Cell cell = getCell(targetList.get(0));
          cell.select();
-         selectedCells.add(cell);
+         addSelectedCellSorted(cell);
       }
    }
 

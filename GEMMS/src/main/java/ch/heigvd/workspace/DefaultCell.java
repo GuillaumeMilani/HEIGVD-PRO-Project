@@ -1,6 +1,11 @@
 package ch.heigvd.workspace;
 
+import ch.heigvd.gemms.CSSIcons;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 
@@ -14,7 +19,7 @@ public class DefaultCell<T> extends Cell<T> {
 
    public DefaultCell(T target) {
       super(target);
-      setStyle("-fx-background-color: #ededed");
+      getStyleClass().add("deslected");
 
       // Create a thumbnail for estetic purposes
       AnchorPane rect = new AnchorPane();
@@ -27,10 +32,35 @@ public class DefaultCell<T> extends Cell<T> {
          rect.getStyleClass().add(((LayerListable) target).getThumbnailClass());
          t.setText(((LayerListable) target).getLayerName());
       }
+      
+      // Button to toggle the layer visibility
+      Button visibility = new Button("");
+      visibility.getStyleClass().add(CSSIcons.VISIBLE);
+      visibility.setPrefWidth(30);
+      visibility.setPrefHeight(10);
+      visibility.setMaxHeight(10);
+      visibility.setOnAction(new EventHandler<ActionEvent>() {
+         @Override
+         public void handle(ActionEvent t) {
+            if (DefaultCell.this.getTarget() instanceof Node) {
+               Node n = (Node) DefaultCell.this.getTarget();
+               if (n.isVisible()) {
+                  n.setVisible(false);
+                  visibility.getStyleClass().remove(CSSIcons.VISIBLE);
+                  visibility.getStyleClass().add(CSSIcons.HIDDEN);
+               } else {
+                  n.setVisible(true);
+                  visibility.getStyleClass().remove(CSSIcons.HIDDEN);
+                  visibility.getStyleClass().add(CSSIcons.VISIBLE);
+               }
+            }
+         }
+      });
 
       // Add it to the LayerCell
       getChildren().add(rect);
       getChildren().add(t);
+      getChildren().add(visibility);
 
       // Align everything
       setAlignment(Pos.CENTER_LEFT);
@@ -40,12 +70,14 @@ public class DefaultCell<T> extends Cell<T> {
    @Override
    public void select() {
       super.select();
-      setStyle("-fx-background-color: #aaa");
+      getStyleClass().remove("deselected");
+      getStyleClass().add("selected");
    }
 
    @Override
    public void deSelect() {
       super.deSelect();
-      setStyle("-fx-background-color: #ededed");
+      getStyleClass().remove("selected");
+      getStyleClass().add("deselected");
    }
 }

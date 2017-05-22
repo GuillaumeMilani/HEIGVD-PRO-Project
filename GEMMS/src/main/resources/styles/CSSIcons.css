@@ -136,6 +136,37 @@
     -fx-background-size: 60%;
 }
 
+.hidden-icon {
+    -fx-background-image: url("../img/hidden-eye-icon.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 60%;
+}
+.visible-icon {
+    -fx-background-image: url("../img/visible-eye-icon.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 60%;
+}
+.selected .visible-icon {
+    -fx-background-color: #aaa;
+}
+.deselected .visible-icon {
+    -fx-background-color: #ededed;
+}
+.selected .hidden-icon {
+    -fx-background-color: #888;
+}
+.deselected .hidden-icon {
+    -fx-background-color: #bcbcbc;
+}
+.selected {
+    -fx-background-color: #aaa;
+}
+.deselected {
+    -fx-background-color: #ededed;
+}
+
 .tool-button {
     -fx-background-color: linear-gradient(#EEE, #DDD);
     -fx-border-radius: 3;

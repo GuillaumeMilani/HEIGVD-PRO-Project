@@ -39,31 +39,33 @@ public class NewDocumentDialog {
         // Set button
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-        // Set text field
+        // Set grid
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
 
-        TextField width = new TextField();
-        width.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
-        TextField height = new TextField();
-        height.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        // Set text field
+        TextField widthText = new TextField();
+        widthText.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        TextField heightText = new TextField();
+        heightText.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
 
+        // Display
         Label description = new Label("Document size");
         description.setFont(Font.font(null, FontWeight.BOLD, 13));
         grid.add(description, 0, 0);
         grid.add(new Label("Width:"), 0, 1);
-        grid.add(width, 1, 1);
+        grid.add(widthText, 1, 1);
         grid.add(new Label("Height:"), 0, 2);
-        grid.add(height, 1, 2);
+        grid.add(heightText, 1, 2);
         grid.add(new Label("Background color:"), 0, 3);
         grid.add(colorPicker, 1, 3);
-
+        
         dialog.getDialogPane().setContent(grid);
 
         // Request focus
-        Platform.runLater(() -> width.requestFocus());
+        Platform.runLater(() -> widthText.requestFocus());
 
         Node loginButton = dialog.getDialogPane().lookupButton(ButtonType.OK);
         loginButton.setDisable(true);
@@ -71,23 +73,31 @@ public class NewDocumentDialog {
         
         // Field validation
         ChangeListener<String> listener = (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            boolean isError = false;
             
-            String w = width.textProperty().get();
-            String h = height.textProperty().get();
-            
-            boolean widthNotValid = w.trim().isEmpty() || (w.matches("[-+]?\\d*\\.?\\d+") && Integer.valueOf(w) <= 0);
-            boolean heightNotValid = h.trim().isEmpty() || (h.matches("[-+]?\\d*\\.?\\d+") && Integer.valueOf(h) <= 0);
-            
-            loginButton.setDisable(widthNotValid || heightNotValid);
+            try {
+                int width = Integer.valueOf(widthText.textProperty().get());
+                int height = Integer.valueOf(heightText.textProperty().get());
+                
+                // Check size
+                if(width <= 0 || width > 3000 || height <= 0 || height > 3000) {
+                    isError = true;
+                }
+            }
+            catch(NumberFormatException e) {
+                isError = true;
+            }
+ 
+            loginButton.setDisable(isError);
         };
         
-        width.textProperty().addListener(listener);
-        height.textProperty().addListener(listener);
+        widthText.textProperty().addListener(listener);
+        heightText.textProperty().addListener(listener);
 
         // Return result
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == ButtonType.OK) {
-                return new NewDocument(Integer.valueOf(width.getText()), Integer.valueOf(height.getText()), colorPicker.getValue());
+                return new NewDocument(Integer.valueOf(widthText.getText()), Integer.valueOf(heightText.getText()), colorPicker.getValue());
             }
 
             return null;

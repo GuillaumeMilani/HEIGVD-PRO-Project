@@ -281,26 +281,6 @@ public class GEMMSStageFXMLController implements Initializable {
             }
         });
 
-        // Create selection button action
-        Button selectionButton = createToolButton("", gridModificationTools);
-        selectionButton.getStyleClass().add(CSSIcons.SELECTION);
-        selectionButton.setOnAction((ActionEvent e) -> {
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-                w.setCurrentTool(new Selection(w));
-            }
-        });
-
-        // Create crop button action
-        Button crop = createToolButton("", gridModificationTools);
-        crop.getStyleClass().add(CSSIcons.CROP);
-        crop.setOnAction((ActionEvent e) -> {
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-                w.setCurrentTool(new Crop(w));
-            }
-        });
-
         // Create drag button action
         Button drag = createToolButton("", gridModificationTools);
         drag.getStyleClass().add(CSSIcons.TRANSLATE);
@@ -329,6 +309,26 @@ public class GEMMSStageFXMLController implements Initializable {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.setCurrentTool(new ch.heigvd.tool.Resize(w));
+            }
+        });
+
+        // Create selection button action
+        Button selectionButton = createToolButton("", gridModificationTools);
+        selectionButton.getStyleClass().add(CSSIcons.SELECTION);
+        selectionButton.setOnAction((ActionEvent e) -> {
+            Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                w.setCurrentTool(new Selection(w));
+            }
+        });
+
+        // Create crop button action
+        Button crop = createToolButton("", gridModificationTools);
+        crop.getStyleClass().add(CSSIcons.CROP);
+        crop.setOnAction((ActionEvent e) -> {
+            Workspace w = getCurrentWorkspace();
+            if(w != null) {
+                w.setCurrentTool(new Crop(w));
             }
         });
         

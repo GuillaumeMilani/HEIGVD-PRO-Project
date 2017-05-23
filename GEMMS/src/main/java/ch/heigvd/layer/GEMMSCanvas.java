@@ -5,13 +5,17 @@ import ch.heigvd.workspace.LayerListable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Point3D;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 
@@ -48,7 +52,12 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
         // Get an image 
         SnapshotParameters sp = new SnapshotParameters();
         sp.setFill(Color.TRANSPARENT);
-        sp.setTransform(getLocalToSceneTransform());
+        try {
+            sp.setTransform(getLocalToSceneTransform().createInverse());
+        } catch (NonInvertibleTransformException ex) {
+            Logger.getLogger(GEMMSCanvas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
 
         WritableImage writableImage = new WritableImage((int)width, (int)height);
         snapshot(sp, writableImage);

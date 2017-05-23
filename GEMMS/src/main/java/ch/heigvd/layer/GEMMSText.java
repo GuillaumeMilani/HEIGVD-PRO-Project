@@ -81,16 +81,16 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
         s.writeDouble(getScaleY());
         s.writeDouble(getScaleZ());
 
-        // Wrtie rotate info
+        // Write rotate info
         s.writeDouble(getRotate());
         s.writeDouble(getRotationAxis().getX());
         s.writeDouble(getRotationAxis().getY());
         s.writeDouble(getRotationAxis().getZ());
 
-        //Write Transformation
-        s.writeInt(getTransforms().size()); // size
+        // Write Transformation
+        s.writeInt(getTransforms().size());
         for (Transform t : getTransforms()) {
-
+            // Rotate
             if (t instanceof javafx.scene.transform.Rotate) {
                 s.writeObject(t.getClass().getSimpleName());
                 Rotate rotate = (Rotate) t;
@@ -101,8 +101,6 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
                 s.writeDouble(rotate.getAxis().getX());
                 s.writeDouble(rotate.getAxis().getY());
                 s.writeDouble(rotate.getAxis().getZ());
-            } else {
-                s.writeObject("None");
             }
         }
     }
@@ -140,7 +138,7 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
         setRotationAxis(new Point3D(s.readDouble(), s.readDouble(), s.readDouble()));
 
 
-        //Set Transformation
+        // Set Transformation
         int sizeTransformation = s.readInt();
         for (int i = 0; i < sizeTransformation; i++) {
             String classOfTransformation = (String) s.readObject();
@@ -155,10 +153,7 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
                     double pAxisZ = s.readDouble();
                     Point3D axis = new Point3D(pAxisX, pAxisY, pAxisZ);
                     getTransforms().add(new Rotate(angle, pivotX, pivotY, pivotZ, axis));
-                    break;
-                default:
-                    System.out.println("Serialisation erreur");
-                    break;
+                break;
             }
         }
 

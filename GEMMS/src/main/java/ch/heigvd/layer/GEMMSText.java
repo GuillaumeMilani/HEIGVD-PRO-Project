@@ -59,6 +59,10 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
         // Write the position
         s.writeDouble(getX());
         s.writeDouble(getY());
+        
+        // Write align property
+        s.writeObject(getTextOrigin());
+        s.writeObject(getTextAlignment());        
 
         // Write font
         s.writeObject(getFont().getFamily());
@@ -110,6 +114,10 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
         // Set the position
         setX(s.readDouble());
         setY(s.readDouble());
+        
+        // Set align
+        setTextOrigin((VPos)s.readObject());
+        setTextAlignment((TextAlignment)s.readObject());
 
         // Set the font
         setFont(Font.font((String) s.readObject(), s.readDouble()));

@@ -29,7 +29,6 @@ public class Document {
 
     private Workspace workspace;
 
-    private FileChooser fileChooser;
     private Stage stage;
     private File currentFile;
 
@@ -88,10 +87,6 @@ public class Document {
      */
     private void init(Stage s) {
         stage = s;
-
-        fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(
-                new File(System.getProperty("user.home")));
     }
 
     /**
@@ -122,7 +117,9 @@ public class Document {
      * @throws FileNotFoundException
      */
     void saveAs() throws FileNotFoundException, IOException {
-
+        FileChooser fileChooser;
+        fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
         fileChooser.setTitle("Save as");
         fileChooser.getExtensionFilters().add(
                 new ExtensionFilter("GEMMS", "*.gemms"));
@@ -152,7 +149,9 @@ public class Document {
      * @throws IOException
      */
     void export() throws IOException {
-
+        FileChooser fileChooser;
+        fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
         fileChooser.setTitle("Export");
         fileChooser.getExtensionFilters().add(
                 new ExtensionFilter("png files (*.png)", "*.png"));

@@ -7,19 +7,33 @@ import javafx.scene.Cursor;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * The Crop tool class. Allow users to crop the workspace with a box.
+ * It resize the workspace but do not resize the layers.
+ */
 public class Crop  implements Tool {
     
+    // Crop box
     private final Rectangle rectangle;
+    
+    // Workspace to crop
     private final Workspace workspace;
     
+    // Last mouse position
     private double lastX;
     private double lastY;
     
+    // Flag
     private boolean isMoving;
     private boolean isDragging;
-    
     private boolean isMoved;
     
+    
+    /**
+     * Constructor
+     * 
+     * @param w workspace to crop
+     */
     public Crop(Workspace w) {
         workspace = w;
         
@@ -39,6 +53,7 @@ public class Crop  implements Tool {
         
         Point3D p = PositionMapper.convert(rectangle, new Point3D(x, y, 0));
         
+        // Create a crop box
         if (!rectangle.contains(new Point2D(p.getX(), p.getY()))) {
             
             workspace.getLayerTool().getChildren().remove(rectangle);
@@ -47,23 +62,28 @@ public class Crop  implements Tool {
             rectangle.setHeight(0);
             rectangle.setX(x);
             rectangle.setY(y);
+            rectangle.setVisible(false);
             
             workspace.getLayerTool().setCursor(Cursor.NE_RESIZE);
 
             isDragging = true;
         }
+        // When pressed on crop box, set the flag isMoving
         else {
             workspace.getLayerTool().setCursor(Cursor.MOVE);
             
             isMoving = true;
         }
 
+        // Save last mouse position
         lastX = x; 
         lastY = y;
     }
 
     @Override
     public void mouseDragged(double x, double y) {
+        
+        // Resize the crop box
         if(isDragging) {
             double width = x - rectangle.getX();
             double height = y - rectangle.getY();
@@ -84,8 +104,9 @@ public class Crop  implements Tool {
             rectangle.setHeight(Math.abs(height));
             
             isMoved = true;
+            rectangle.setVisible(true);
         }
-        
+        // Moving the crop box
         else if(isMoving) {
             double addX = x - lastX;
             double addY = y - lastY;
@@ -102,8 +123,15 @@ public class Crop  implements Tool {
 
     @Override
     public void mouseReleased(double x, double y) {
+        
+        Point3D p = PositionMapper.convert(rectangle, new Point3D(x, y, 0));
 
-        if(!isMoved) {
+        // Crop
+        if(!isMoved && 
+            rectangle.contains(new Point2D(p.getX(), p.getY())) && 
+            rectangle.getWidth() > 0 && 
+            rectangle.getHeight() > 0) {
+
             workspace.resizeCanvas((int)rectangle.getWidth(), (int)rectangle.getHeight(), -(int)rectangle.getBoundsInParent().getMinX(), -(int)rectangle.getBoundsInParent().getMinY());
             rectangle.setWidth(0);
             rectangle.setHeight(0);
@@ -117,5 +145,4 @@ public class Crop  implements Tool {
         isMoving = false;
         isMoved = false;
     }
-    
 }

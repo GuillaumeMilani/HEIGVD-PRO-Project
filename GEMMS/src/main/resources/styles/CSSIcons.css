@@ -186,7 +186,10 @@
     -fx-border-width: 1;
     -fx-border-color: #DDD;
 }
+.tool-button.selected {
+    -fx-background-color: linear-gradient(#BBB, #BCBCBC);
+}
 
-.tool-button:pressed, .tool-button:focused {
+.tool-button:pressed {
     -fx-background-color: linear-gradient(#DDD, #FFF);
 }

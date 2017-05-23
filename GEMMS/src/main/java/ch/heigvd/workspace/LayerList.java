@@ -287,6 +287,7 @@ public class LayerList<T> extends VBox {
 
       // Else create it and return it
       final Cell<T> cell = factory.createCell(element, targetList);
+      cell.setIndex(targetList.indexOf(element));
       cellList.add(cell);
       // Add an event listner on the mouse pressed to manage selection
       cell.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -457,6 +458,43 @@ public class LayerList<T> extends VBox {
       if (targetList.size() > 0) {
          Cell cell = getCell(targetList.get(0));
          addSelectedCellSorted(cell);
+      }
+   }
+   
+   /**
+    * Adds given items to the list of selected layers. If the target list 
+    * doesn't contain any of the given elements, this particular element
+    * won't be added nor selected.
+    * @param layers the layers to add to the selection
+    */
+   public void selectLayers(T... layers) {
+      for (T layer : layers) {
+         selectLayer(layer);
+      }
+   }
+   
+   /**
+    * Add the given layer to the selection. If the layer is not present in the 
+    * target list, it will not be added nor selected.
+    * @param layer to add to the selection
+    */
+   public void selectLayer(T layer) {
+      if (targetList.contains(layer)) {
+         Cell<T> cell = getCell(layer);
+         if (!cell.isSelected()) {
+            addSelectedCellSorted(cell);
+         }
+      }
+   }
+   
+   /**
+    * Adds a specific layer by index to the selection. The method won't do anything 
+    * if the index is out of bounds.
+    * @param i the index of the layer to add to the selection
+    */
+   public void selectLayerByIndex(int i) {
+      if (i< 0 || i < targetList.size()) {
+         selectLayer(targetList.get(i));
       }
    }
 

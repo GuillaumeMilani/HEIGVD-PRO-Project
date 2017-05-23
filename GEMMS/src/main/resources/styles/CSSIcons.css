@@ -167,13 +167,29 @@
     -fx-background-color: #ededed;
 }
 
+.new-document-button {
+    -fx-background-image: url("../img/plus.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 50%;
+}
+.open-document-button {
+    -fx-background-image: url("../img/open-icon.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 50%;
+}
+
 .tool-button {
     -fx-background-color: linear-gradient(#EEE, #DDD);
     -fx-border-radius: 3;
     -fx-border-width: 1;
     -fx-border-color: #DDD;
 }
+.tool-button.selected {
+    -fx-background-color: linear-gradient(#BBB, #BCBCBC);
+}
 
-.tool-button:pressed, .tool-button:focused {
+.tool-button:pressed {
     -fx-background-color: linear-gradient(#DDD, #FFF);
 }

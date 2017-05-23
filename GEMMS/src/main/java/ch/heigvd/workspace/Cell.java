@@ -64,4 +64,9 @@ public abstract class Cell<T> extends HBox{
       return target;
    }
    
+   /**
+    * Set the name of the layer.
+    * @param name 
+    */
+   public abstract void setLayerName(String name);
 }

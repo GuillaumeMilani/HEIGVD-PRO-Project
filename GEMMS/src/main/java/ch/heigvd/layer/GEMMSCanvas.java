@@ -2,25 +2,21 @@ package ch.heigvd.layer;
 
 import ch.heigvd.gemms.CSSIcons;
 import ch.heigvd.workspace.LayerListable;
-
 import java.io.IOException;
-
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Point3D;
 import javafx.scene.SnapshotParameters;
-
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-import javafx.scene.transform.MatrixType;
+import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
-import javafx.scene.transform.Translate;
 
 public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNode, LayerListable {
 
@@ -43,20 +39,24 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
         s.defaultWriteObject();
 
         // Get the size
-        int width = (int) getWidth();
-        int height = (int) getHeight();
+        double width = getWidth();
+        double height = getHeight();
 
         // Write the size
-        s.writeInt(width);
-        s.writeInt(height);
+        s.writeDouble(width);
+        s.writeDouble(height);
 
         // Get an image 
         SnapshotParameters sp = new SnapshotParameters();
         sp.setFill(Color.TRANSPARENT);
+        try {
+            sp.setTransform(getLocalToSceneTransform().createInverse());
+        } catch (NonInvertibleTransformException ex) {
+            Logger.getLogger(GEMMSCanvas.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-        sp.setTransform(getLocalToSceneTransform());
 
-        WritableImage writableImage = new WritableImage(width, height);
+        WritableImage writableImage = new WritableImage((int)width, (int)height);
         snapshot(sp, writableImage);
 
         // Get a pixel reader
@@ -90,10 +90,10 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
         s.writeDouble(getRotationAxis().getY());
         s.writeDouble(getRotationAxis().getZ());
 
-        //Write Transformation
-        s.writeInt(getTransforms().size()); // size
+        // Write Transformation
+        s.writeInt(getTransforms().size());
         for (Transform t : getTransforms()) {
-
+            // Rotate
             if (t instanceof javafx.scene.transform.Rotate) {
                 s.writeObject(t.getClass().getSimpleName());
                 Rotate rotate = (Rotate) t;
@@ -104,18 +104,15 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
                 s.writeDouble(rotate.getAxis().getX());
                 s.writeDouble(rotate.getAxis().getY());
                 s.writeDouble(rotate.getAxis().getZ());
-            } else {
-                s.writeObject("None");
             }
         }
-
     }
 
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
 
         // Get the size of the canvas
-        int width = s.readInt();
-        int height = s.readInt();
+        double width = s.readDouble();
+        double height = s.readDouble();
 
         // Set the size of this canvas
         setWidth(width);
@@ -148,7 +145,7 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
         setRotate(s.readDouble());
         setRotationAxis(new Point3D(s.readDouble(), s.readDouble(), s.readDouble()));
 
-        //Set Transformation
+        // Set Transformation
         int sizeTransformation = s.readInt();
         for (int i = 0; i < sizeTransformation; i++) {
             String classOfTransformation = (String) s.readObject();
@@ -163,14 +160,9 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
                     double pAxisZ = s.readDouble();
                     Point3D axis = new Point3D(pAxisX, pAxisY, pAxisZ);
                     getTransforms().add(new Rotate(angle, pivotX, pivotY, pivotZ, axis));
-                    break;
-                default:
-                    System.out.println("Serialisation erreur");
-                    break;
+                break;
             }
         }
-
-
     }
 
     @Override

@@ -16,6 +16,7 @@ import javafx.scene.text.Text;
 public class DefaultCell<T> extends Cell<T> {
 
    static int count = 0;
+   Text t;
 
    public DefaultCell(T target) {
       super(target);
@@ -26,7 +27,7 @@ public class DefaultCell<T> extends Cell<T> {
       rect.setPrefSize(40, 40);
 
       // Add a Label (To be replaced by the name of the type of Node ?)
-      Text t = new Text("Layer");
+      t = new Text("Layer");
 
       if (LayerListable.class.isInstance(target)) {
          rect.getStyleClass().add(((LayerListable) target).getThumbnailClass());
@@ -79,5 +80,10 @@ public class DefaultCell<T> extends Cell<T> {
       super.deSelect();
       getStyleClass().remove("selected");
       getStyleClass().add("deselected");
+   }
+
+   @Override
+   public void setLayerName(String name) {
+      t.setText(name);
    }
 }

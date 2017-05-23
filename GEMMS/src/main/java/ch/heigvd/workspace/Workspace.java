@@ -44,7 +44,7 @@ public class Workspace extends StackPane implements Serializable {
    
 
    // Contains layers
-   private LayerList layerList;
+   private LayerList<Node> layerList;
    private VBox layersController;
 
    
@@ -84,7 +84,7 @@ public class Workspace extends StackPane implements Serializable {
       
 
       
-      layerList = new LayerList(workspace.getChildren());
+      layerList = new LayerList<>(workspace.getChildren());
       
       currentTool = null;
 
@@ -321,6 +321,34 @@ public class Workspace extends StackPane implements Serializable {
    
    public AnchorPane getLayerTool() {
        return layerTools;
+   }
+   
+   /**
+    * Adds given items to the list of selected layers. If the target list 
+    * doesn't contain any of the given elements, this particular element
+    * won't be added nor selected.
+    * @param layers the layers to add to the selection
+    */
+   public void selectLayers(Node... layers) {
+      layerList.selectLayers(layers);
+   }
+   
+   /**
+    * Add the given layer to the selection. If the layer is not present in the 
+    * target list, it will not be added nor selected.
+    * @param layer to add to the selection
+    */
+   public void selectLayer(Node layer) {
+      layerList.selectLayer(layer);
+   }
+   
+   /**
+    * Adds a specific layer by index to the selection. The method won't do anything 
+    * if the index is out of bounds.
+    * @param i the index of the layer to add to the selection
+    */
+   public void selectLayerByIndex(int i) {
+      layerList.selectLayerByIndex(i);
    }
 
    

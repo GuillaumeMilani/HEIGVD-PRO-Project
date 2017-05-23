@@ -489,7 +489,8 @@ public class LayerList<T> extends VBox {
    
    /**
     * Adds a specific layer by index to the selection. The method won't do anything 
-    * if the index is out of bounds.
+    * if the index is out of bounds. The index 0 is the bottom layer and the 
+    * index targetList.size() -1 is the top layer.
     * @param i the index of the layer to add to the selection
     */
    public void selectLayerByIndex(int i) {

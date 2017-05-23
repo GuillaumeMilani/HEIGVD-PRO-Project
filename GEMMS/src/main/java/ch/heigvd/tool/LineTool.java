@@ -153,7 +153,6 @@ public abstract class LineTool extends AbstractTool {
             drawPixel((int)point.getX(), (int)point.getY(), gc);
 
          }
-
       }
       setChanged();
       notifyObservers();

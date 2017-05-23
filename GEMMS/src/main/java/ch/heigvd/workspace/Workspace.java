@@ -9,6 +9,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
@@ -29,7 +31,7 @@ import javafx.scene.transform.Transform;
 /**
  * @author mathieu
  */
-public class Workspace extends StackPane implements Serializable, Cloneable {
+public class Workspace extends StackPane implements Serializable {
 
    // Workspace that displays layers
    private AnchorPane workspace;
@@ -218,12 +220,6 @@ public class Workspace extends StackPane implements Serializable, Cloneable {
       return workspace.getChildren();
    }
 
-   public void setLayers(List<Node> nodes) {
-      getChildren().clear();
-      getLayers().addAll(nodes);
-   }
-
-   
    /**
     * @param factor
     */

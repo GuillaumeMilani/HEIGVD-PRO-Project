@@ -609,15 +609,7 @@ public class GEMMSStageFXMLController implements Initializable {
 
         // Serialize each node
         try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(baos);
-
-            List<IGEMMSNode> n = new LinkedList<>();
-            nodes.forEach(node -> n.add((IGEMMSNode)node));
-            out.writeObject(n);
-
-            cc.putString(Base64.getEncoder().encodeToString(baos.toByteArray()));
-            baos.close();
+            cc.putString(Utils.serializeNodeList(nodes));
         } catch (Exception e) {
             // TODO: manage exceptions
             e.printStackTrace();
@@ -636,9 +628,7 @@ public class GEMMSStageFXMLController implements Initializable {
 
         // Deserialize the clipboard's content
         try {
-            ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(serializedObject));
-            ObjectInputStream in = new ObjectInputStream(bais);
-            return (List<Node>)in.readObject();
+            return Utils.deserializeNodeList(serializedObject);
         } catch (Exception e) {
             // TODO: manage exceptions
             e.printStackTrace();

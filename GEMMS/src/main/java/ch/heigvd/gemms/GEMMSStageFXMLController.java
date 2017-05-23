@@ -36,8 +36,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
@@ -59,9 +58,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 
 
 
@@ -105,12 +104,53 @@ public class GEMMSStageFXMLController implements Initializable {
     // List of documents
     private ArrayList<Document> documents;
     
+    private Tab welcomeTab;
+    
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
         // Document list
         documents = new ArrayList<>();
+        
+        // Add a welcom panel 
+        welcomeTab = new Tab();
+        StackPane welcomeContainer = new StackPane(); // Container to center
+        GridPane welcomeGrid = new GridPane(); // Grid for multiple panels
+        
+        // Button for new document invite
+        Button newButtonInvite = new Button();
+        newButtonInvite.getStyleClass().add("new-document-button");
+        newButtonInvite.setOnAction(e -> {
+           newButtonAction(e);
+        });
+        WelcomeInvite newInvite = new WelcomeInvite(new Label("Créer un nouveau document."), newButtonInvite);
+        
+        // Button for open document invite
+        Button openButtonInvite = new Button();
+        openButtonInvite.getStyleClass().add("open-document-button");
+        openButtonInvite.setOnAction(e -> {
+           openButtonAction(e);
+        });
+        WelcomeInvite openInvite = new WelcomeInvite(new Label("Ouvrir un document GEMMS."), openButtonInvite);
+        
+        // Add invites
+        welcomeGrid.add(newInvite, 0, 0);
+        welcomeGrid.add(openInvite, 1, 0);
+        
+        // Set visual parameters
+        welcomeGrid.setHgap(15); 
+        welcomeGrid.setVgap(15);
+        welcomeGrid.setMaxSize(460, 460);
+        
+        // Add grid to the container
+        welcomeContainer.getChildren().add(welcomeGrid);
+        StackPane.setAlignment(welcomeGrid, Pos.CENTER);
+        
+        // Welcome tab parameters
+        welcomeTab.setContent(welcomeContainer);
+        welcomeTab.setText("Welcome !");
+        workspaces.getTabs().add(welcomeTab);
         
         
         // Tab changed action
@@ -122,6 +162,8 @@ public class GEMMSStageFXMLController implements Initializable {
             }
             // Suppress tab
             else {
+              
+              if (t != welcomeTab) {
                 // Get workspace
                 w = (Workspace)t.getContent();
                 
@@ -133,8 +175,11 @@ public class GEMMSStageFXMLController implements Initializable {
                 
                 // Clear
                 layerController.getChildren().clear();
+              }
             }
         });
+        
+        
         
         colorController.getChildren().add(ColorSet.getInstance().getColorController());
         
@@ -853,7 +898,9 @@ public class GEMMSStageFXMLController implements Initializable {
      */
     private Workspace getCurrentWorkspace() {
         if (workspaces.getTabs().size() > 0) {
-            return (Workspace) workspaces.getSelectionModel().getSelectedItem().getContent();
+           if (workspaces.getSelectionModel().getSelectedItem() != welcomeTab)  {
+             return (Workspace) workspaces.getSelectionModel().getSelectedItem().getContent();
+           }
         }
         
         return null;

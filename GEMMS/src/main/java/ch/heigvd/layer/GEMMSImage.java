@@ -131,4 +131,9 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
     public String getThumbnailClass() {
         return CSSIcons.IMAGE;
     }
+
+    @Override
+    public IGEMMSNode clone() {
+        return null;
+    }
 }

@@ -52,11 +52,8 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
         // Get an image 
         SnapshotParameters sp = new SnapshotParameters();
         sp.setFill(Color.TRANSPARENT);
-        
-        
+
         sp.setTransform(getLocalToSceneTransform());
-        
-        
         
         WritableImage writableImage = new WritableImage(width, height);
         snapshot(sp, writableImage);
@@ -141,5 +138,51 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
     @Override
     public String getThumbnailClass() {
         return CSSIcons.CANVAS;
+    }
+
+    @Override
+    public IGEMMSNode clone() {
+        GEMMSCanvas newCanvas = new GEMMSCanvas(getWidth(), getHeight());
+
+        // Get an image
+        SnapshotParameters sp = new SnapshotParameters();
+        sp.setFill(Color.TRANSPARENT);
+
+        sp.setTransform(getLocalToSceneTransform());
+
+        WritableImage writableImage = new WritableImage((int)Math.round(getWidth()), (int)Math.round(getHeight()));
+        snapshot(sp, writableImage);
+
+        // Get a pixel reader
+        PixelReader pixelReader = writableImage.getPixelReader();
+
+        // Get a pixel writer
+        PixelWriter pixelWriter = newCanvas.getGraphicsContext2D().getPixelWriter();
+
+        // Copy the color of every pixel
+        for (int y = 0; y < getHeight(); ++y) {
+            for (int x = 0; x < getWidth(); ++x) {
+                Color c = pixelReader.getColor(x, y);
+
+                pixelWriter.setColor(x, y, c);
+            }
+        }
+
+        // Copy translate info
+        newCanvas.setTranslateX(getTranslateX());
+        newCanvas.setTranslateY(getTranslateY());
+        newCanvas.setTranslateZ(getTranslateZ());
+
+        // Copy scale info
+        newCanvas.setScaleX(getScaleX());
+        newCanvas.setScaleY(getScaleY());
+        newCanvas.setScaleZ(getScaleZ());
+
+        // Copy rotate info
+        newCanvas.setRotate(getRotate());
+        Point3D rotationAxis = new Point3D(getRotationAxis().getX(), getRotationAxis().getY(), getRotationAxis().getZ());
+        newCanvas.setRotationAxis(rotationAxis);
+
+        return newCanvas;
     }
 }

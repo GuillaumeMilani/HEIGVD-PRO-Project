@@ -1,11 +1,13 @@
 package ch.heigvd.workspace;
 
 import ch.heigvd.gemms.Constants;
+import ch.heigvd.layer.IGEMMSNode;
 import ch.heigvd.tool.Tool;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -25,7 +27,7 @@ import javafx.scene.transform.Transform;
 /**
  * @author mathieu
  */
-public class Workspace extends StackPane implements Serializable {
+public class Workspace extends StackPane implements Serializable, Cloneable {
 
    // Workspace that displays layers
    private AnchorPane workspace;
@@ -48,6 +50,8 @@ public class Workspace extends StackPane implements Serializable {
    
    // Current selected tool
    private Tool currentTool;
+
+   private History history;
   
 
    /**
@@ -147,6 +151,9 @@ public class Workspace extends StackPane implements Serializable {
       addEventFilter(MouseEvent.ANY, dragEventHandler);
 
       addEventHandler(MouseEvent.ANY, dragEventHandler);
+
+      // History
+      this.history = new History(this);
    }
    
    
@@ -193,13 +200,17 @@ public class Workspace extends StackPane implements Serializable {
    public List<Node> getCurrentLayers() {
       return layerList.getSelectedItems();
    }
-
    
    /**
     * @return
     */
    public List<Node> getLayers() {
       return workspace.getChildren();
+   }
+
+   public void setLayers(List<Node> nodes) {
+      getChildren().clear();
+      getLayers().addAll(nodes);
    }
 
    
@@ -342,5 +353,13 @@ public class Workspace extends StackPane implements Serializable {
       for (int i = 0; i < nbLayers; ++i) {
          addLayer((Node) s.readObject());
       }
+   }
+
+   public History getHistory() {
+      return history;
+   }
+
+   public void setHistory(History history) {
+      this.history = history;
    }
 }

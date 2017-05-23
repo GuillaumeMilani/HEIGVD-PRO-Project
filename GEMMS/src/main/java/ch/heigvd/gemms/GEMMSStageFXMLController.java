@@ -17,6 +17,7 @@ import ch.heigvd.tool.settings.ToolFontSettings;
 import ch.heigvd.tool.settings.ToolSettingsContainer;
 import ch.heigvd.tool.settings.ToolSizeSettings;
 
+import ch.heigvd.workspace.History;
 import ch.heigvd.workspace.Workspace;
 
 import java.awt.*;
@@ -104,8 +105,7 @@ public class GEMMSStageFXMLController implements Initializable {
 
         // Document list
         documents = new ArrayList<>();
-        
-        
+
         // Tab changed action
         workspaces.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> ov, Tab t, Tab t1) -> {
            Workspace w = getCurrentWorkspace();
@@ -333,7 +333,6 @@ public class GEMMSStageFXMLController implements Initializable {
         });
         
         
-        
         //Create various sliders
         final Slider opacity = new Slider(0, 1, 1);
         final Slider sepia = new Slider(0, 1, 0);
@@ -466,12 +465,21 @@ public class GEMMSStageFXMLController implements Initializable {
                 // Disable current tool
                 getCurrentWorkspace().setCurrentTool(null);
 
-            // ---------- DEL ----------
-
             } else if (keyEvent.getCode().equals(KeyCode.DELETE)) {
-            // Drop the current selected layers
+                // ---------- DEL ----------
+
+                // Drop the current selected layers
                 getCurrentWorkspace().getCurrentLayers().forEach(n->getCurrentWorkspace().getLayers().remove(n));
+
+            } else if (Constants.CTRL_Z.match(keyEvent)) {
+                // ---------- CTRL + Z ----------
+                try {
+                    getCurrentWorkspace().getHistory().undo();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+
             // ---------- CTRL + C ----------
             if (Constants.CTRL_C.match(keyEvent)) {
 

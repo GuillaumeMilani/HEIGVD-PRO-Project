@@ -154,8 +154,7 @@ public abstract class LineTool extends AbstractTool {
 
          }
       }
-      setChanged();
-      notifyObservers();
+      notifier.notifyHistory();
    }
 
    /**

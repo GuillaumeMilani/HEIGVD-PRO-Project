@@ -56,6 +56,8 @@ public class Workspace extends StackPane implements Serializable {
    private Tool currentTool;
 
    private History history;
+
+   private HistoryNotifier historyNotifier = new HistoryNotifier();
   
 
    /**
@@ -158,6 +160,7 @@ public class Workspace extends StackPane implements Serializable {
 
       // History
       this.history = new History(this);
+      historyNotifier.addObserver(history);
    }
    
    
@@ -193,7 +196,9 @@ public class Workspace extends StackPane implements Serializable {
       workspace.getChildren().add(node);
       layerList.clearSelection();
       layerList.selectTopLayer();
-      
+
+      historyNotifier.notifyHistory();
+
       //layerList.getItems().add(node);
       //layerList.getSelectionModel().clearSelection();
       //layerList.getSelectionModel().selectLast();
@@ -206,6 +211,7 @@ public class Workspace extends StackPane implements Serializable {
    public void removeLayer(Node node) {
       workspace.getChildren().remove(node);
       layerList.selectTopLayer();
+      historyNotifier.notifyHistory();
    }
    
    

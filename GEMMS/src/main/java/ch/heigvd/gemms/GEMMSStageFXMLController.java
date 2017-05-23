@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
@@ -536,11 +537,10 @@ public class GEMMSStageFXMLController implements Initializable {
 
             } else if (Constants.CTRL_Z.match(keyEvent)) {
                 // ---------- CTRL + Z ----------
-                try {
-                    getCurrentWorkspace().getHistory().undo();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                getCurrentWorkspace().getHistory().undo();
+            } else if (Constants.CTRL_Y.match(keyEvent)) {
+                // ---------- CTRL + Y ----------
+                getCurrentWorkspace().getHistory().redo();
             }
 
             // ---------- CTRL + C ----------

@@ -14,7 +14,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.Separator?>
 
 <AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.heigvd.gemms.GEMMSStageFXMLController">
    <children>
@@ -93,14 +95,17 @@
               <items>
                   <MenuButton mnemonicParsing="false" text="Menu">
                     <items>
+                      <MenuItem mnemonicParsing="false" fx:id="newButton" onAction="#newButtonAction" text="New" />
+                      <MenuItem mnemonicParsing="false" fx:id="openButton" onAction="#openButtonAction" text="Open" />
+                      <MenuItem mnemonicParsing="false" fx:id="saveButton"  onAction="#saveButtonAction" text="Save" />
+                      <MenuItem mnemonicParsing="false" fx:id="exportButton" onAction="#exportButtonAction" text="Export" />
                       <MenuItem mnemonicParsing="false" onAction="#resizeButtonAction" text="Resize canvas" />
-                      <MenuItem mnemonicParsing="false" text="Action 2" />
                     </items>
                   </MenuButton>
-                  <Button fx:id="newButton" mnemonicParsing="false" onAction="#newButtonAction" text="New" />
-                  <Button fx:id="openButton" mnemonicParsing="false" onAction="#openButtonAction" text="Open" />
-                  <Button fx:id="saveButton" mnemonicParsing="false" onAction="#saveButtonAction" text="Save" />
-                  <Button fx:id="exportButton" mnemonicParsing="false" onAction="#exportButtonAction" text="Export" />
+                  <Separator />
+                  <HBox spacing="10.0" fx:id="toolSettingsContainer">
+                        
+                  </HBox>
               </items>
             </ToolBar>
          </top>

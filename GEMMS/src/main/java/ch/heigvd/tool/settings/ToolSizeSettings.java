@@ -29,7 +29,7 @@ public class ToolSizeSettings extends ToolSettings {
       slider = new Slider(min, max, value);
       
       // Text to display the Slider current value
-      final Text textValue = new Text(String.valueOf(value));
+      final Text textValue = new Text(String.valueOf(value + "px"));
       
       // Create the event on slider change
       slider.valueProperty().addListener(new ChangeListener<Number>() {
@@ -38,7 +38,7 @@ public class ToolSizeSettings extends ToolSettings {
                  Number old_val, Number new_val) {
             if (target != null) {
                // Update the text and set the size of the target
-               textValue.setText(String.format("%d", new_val.intValue()));
+               textValue.setText(String.format("%dpx", new_val.intValue()));
                target.setSize(new_val.intValue());
             }
          }

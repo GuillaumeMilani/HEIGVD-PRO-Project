@@ -241,6 +241,7 @@ public class LayerList<T> extends VBox {
    private void displayChildren() {
       // Clear the current display of cells
       wrapper.getChildren().clear();
+      selectedCells.clear();
       int i = 0;
       
       // Display each element from the target list
@@ -250,6 +251,10 @@ public class LayerList<T> extends VBox {
          final Cell cell = getCell(element);
          // Set its index in the list
          cell.setIndex(i++);
+         
+         if (cell.isSelected()) {
+            addSelectedCellSorted(cell);
+         }
          
          // Add it to the wrapper
          wrapper.getChildren().add(0, cell);

@@ -217,9 +217,9 @@ public class GEMMSStageFXMLController implements Initializable {
         setHoverHint(text, "Edit a text properties.");
         text.setOnAction((ActionEvent e) -> {
            clearSelectedButtons();
-            selectButton(text);
             Workspace w = getCurrentWorkspace();
             if(w != null) {
+               selectButton(text);
                TextTool t = new TextTool(w);
                w.setCurrentTool(t); 
                textColor.setTarget(t);
@@ -785,6 +785,7 @@ public class GEMMSStageFXMLController implements Initializable {
              b.getStyleClass().remove("selected");
           }
        }
+       toolSettingsContainer.getChildren().clear();
     }
     
     private void selectButton(Button b) {

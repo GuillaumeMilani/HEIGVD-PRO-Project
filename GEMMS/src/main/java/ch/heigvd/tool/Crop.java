@@ -47,6 +47,7 @@ public class Crop  implements Tool {
             rectangle.setHeight(0);
             rectangle.setX(x);
             rectangle.setY(y);
+            rectangle.setVisible(false);
             
             workspace.getLayerTool().setCursor(Cursor.NE_RESIZE);
 
@@ -84,6 +85,7 @@ public class Crop  implements Tool {
             rectangle.setHeight(Math.abs(height));
             
             isMoved = true;
+            rectangle.setVisible(true);
         }
         
         else if(isMoving) {
@@ -102,8 +104,14 @@ public class Crop  implements Tool {
 
     @Override
     public void mouseReleased(double x, double y) {
+        
+        Point3D p = PositionMapper.convert(rectangle, new Point3D(x, y, 0));
 
-        if(!isMoved) {
+        if(!isMoved && 
+                rectangle.contains(new Point2D(p.getX(), p.getY())) && 
+                rectangle.getWidth() > 0 && 
+                rectangle.getHeight() > 0) {
+
             workspace.resizeCanvas((int)rectangle.getWidth(), (int)rectangle.getHeight(), -(int)rectangle.getBoundsInParent().getMinX(), -(int)rectangle.getBoundsInParent().getMinY());
             rectangle.setWidth(0);
             rectangle.setHeight(0);

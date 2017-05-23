@@ -9,6 +9,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import javafx.geometry.Point3D;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
@@ -81,6 +83,38 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
         s.writeDouble(getRotationAxis().getY());
         s.writeDouble(getRotationAxis().getZ());
         
+        //Write effect info
+        ColorAdjust c;
+        if(getEffect() instanceof ColorAdjust){
+            s.writeBoolean(true);
+            c = ((ColorAdjust) getEffect());
+            s.writeDouble(c.getContrast());
+            s.writeDouble(c.getHue());
+            s.writeDouble(c.getSaturation());
+            s.writeDouble(c.getBrightness());
+            s.writeDouble(((SepiaTone) c.getInput()).getLevel());
+        }else{
+            s.writeBoolean(false);
+        }
+
+        //Write Transformation
+        s.writeInt(getTransforms().size()); // size
+        for(Transform t : getTransforms()){
+
+            if(t instanceof  javafx.scene.transform.Rotate){
+                s.writeObject(t.getClass().getSimpleName());
+                Rotate rotate = (Rotate)t;
+                s.writeDouble(rotate.getAngle());
+                s.writeDouble(rotate.getPivotX());
+                s.writeDouble(rotate.getPivotY());
+                s.writeDouble(rotate.getPivotZ());
+                s.writeDouble(rotate.getAxis().getX());
+                s.writeDouble(rotate.getAxis().getY());
+                s.writeDouble(rotate.getAxis().getZ());
+            }else{
+                s.writeObject("None");
+            }
+        }
     }
     
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
@@ -119,6 +153,39 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
         // Set rotate info
         setRotate(s.readDouble());
         setRotationAxis(new Point3D(s.readDouble(), s.readDouble(), s.readDouble()));
+        
+        //Boolean to notify if effects are on their way, if so read them and apply
+        if(s.readBoolean()){
+            ColorAdjust c = new ColorAdjust();
+            c.setContrast(s.readDouble());
+            c.setHue(s.readDouble());
+            c.setSaturation(s.readDouble());
+            c.setBrightness(s.readDouble());
+            c.setInput(new SepiaTone(s.readDouble()));
+            setEffect(c);
+        }
+
+        //Set Transformation
+        int sizeTransformation = s.readInt();
+        for (int i = 0; i < sizeTransformation; i++) {
+            String classOfTransformation = (String) s.readObject();
+            switch (classOfTransformation) {
+                case "Rotate":
+                    double angle = s.readDouble();
+                    double pivotX = s.readDouble();
+                    double pivotY = s.readDouble();
+                    double pivotZ = s.readDouble();
+                    double pAxisX = s.readDouble();
+                    double pAxisY = s.readDouble();
+                    double pAxisZ = s.readDouble();
+                    Point3D axis = new Point3D(pAxisX, pAxisY, pAxisZ);
+                    getTransforms().add(new Rotate(angle, pivotX, pivotY, pivotZ, axis));
+                    break;
+                default:
+                    System.out.println("Serialisation erreur");
+                    break;
+            }
+        }
            
     }
 

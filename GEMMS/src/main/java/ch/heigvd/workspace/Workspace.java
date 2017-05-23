@@ -12,6 +12,7 @@ import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
@@ -20,6 +21,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Transform;
 
@@ -170,6 +172,14 @@ public class Workspace extends StackPane implements Serializable, Cloneable {
    
    @Override
    public WritableImage snapshot(SnapshotParameters params, WritableImage image) {
+      if(params == null) {
+          params = new SnapshotParameters();
+      } 
+      
+      params.setTransform(Transform.scale(1 / getWorkspaceScaleX(), 1 / getWorkspaceScaleX()));
+      params.setFill(Color.TRANSPARENT);
+      params.setViewport(new Rectangle2D(clip.getLayoutX(), clip.getLayoutY(), clip.getWidth(), clip.getHeight()));
+      
       return workspace.snapshot(params, image);
    }
 

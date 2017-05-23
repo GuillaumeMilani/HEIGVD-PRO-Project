@@ -14,23 +14,21 @@ import javafx.stage.Popup;
  * ToolSettingsContainer are meant to contain ToolSettings.
  * @author mathieu
  */
-public class ToolSettingsContainer extends Popup {
+public class ToolSettingsContainer extends HBox {
    public ToolSettingsContainer(Node... settings) {
       // Set HBox container
-      final HBox hbox = new HBox();
-      hbox.setAlignment(Pos.CENTER);
-      hbox.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+      setAlignment(Pos.CENTER);
+      setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
       
       // Set padding and alignement
-      hbox.setPadding(new Insets(5, 5, 5, 5));
-      hbox.setSpacing(10);
-      hbox.setAlignment(Pos.CENTER);
+      setPadding(new Insets(5, 5, 5, 5));
+      setSpacing(10);
+      setAlignment(Pos.CENTER);
       
       // Add elements
       for(Node s : settings) {
-         hbox.getChildren().add(s);
+         getChildren().add(s);
       }
       
-      getContent().add(hbox);
    }
 }

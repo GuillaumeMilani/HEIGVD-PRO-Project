@@ -61,7 +61,7 @@ public class ToolFontSettings extends ToolSettings{
       slider = new Slider(min, max, value);
       
       // Text to display the current value of the slider
-      final Text textValue = new Text(String.valueOf(value));
+      final Text textValue = new Text(String.valueOf(value + "px"));
       
       // Create the event on slider change
       slider.valueProperty().addListener(new ChangeListener<Number>() {
@@ -69,7 +69,7 @@ public class ToolFontSettings extends ToolSettings{
          public void changed(ObservableValue<? extends Number> ov,
                  Number old_val, Number new_val) {
             if (target != null) {
-               textValue.setText(String.format("%d", new_val.intValue()));
+               textValue.setText(String.format("%dpx", new_val.intValue()));
                target.setFont(Font.font(cb.getValue(), new_val.intValue()));
             }
          }

@@ -14,7 +14,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.Separator?>
 
 <AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.heigvd.gemms.GEMMSStageFXMLController">
    <children>
@@ -100,6 +102,10 @@
                       <MenuItem mnemonicParsing="false" onAction="#resizeButtonAction" text="Resize canvas" />
                     </items>
                   </MenuButton>
+                  <Separator />
+                  <HBox spacing="10.0" fx:id="toolSettingsContainer">
+                        
+                  </HBox>
               </items>
             </ToolBar>
          </top>

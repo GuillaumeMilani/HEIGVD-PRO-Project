@@ -61,6 +61,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
+import javafx.scene.layout.HBox;
 
 
 
@@ -97,6 +98,9 @@ public class GEMMSStageFXMLController implements Initializable {
     
     @FXML
     private AnchorPane colorController;
+    
+    @FXML
+    private HBox toolSettingsContainer;
 
     // List of documents
     private ArrayList<Document> documents;
@@ -150,6 +154,7 @@ public class GEMMSStageFXMLController implements Initializable {
                   t.setFont(textFont.getFont());
                   t.setTranslateX(-t.getBoundsInParent().getWidth() / 2);
                   w.addLayer(t);
+                  displayToolSetting(textCreation, null);
                }
             }
         });
@@ -178,6 +183,7 @@ public class GEMMSStageFXMLController implements Initializable {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.addLayer(new GEMMSCanvas(w.width(), w.height()));
+                displayToolSetting(canvasCreation, null);
             }
         });
 
@@ -194,6 +200,7 @@ public class GEMMSStageFXMLController implements Initializable {
                     GEMMSImage i = new GEMMSImage(image);
                     i.setViewport(new Rectangle2D(0, 0, image.getWidth(), image.getHeight()));
                     w.addLayer(i);
+                    displayToolSetting(imageCreation, null);
                 }
             }
         });
@@ -215,6 +222,7 @@ public class GEMMSStageFXMLController implements Initializable {
                       node.getTransforms().add(new Rotate(180, node.getBoundsInLocal().getWidth() / 2, node.getBoundsInLocal().getHeight() / 2, 0, Rotate.Y_AXIS));
                  }
               }
+              displayToolSetting(hSym, null);
            }
         });
 
@@ -236,6 +244,7 @@ public class GEMMSStageFXMLController implements Initializable {
                     node.getTransforms().add(new Rotate(180, node.getBoundsInLocal().getWidth() / 2, node.getBoundsInLocal().getHeight() / 2, 0, Rotate.X_AXIS));
                  }
               }
+              displayToolSetting(vSym, null);
            }
         });
         
@@ -264,6 +273,7 @@ public class GEMMSStageFXMLController implements Initializable {
             if(w != null) {
                 BucketFill b = new BucketFill(w);
                 w.setCurrentTool(b);
+                displayToolSetting(bucket, null);
             }
         });
 
@@ -291,6 +301,7 @@ public class GEMMSStageFXMLController implements Initializable {
            Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.setCurrentTool(new EyeDropper(w));
+              displayToolSetting(eyeDropper, null);
             }
         });
 
@@ -302,6 +313,7 @@ public class GEMMSStageFXMLController implements Initializable {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.setCurrentTool(new Drag(w));
+              displayToolSetting(drag, null);
             }
         });
 
@@ -314,6 +326,7 @@ public class GEMMSStageFXMLController implements Initializable {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.setCurrentTool(new ch.heigvd.tool.RotateTool(w));
+              displayToolSetting(rotate, null);
             }
         });
 
@@ -325,6 +338,7 @@ public class GEMMSStageFXMLController implements Initializable {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.setCurrentTool(new ch.heigvd.tool.Resize(w));
+              displayToolSetting(resize, null);
             }
         });
 
@@ -336,6 +350,7 @@ public class GEMMSStageFXMLController implements Initializable {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.setCurrentTool(new Selection(w));
+              displayToolSetting(selectionButton, null);
             }
         });
 
@@ -347,6 +362,7 @@ public class GEMMSStageFXMLController implements Initializable {
             Workspace w = getCurrentWorkspace();
             if(w != null) {
                 w.setCurrentTool(new Crop(w));
+              displayToolSetting(crop, null);
             }
         });
         
@@ -451,18 +467,24 @@ public class GEMMSStageFXMLController implements Initializable {
         createSlider(gridSliders, brightnessLabel, brightness, brightnessValue, 5);
 
         // Create filter button
-        createToolButton("B&W", gridFilterTools).setOnAction((ActionEvent e) -> {
+        Button BW = createToolButton("B&W", gridFilterTools);
+        setHoverHint(BW, "Apply a Black and White filter.");
+        BW.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if (w != null) {
                 for (Node n : w.getCurrentLayers()) {
                     getColorAdjust(n).setSaturation(-1);
                     saturation.setValue(-1);
                 }
+                
+              displayToolSetting(BW, null);
             }
         });
         
         // Create filter button
-        createToolButton("Tint", gridFilterTools).setOnAction((ActionEvent e) -> {
+        Button tint = createToolButton("Tint", gridFilterTools);
+        setHoverHint(tint, "Apply a Tint filter.");
+        tint.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if (w != null) {
                 for (Node n : w.getCurrentLayers()) {
@@ -476,11 +498,14 @@ public class GEMMSStageFXMLController implements Initializable {
                     //Finally, set the hue to node
                     getColorAdjust(n).setHue(hue);
                 }
+              displayToolSetting(tint, null);
             }
         });
         
         // Create filter button
-        createToolButton("Reset", gridFilterTools).setOnAction((ActionEvent e) -> {
+        Button reset = createToolButton("Reset", gridFilterTools);
+        setHoverHint(reset, "Reset all color effects.");
+        reset.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if (w != null) {
                 for (Node n : w.getCurrentLayers()) {
@@ -492,6 +517,8 @@ public class GEMMSStageFXMLController implements Initializable {
                 sepia.setValue(0);
                 contrast.setValue(0);
                 brightness.setValue(0);
+                
+                displayToolSetting(reset, null);
             }
         });
 
@@ -638,11 +665,10 @@ public class GEMMSStageFXMLController implements Initializable {
         }
     }
     
-    private void displayToolSetting(Button button, Popup popup) {
-      popup.show(stage);
-      popup.setX(button.localToScreen(button.getBoundsInLocal()).getMinX());
-      popup.setY(button.localToScreen(button.getBoundsInLocal()).getMaxY());
-      popup.setAutoHide(true);
+    private void displayToolSetting(Button button, HBox toolBox) {
+       toolSettingsContainer.getChildren().clear();
+       if (toolBox != null)
+         toolSettingsContainer.getChildren().add(toolBox);
     }
     
     /**

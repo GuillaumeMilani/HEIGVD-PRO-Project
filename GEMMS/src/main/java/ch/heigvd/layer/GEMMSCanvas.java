@@ -21,6 +21,11 @@ import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 
+/**
+ * <h1>GEMMSCanvas</h1>
+ * 
+ * This class was created to implement Serializable
+ */
 public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNode, LayerListable {
 
     /**
@@ -38,6 +43,12 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
         super(width, height);
     }
 
+    /**
+     * Write all informations for serialization
+     * 
+     * @param s output stream
+     * @throws IOException 
+     */
     private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
 
@@ -52,12 +63,14 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
         // Get an image 
         SnapshotParameters sp = new SnapshotParameters();
         sp.setFill(Color.TRANSPARENT);
+        
         try {
+            // Cancel all tranformation before taking a snapshot
             sp.setTransform(getLocalToSceneTransform().createInverse());
         } catch (NonInvertibleTransformException ex) {
+            // TODO : Manage exceptions
             Logger.getLogger(GEMMSCanvas.class.getName()).log(Level.SEVERE, null, ex);
         }
-
 
         WritableImage writableImage = new WritableImage((int)width, (int)height);
         snapshot(sp, writableImage);
@@ -127,6 +140,12 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
         }
     }
 
+    /**
+     * Read all informations for serialization
+     * 
+     * @param s input stream
+     * @throws IOException 
+     */
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
 
         // Get the size of the canvas

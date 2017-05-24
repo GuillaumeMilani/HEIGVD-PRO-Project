@@ -10,6 +10,7 @@ import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
@@ -18,6 +19,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Transform;
 
@@ -42,7 +44,7 @@ public class Workspace extends StackPane implements Serializable {
    
 
    // Contains layers
-   private LayerList layerList;
+   private LayerList<Node> layerList;
    private VBox layersController;
 
    
@@ -82,7 +84,7 @@ public class Workspace extends StackPane implements Serializable {
       
 
       
-      layerList = new LayerList(workspace.getChildren());
+      layerList = new LayerList<>(workspace.getChildren());
       
       currentTool = null;
 
@@ -163,6 +165,14 @@ public class Workspace extends StackPane implements Serializable {
    
    @Override
    public WritableImage snapshot(SnapshotParameters params, WritableImage image) {
+      if(params == null) {
+          params = new SnapshotParameters();
+      } 
+      
+      params.setTransform(Transform.scale(1 / getWorkspaceScaleX(), 1 / getWorkspaceScaleX()));
+      params.setFill(Color.TRANSPARENT);
+      params.setViewport(new Rectangle2D(clip.getLayoutX(), clip.getLayoutY(), clip.getWidth(), clip.getHeight()));
+      
       return workspace.snapshot(params, image);
    }
 
@@ -311,6 +321,34 @@ public class Workspace extends StackPane implements Serializable {
    
    public AnchorPane getLayerTool() {
        return layerTools;
+   }
+   
+   /**
+    * Adds given items to the list of selected layers. If the target list 
+    * doesn't contain any of the given elements, this particular element
+    * won't be added nor selected.
+    * @param layers the layers to add to the selection
+    */
+   public void selectLayers(Node... layers) {
+      layerList.selectLayers(layers);
+   }
+   
+   /**
+    * Add the given layer to the selection. If the layer is not present in the 
+    * target list, it will not be added nor selected.
+    * @param layer to add to the selection
+    */
+   public void selectLayer(Node layer) {
+      layerList.selectLayer(layer);
+   }
+   
+   /**
+    * Adds a specific layer by index to the selection. The method won't do anything 
+    * if the index is out of bounds.
+    * @param i the index of the layer to add to the selection
+    */
+   public void selectLayerByIndex(int i) {
+      layerList.selectLayerByIndex(i);
    }
 
    

@@ -6,7 +6,6 @@ import ch.heigvd.workspace.LayerListable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import javafx.geometry.Point3D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.effect.ColorAdjust;
@@ -33,7 +32,6 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
     public GEMMSImage(String url) {
         super(url);
     }
-
     
     private void writeObject(ObjectOutputStream s) throws IOException {
         
@@ -99,13 +97,13 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
             s.writeBoolean(false);
         }
 
-        //Write Transformation
-        s.writeInt(getTransforms().size()); // size
-        for(Transform t : getTransforms()){
-
-            if(t instanceof  javafx.scene.transform.Rotate){
+        // Write Transformation
+        s.writeInt(getTransforms().size());
+        for (Transform t : getTransforms()) {
+            // Rotate
+            if (t instanceof javafx.scene.transform.Rotate) {
                 s.writeObject(t.getClass().getSimpleName());
-                Rotate rotate = (Rotate)t;
+                Rotate rotate = (Rotate) t;
                 s.writeDouble(rotate.getAngle());
                 s.writeDouble(rotate.getPivotX());
                 s.writeDouble(rotate.getPivotY());
@@ -113,8 +111,6 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
                 s.writeDouble(rotate.getAxis().getX());
                 s.writeDouble(rotate.getAxis().getY());
                 s.writeDouble(rotate.getAxis().getZ());
-            }else{
-                s.writeObject("None");
             }
         }
     }
@@ -169,7 +165,7 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
             setEffect(c);
         }
 
-        //Set Transformation
+        // Set Transformation
         int sizeTransformation = s.readInt();
         for (int i = 0; i < sizeTransformation; i++) {
             String classOfTransformation = (String) s.readObject();
@@ -184,13 +180,9 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
                     double pAxisZ = s.readDouble();
                     Point3D axis = new Point3D(pAxisX, pAxisY, pAxisZ);
                     getTransforms().add(new Rotate(angle, pivotX, pivotY, pivotZ, axis));
-                    break;
-                default:
-                    System.out.println("Serialisation erreur");
-                    break;
+                break;
             }
-        }
-           
+        } 
     }
 
     @Override

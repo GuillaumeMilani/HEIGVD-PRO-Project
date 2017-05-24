@@ -9,36 +9,34 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 import javax.imageio.ImageIO;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
-import javafx.scene.paint.Color;
-import javafx.scene.transform.Transform;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
-
 /**
  * <h1>Document</h1>
  *
- * This class create or load a from file a workspace. And allow to save in file 
+ * This class create or load a from file a workspace. And allow to save in file
  * and export as an image.
  */
 public class Document {
 
     private Workspace workspace;
-    
-    private FileChooser fileChooser;
+
     private Stage stage;
     private File currentFile;
-    
+
     private String name;
-    
+
     /**
      * Constructor
-     * 
+     *
      * Create a new document
      *
      * @param s stage for the file chooser
@@ -47,50 +45,49 @@ public class Document {
      */
     public Document(Stage s, int width, int height) {
         init(s);
-        
+
         name = "untiled";
         workspace = new Workspace(width, height);
     }
-    
+
     /**
      * Constructor
-     * 
+     *
      * Open a new document with a file
-     * 
+     *
      * @param s stage for the file chooser
      * @param f file to open
      * @throws FileNotFoundException
      * @throws IOException
-     * @throws ClassNotFoundException 
+     * @throws ClassNotFoundException
      */
     public Document(Stage s, File f) throws FileNotFoundException, IOException, ClassNotFoundException {
         init(s);
-        
+
         // TODO : Check file extension
         currentFile = f;
-        
+
         name = currentFile.getName();
-        
+
         if (currentFile != null) {
-            try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(currentFile))) {
+            try (ObjectInputStream in = new ObjectInputStream(
+                    new GZIPInputStream(
+                            new FileInputStream(currentFile)
+                    )
+            )) {
                 workspace = (Workspace) in.readObject();
             }
         }
     }
-    
+
     /**
      * Init for constructor
-     * 
+     *
      * @param s stage to affect
      */
     private void init(Stage s) {
         stage = s;
-
-        fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(
-                new File(System.getProperty("user.home")));
     }
-    
 
     /**
      * Save the workspace
@@ -99,9 +96,13 @@ public class Document {
      * @throws FileNotFoundException
      */
     void save() throws FileNotFoundException, IOException {
-        
+
         if (currentFile != null) {
-            try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(currentFile))) {
+            try (ObjectOutputStream out = new ObjectOutputStream(
+                    new GZIPOutputStream(
+                            new FileOutputStream(currentFile)
+                    )
+            )) {
                 out.writeObject(workspace);
             }
         } else {
@@ -116,7 +117,9 @@ public class Document {
      * @throws FileNotFoundException
      */
     void saveAs() throws FileNotFoundException, IOException {
-
+        FileChooser fileChooser;
+        fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
         fileChooser.setTitle("Save as");
         fileChooser.getExtensionFilters().add(
                 new ExtensionFilter("GEMMS", "*.gemms"));
@@ -125,10 +128,14 @@ public class Document {
         currentFile = fileChooser.showSaveDialog(stage);
         if (currentFile != null) {
             if (currentFile.getName().endsWith(".gemms")) {
-                try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(currentFile))) {
+                try (ObjectOutputStream out = new ObjectOutputStream(
+                        new GZIPOutputStream(
+                                new FileOutputStream(currentFile)
+                        )
+                )) {
                     out.writeObject(workspace);
                 }
-                
+
                 name = currentFile.getName();
             } else {
                 // throw new Exception(currentFile.getName() + " has no valid file-extension.");
@@ -142,7 +149,9 @@ public class Document {
      * @throws IOException
      */
     void export() throws IOException {
-
+        FileChooser fileChooser;
+        fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
         fileChooser.setTitle("Export");
         fileChooser.getExtensionFilters().add(
                 new ExtensionFilter("png files (*.png)", "*.png"));
@@ -152,30 +161,28 @@ public class Document {
         // new ExtensionFilter("All Files", "*.*")
         File file = fileChooser.showSaveDialog(stage);
         if (file != null) {
-            
+
             SnapshotParameters sp = new SnapshotParameters();
-            sp.setTransform(Transform.scale(1 / workspace.getWorkspaceScaleX(), 1 / workspace.getWorkspaceScaleX()));
-            sp.setFill(Color.TRANSPARENT);
-            
-            WritableImage writableImage = new WritableImage((int)workspace.width(), (int)workspace.height());
+
+            WritableImage writableImage = new WritableImage((int) workspace.width(), (int) workspace.height());
             workspace.snapshot(sp, writableImage);
             RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
             ImageIO.write(renderedImage, "png", file);
         }
     }
-    
+
     /**
      * Return the workspace
-     * 
+     *
      * @return the workspace
      */
     public Workspace workspace() {
         return workspace;
     }
-    
+
     /**
      * Return name of the document
-     * 
+     *
      * @return name
      */
     public String name() {

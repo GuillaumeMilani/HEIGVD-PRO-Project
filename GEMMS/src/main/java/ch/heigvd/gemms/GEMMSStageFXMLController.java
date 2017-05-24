@@ -17,6 +17,7 @@ import ch.heigvd.tool.settings.ToolFontSettings;
 import ch.heigvd.tool.settings.ToolSettingsContainer;
 import ch.heigvd.tool.settings.ToolSizeSettings;
 
+import ch.heigvd.workspace.History;
 import ch.heigvd.workspace.Workspace;
 
 import java.awt.*;
@@ -28,11 +29,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.event.*;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -487,7 +489,6 @@ public class GEMMSStageFXMLController implements Initializable {
         });
         
         
-        
         //Create various sliders
         final Slider opacity = new Slider(0, 1, 1);
         final Slider sepia = new Slider(0, 1, 0);
@@ -552,6 +553,7 @@ public class GEMMSStageFXMLController implements Initializable {
                     for (Node n : w.getCurrentLayers()) {
                         getColorAdjust(n).setSaturation(new_val.doubleValue());
                     }
+                    w.notifyHistory();
                 }
                 saturationValue.setText(String.format("%.2f", new_val));
             }
@@ -596,6 +598,20 @@ public class GEMMSStageFXMLController implements Initializable {
             }
         });
 
+        EventHandler eh = new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                getCurrentWorkspace().notifyHistory();
+            }
+        };
+
+        opacity.setOnMouseReleased(eh);
+        sepia.setOnMouseReleased(eh);
+        saturation.setOnMouseReleased(eh);
+        contrast.setOnMouseReleased(eh);
+        brightness.setOnMouseReleased(eh);
+
+
         gridSliders.setPadding(new Insets(10, 10, 10, 10));
         createSlider(gridSliders, opacityLabel, opacity, opacityValue, 1);
         createSlider(gridSliders, sepiaLabel, sepia, sepiaValue, 2);
@@ -615,8 +631,9 @@ public class GEMMSStageFXMLController implements Initializable {
                     getColorAdjust(n).setSaturation(-1);
                     saturation.setValue(-1);
                 }
-                
-              displayToolSetting(BW, null);
+                w.notifyHistory();
+
+                displayToolSetting(BW, null);
             }
         });
         
@@ -638,7 +655,9 @@ public class GEMMSStageFXMLController implements Initializable {
                     //Finally, set the hue to node
                     getColorAdjust(n).setHue(hue);
                 }
-              displayToolSetting(tint, null);
+                w.notifyHistory();
+
+                displayToolSetting(tint, null);
             }
         });
 
@@ -655,6 +674,8 @@ public class GEMMSStageFXMLController implements Initializable {
                     c.setHue(0);
                     setBlurRadius(n, 0);
                 }
+                w.notifyHistory();
+
                 opacity.setValue(1);
                 saturation.setValue(0);
                 sepia.setValue(0);
@@ -672,12 +693,20 @@ public class GEMMSStageFXMLController implements Initializable {
                 // Disable current tool
                 getCurrentWorkspace().setCurrentTool(null);
 
-            // ---------- DEL ----------
-
             } else if (keyEvent.getCode().equals(KeyCode.DELETE)) {
-            // Drop the current selected layers
-                getCurrentWorkspace().getCurrentLayers().forEach(n->getCurrentWorkspace().getLayers().remove(n));
+                // ---------- DEL ----------
+
+                // Drop the current selected layers
+                getCurrentWorkspace().getCurrentLayers().forEach(n->getCurrentWorkspace().removeLayer(n));
+
+            } else if (Constants.CTRL_Z.match(keyEvent)) {
+                // ---------- CTRL + Z ----------
+                getCurrentWorkspace().getHistory().undo();
+            } else if (Constants.CTRL_Y.match(keyEvent)) {
+                // ---------- CTRL + Y ----------
+                getCurrentWorkspace().getHistory().redo();
             }
+
             // ---------- CTRL + C ----------
             if (Constants.CTRL_C.match(keyEvent)) {
 
@@ -771,15 +800,7 @@ public class GEMMSStageFXMLController implements Initializable {
 
         // Serialize each node
         try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(baos);
-
-            List<IGEMMSNode> n = new LinkedList<>();
-            nodes.forEach(node -> n.add((IGEMMSNode)node));
-            out.writeObject(n);
-
-            cc.putString(Base64.getEncoder().encodeToString(baos.toByteArray()));
-            baos.close();
+            cc.putString(Utils.serializeNodeList(nodes));
         } catch (Exception e) {
             // TODO: manage exceptions
             e.printStackTrace();
@@ -798,9 +819,7 @@ public class GEMMSStageFXMLController implements Initializable {
 
         // Deserialize the clipboard's content
         try {
-            ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(serializedObject));
-            ObjectInputStream in = new ObjectInputStream(bais);
-            return (List<Node>)in.readObject();
+            return Utils.deserializeNodeList(serializedObject);
         } catch (Exception e) {
             // TODO: manage exceptions
             e.printStackTrace();

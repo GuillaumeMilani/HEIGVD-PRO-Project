@@ -24,18 +24,14 @@ import javafx.scene.text.Font;
  *
  * @author Mathieu Monteverde
  */
-public class TextTool implements Tool, ColorConfigurableTool, FontConfigurableTool {
-
-   // The Workspace to work on
-   private final Workspace workspace;
-
+public class TextTool extends AbstractTool implements ColorConfigurableTool, FontConfigurableTool {
    /**
     * Constructor. Sets the workspace to work on.
     *
     * @param workspace the workspace to work on
     */
    public TextTool(Workspace workspace) {
-      this.workspace = workspace;
+      super(workspace);
       workspace.getLayerTool().setCursor(Cursor.TEXT);
    }
 

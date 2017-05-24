@@ -9,15 +9,14 @@ import javafx.scene.transform.*;
 import java.util.List;
 
 
-public class Resize implements Tool {
+public class Resize extends AbstractTool {
 
-    private final Workspace workspace;
     private double mouseX;
     private final double FACTEUR = 0.001;
 
 
     public Resize(Workspace w){
-        this.workspace = w;
+        super(w);
     }
 
     @Override
@@ -50,5 +49,6 @@ public class Resize implements Tool {
     @Override
     public void mouseReleased(double x, double y) {
         workspace.setCursor(Cursor.DEFAULT);
+        notifier.notifyHistory();
     }
 }

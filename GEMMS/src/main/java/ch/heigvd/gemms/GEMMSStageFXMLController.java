@@ -1057,7 +1057,7 @@ public class GEMMSStageFXMLController implements Initializable {
     
     /**
      * Returns node ColorAdjust effect. If it has none, creates one with
-     * SepiaTone as input.
+     * SepiaTone as input, which itself has a GaussianBlur as input.
      * @param n Node
      * @return node's ColorAdjust
      */

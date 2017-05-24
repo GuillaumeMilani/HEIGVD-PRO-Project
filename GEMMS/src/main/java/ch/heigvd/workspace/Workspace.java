@@ -1,25 +1,18 @@
 package ch.heigvd.workspace;
 
-import ch.heigvd.gemms.Constants;
-import ch.heigvd.layer.IGEMMSNode;
 import ch.heigvd.tool.Tool;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.control.Button;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
@@ -28,12 +21,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.NonInvertibleTransformException;
-import javafx.scene.transform.Transform;
 
-
-/**
- * @author mathieu
- */
 public class Workspace extends StackPane implements Serializable {
 
    // Workspace that displays layers
@@ -222,15 +210,6 @@ public class Workspace extends StackPane implements Serializable {
       clip.setTranslateX(clip.getTranslateX() + x);
       clip.setTranslateY(clip.getTranslateY() + y);
    }
-
-   
-   /**
-    *
-    */
-   public void crop() {
-
-   }
-   
    
    public void resizeCanvas(int width, int height, int offsetX, int offsetY) {
       this.width = width;

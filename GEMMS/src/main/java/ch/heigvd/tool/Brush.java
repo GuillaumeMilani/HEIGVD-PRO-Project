@@ -86,6 +86,7 @@ public class Brush extends LineTool implements SizeConfigurableTool {
     *
     * @return the size of the brush
     */
+   @Override
    public int getSize() {
       return size;
    }
@@ -118,7 +119,5 @@ public class Brush extends LineTool implements SizeConfigurableTool {
    @Override
    public void mouseReleased(double x, double y) {
       super.mouseReleased(x, y);
-
    }
-
 }

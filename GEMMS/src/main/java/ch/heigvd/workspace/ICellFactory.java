@@ -1,10 +1,7 @@
 package ch.heigvd.workspace;
+
 import javafx.collections.ObservableList;
 
-/**
- *
- * @author mathieu
- */
 public interface ICellFactory<T> {
    /**
     * The method to create Cells using the factory. 

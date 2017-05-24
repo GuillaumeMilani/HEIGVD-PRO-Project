@@ -51,6 +51,7 @@ public class Eraser extends LineTool implements SizeConfigurableTool {
     * Get the size of the eraser in pixels
     * @return the size of the brush
     */
+   @Override
    public int getSize() {
       return size;
    }

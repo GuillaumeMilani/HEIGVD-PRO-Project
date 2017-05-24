@@ -1,13 +1,9 @@
 package ch.heigvd.tool;
 
-import ch.heigvd.layer.GEMMSCanvas;
 import ch.heigvd.workspace.Workspace;
-        import javafx.scene.Cursor;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.transform.*;
-
 import java.util.List;
-
 
 public class Resize extends AbstractTool {
 

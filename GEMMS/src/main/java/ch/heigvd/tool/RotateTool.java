@@ -1,15 +1,12 @@
 package ch.heigvd.tool;
 
-import ch.heigvd.layer.IGEMMSNode;
 import ch.heigvd.workspace.Workspace;
+import java.util.List;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 
-import java.util.List;
 
-/**
- * Created by Michael on 17.05.2017.
- */
+
 public class RotateTool extends AbstractTool {
     private double mouseX;
 
@@ -38,7 +35,6 @@ public class RotateTool extends AbstractTool {
         }
 
         mouseX = x;
-
     }
 
     @Override

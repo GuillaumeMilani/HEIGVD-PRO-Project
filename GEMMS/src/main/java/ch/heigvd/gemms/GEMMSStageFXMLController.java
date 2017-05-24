@@ -8,7 +8,6 @@ import ch.heigvd.dialog.ResizeDialog;
 
 import ch.heigvd.layer.GEMMSText;
 import ch.heigvd.layer.GEMMSCanvas;
-import ch.heigvd.layer.IGEMMSNode;
 import ch.heigvd.layer.GEMMSImage;
 
 import ch.heigvd.tool.*;
@@ -17,7 +16,6 @@ import ch.heigvd.tool.settings.ToolFontSettings;
 import ch.heigvd.tool.settings.ToolSettingsContainer;
 import ch.heigvd.tool.settings.ToolSizeSettings;
 
-import ch.heigvd.workspace.History;
 import ch.heigvd.workspace.Workspace;
 
 import java.awt.*;
@@ -29,7 +27,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;

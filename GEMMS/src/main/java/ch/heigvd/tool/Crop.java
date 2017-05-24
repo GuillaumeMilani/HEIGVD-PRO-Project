@@ -129,7 +129,12 @@ public class Crop extends AbstractTool {
             rectangle.getWidth() > 0 && 
             rectangle.getHeight() > 0) {
 
-            workspace.resizeCanvas((int)rectangle.getWidth(), (int)rectangle.getHeight(), -(int)rectangle.getBoundsInParent().getMinX(), -(int)rectangle.getBoundsInParent().getMinY());
+            workspace.resizeCanvas(
+                    (int)rectangle.getWidth(), 
+                    (int)rectangle.getHeight(), 
+                    -(int)rectangle.getBoundsInParent().getMinX(), 
+                    -(int)rectangle.getBoundsInParent().getMinY());
+            
             rectangle.setWidth(0);
             rectangle.setHeight(0);
             rectangle.setX(0);

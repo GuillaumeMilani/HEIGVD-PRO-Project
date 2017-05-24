@@ -1,6 +1,7 @@
 package ch.heigvd.workspace;
 
 import ch.heigvd.gemms.Utils;
+import java.io.IOException;
 import javafx.scene.image.WritableImage;
 
 import java.util.*;
@@ -57,7 +58,6 @@ public class History implements Observer {
      * Save the current states to the stacks
      */
     private void save() {
-        System.out.println("Save");
         // If a modification is done, a new "branch" begins. No action to redo anymore
         redoHistory.clear();
         redoSelectedLayers.clear();
@@ -106,7 +106,6 @@ public class History implements Observer {
     private void historyAction(Stack<String> layersTakeFrom, Stack<String> layersPutIn,
                                Stack<List<Integer>> indexesTakeFrom, Stack<List<Integer>> indexesPutIn) {
         if (!layersTakeFrom.isEmpty()) {
-            System.out.println("Action");
 
             // Save current state
             layersPutIn.push(currentState);
@@ -123,12 +122,10 @@ public class History implements Observer {
                 workspace.getLayers().addAll(Utils.deserializeNodeList(currentState));
                 currentIndexes.forEach(i -> workspace.selectLayerByIndex(i));
 
-            } catch (Exception e) {
+            } catch (IOException | ClassNotFoundException e) {
                 // TODO: Manage exceptions
                 e.printStackTrace();
             }
-
-
         }
     }
 }

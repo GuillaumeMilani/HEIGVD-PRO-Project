@@ -10,9 +10,6 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-/**
- * Created by lognaume on 5/23/17.
- */
 public class Utils {
     public static String serializeNodeList(List<Node> nodes) throws IOException {
         String ret;

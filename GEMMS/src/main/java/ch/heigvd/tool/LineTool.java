@@ -16,10 +16,7 @@ import javafx.scene.canvas.GraphicsContext;
  *
  * @author mathieu
  */
-public abstract class LineTool implements Tool {
-
-   // The Workspace the object is working on
-   protected Workspace workspace;
+public abstract class LineTool extends AbstractTool {
 
    // The size of the tool [px]
    protected int size;
@@ -37,7 +34,7 @@ public abstract class LineTool implements Tool {
     * @param size the size of the tool in pixels
     */
    public LineTool(Workspace workspace, int size) {
-      this.workspace = workspace;
+      super(workspace);
       this.size = size;
    }
 
@@ -156,8 +153,8 @@ public abstract class LineTool implements Tool {
             drawPixel((int)point.getX(), (int)point.getY(), gc);
 
          }
-
       }
+      notifier.notifyHistory();
    }
 
    /**

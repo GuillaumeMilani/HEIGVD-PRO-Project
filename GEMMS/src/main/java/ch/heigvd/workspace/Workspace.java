@@ -1,12 +1,16 @@
 package ch.heigvd.workspace;
 
 import ch.heigvd.gemms.Constants;
+import ch.heigvd.layer.IGEMMSNode;
 import ch.heigvd.tool.Tool;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
@@ -50,7 +54,11 @@ public class Workspace extends StackPane implements Serializable {
    
    // Current selected tool
    private Tool currentTool;
-  
+
+   private History history;
+
+   private HistoryNotifier historyNotifier = new HistoryNotifier();
+
 
    /**
     * Constructor for a new instance of Workspace. The Workspace extends a Pane
@@ -149,6 +157,10 @@ public class Workspace extends StackPane implements Serializable {
       addEventFilter(MouseEvent.ANY, dragEventHandler);
 
       addEventHandler(MouseEvent.ANY, dragEventHandler);
+
+      // History
+      this.history = new History(this);
+      historyNotifier.addObserver(history);
    }
    
    
@@ -184,7 +196,9 @@ public class Workspace extends StackPane implements Serializable {
       workspace.getChildren().add(node);
       layerList.clearSelection();
       layerList.selectTopLayer();
-      
+
+      historyNotifier.notifyHistory();
+
       //layerList.getItems().add(node);
       //layerList.getSelectionModel().clearSelection();
       //layerList.getSelectionModel().selectLast();
@@ -197,13 +211,13 @@ public class Workspace extends StackPane implements Serializable {
    public void removeLayer(Node node) {
       workspace.getChildren().remove(node);
       layerList.selectTopLayer();
+      historyNotifier.notifyHistory();
    }
    
    
    public List<Node> getCurrentLayers() {
       return layerList.getSelectedItems();
    }
-
    
    /**
     * @return
@@ -212,7 +226,6 @@ public class Workspace extends StackPane implements Serializable {
       return workspace.getChildren();
    }
 
-   
    /**
     * @param factor
     */
@@ -380,5 +393,12 @@ public class Workspace extends StackPane implements Serializable {
       for (int i = 0; i < nbLayers; ++i) {
          addLayer((Node) s.readObject());
       }
+   }
+
+   public History getHistory() {
+      return history;
+   }
+   public void notifyHistory() {
+      historyNotifier.notifyHistory();
    }
 }

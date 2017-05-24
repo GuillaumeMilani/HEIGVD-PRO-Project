@@ -13,10 +13,9 @@ import javafx.scene.paint.Color;
 import java.util.LinkedList;
 import java.util.List;
 
-public class BucketFill implements Tool {
+public class BucketFill extends AbstractTool implements Tool {
 
     private Color colorToFillWith;
-    private Workspace workspace;
     private final double GAMMA = 0.2;
 
     /**
@@ -31,7 +30,7 @@ public class BucketFill implements Tool {
 
 
     public BucketFill(Workspace workspace, Color colorToFillWith) {
-        this.workspace = workspace;
+        super(workspace);
         this.colorToFillWith = colorToFillWith;
     }
 
@@ -109,6 +108,7 @@ public class BucketFill implements Tool {
                 fill(new Point2D(x, y), colorToFillWith, (GEMMSCanvas) n);
             }
         }
+        notifier.notifyHistory();
     }
 
     /**

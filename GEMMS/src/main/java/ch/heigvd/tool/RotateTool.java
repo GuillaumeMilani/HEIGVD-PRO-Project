@@ -10,14 +10,13 @@ import java.util.List;
 /**
  * Created by Michael on 17.05.2017.
  */
-public class RotateTool implements Tool{
+public class RotateTool extends AbstractTool {
     private double mouseX;
-    private Workspace workspace;
 
     List<Node> layers;
 
     public RotateTool(Workspace w){
-        this.workspace = w;
+        super(w);
     }
 
     @Override
@@ -45,6 +44,7 @@ public class RotateTool implements Tool{
     @Override
     public void mouseReleased(double x, double y) {
         workspace.setCursor(Cursor.DEFAULT);
+        notifier.notifyHistory();
     }
 
 }

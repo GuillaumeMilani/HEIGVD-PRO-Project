@@ -26,9 +26,7 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
     /**
      * Constructor
      */
-    public GEMMSCanvas() {
-        super();
-    }
+    public GEMMSCanvas() { super(); }
 
     /**
      * Constructor

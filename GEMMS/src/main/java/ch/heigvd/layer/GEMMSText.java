@@ -201,4 +201,8 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
         return CSSIcons.TEXT;
     }
 
+    @Override
+    public IGEMMSNode clone() {
+        return null;
+    }
 }

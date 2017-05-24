@@ -9,7 +9,11 @@ import javafx.scene.transform.Scale;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
 
-
+/**
+ * <h1>PositionMapper</h1>
+ * 
+ * Provides function to convert coordinates to Node coordinates
+ */
 public class PositionMapper {
     
     /**
@@ -54,6 +58,7 @@ public class PositionMapper {
                 Transform inverseTranform = t.createInverse();
                 point = inverseTranform.transform(point);
             } catch (NonInvertibleTransformException e) {
+                // TODO : Manage exceptions
                 e.printStackTrace();
             }
         }
@@ -61,6 +66,14 @@ public class PositionMapper {
         return point;
     }
     
+    /**
+     * Convert mouse coordinates to Node coordinates (Apply node transformation)
+     * 
+     * @param node Node as reference
+     * @param point coordinates to convert
+     * 
+     * @return converted coordinates
+     */
     public static Point3D convert(Node node, Point3D point) { 
         return convert(node, point.getX(), point.getY(), point.getZ());
     }

@@ -26,16 +26,13 @@ import javax.imageio.ImageIO;
  *
  * @author mathieu
  */
-public class EyeDropper implements Tool {
+public class EyeDropper extends AbstractTool {
 
    // Picked color
    private Paint pickedColor;
 
-   // Workspace
-   private Workspace workspace;
-
    public EyeDropper(Workspace workspace) {
-      this.workspace = workspace;
+      super(workspace);
       this.pickedColor = null;
    }
 

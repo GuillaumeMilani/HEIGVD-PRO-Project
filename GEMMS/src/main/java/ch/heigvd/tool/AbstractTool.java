@@ -11,7 +11,7 @@ import java.util.Observable;
  * Created by lognaume on 5/19/17.
  */
 public abstract class AbstractTool implements Tool {
-    protected Workspace workspace;
+    protected final Workspace workspace;
     protected HistoryNotifier notifier;
 
     public AbstractTool(Workspace workspace) {

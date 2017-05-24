@@ -33,8 +33,8 @@ import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.event.*;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -476,7 +476,6 @@ public class GEMMSStageFXMLController implements Initializable {
                     for (Node n : w.getCurrentLayers()) {
                         n.setOpacity(new_val.doubleValue());
                     }
-                    w.notifyHistory();
                 }
                 opacityValue.setText(String.format("%.2f", new_val));
 
@@ -491,7 +490,6 @@ public class GEMMSStageFXMLController implements Initializable {
                     for (Node n : w.getCurrentLayers()) {
                         ((SepiaTone) getColorAdjust(n).getInput()).setLevel(new_val.doubleValue());
                     }
-                    w.notifyHistory();
                 }
                 sepiaValue.setText(String.format("%.2f", new_val));
             }
@@ -519,7 +517,6 @@ public class GEMMSStageFXMLController implements Initializable {
                     for (Node n : w.getCurrentLayers()) {
                         getColorAdjust(n).setContrast(new_val.doubleValue());
                     }
-                    w.notifyHistory();
                 }
                 contrastValue.setText(String.format("%.2f", new_val));
             }
@@ -533,11 +530,24 @@ public class GEMMSStageFXMLController implements Initializable {
                     for (Node n : w.getCurrentLayers()) {
                         getColorAdjust(n).setBrightness(new_val.doubleValue());
                     }
-                    w.notifyHistory();
                 }
                 brightnessValue.setText(String.format("%.2f", new_val));
             }
         });
+
+        EventHandler eh = new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                getCurrentWorkspace().notifyHistory();
+            }
+        };
+
+        opacity.setOnMouseReleased(eh);
+        sepia.setOnMouseReleased(eh);
+        saturation.setOnMouseReleased(eh);
+        contrast.setOnMouseReleased(eh);
+        brightness.setOnMouseReleased(eh);
+
 
         gridSliders.setPadding(new Insets(10, 10, 10, 10));
         createSlider(gridSliders, opacityLabel, opacity, opacityValue, 1);

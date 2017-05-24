@@ -1,6 +1,7 @@
 package ch.heigvd.workspace;
 
 import ch.heigvd.gemms.Utils;
+import javafx.scene.image.WritableImage;
 
 import java.util.*;
 
@@ -22,22 +23,28 @@ public class History implements Observer {
     /**
      * Stacks to save the currently selected layers
      */
-    private Stack<List<Integer>> selectedUndoHistory;
-    private Stack<List<Integer>> selectedRedoHistory;
+    private Stack<List<Integer>> undoSelectedLayers;
+    private Stack<List<Integer>> redoSelectedLayers;
+
+    private Stack<WritableImage> undoImages;
+    private Stack<WritableImage> redoImages;
 
     /**
      * Contains the data to save the current states
      */
     private String currentState;
     private List<Integer> currentIndexes;
+    private WritableImage currentImage;
 
     private Workspace workspace;
 
     public History(Workspace workspace) {
         this.undoHistory = new Stack();
         this.redoHistory = new Stack();
-        this.selectedUndoHistory = new Stack();
-        this.selectedRedoHistory = new Stack();
+        this.undoSelectedLayers = new Stack();
+        this.redoSelectedLayers = new Stack();
+        this.undoHistory = new Stack();
+        this.redoHistory = new Stack();
         this.workspace = workspace;
     }
 
@@ -53,7 +60,7 @@ public class History implements Observer {
         System.out.println("Save");
         // If a modification is done, a new "branch" begins. No action to redo anymore
         redoHistory.clear();
-        selectedRedoHistory.clear();
+        redoSelectedLayers.clear();
 
         try {
             // Get the selected layers indexes
@@ -62,7 +69,7 @@ public class History implements Observer {
 
             // Push the current states except the first time an action is done
             if (currentState != null) {
-                selectedUndoHistory.push(currentIndexes);
+                undoSelectedLayers.push(currentIndexes);
                 undoHistory.push(currentState);
             }
 
@@ -79,14 +86,14 @@ public class History implements Observer {
      * Undo the last action (rollback to layers precedent state)
      */
     public void undo() {
-        historyAction(undoHistory, redoHistory, selectedUndoHistory, selectedRedoHistory);
+        historyAction(undoHistory, redoHistory, undoSelectedLayers, redoSelectedLayers);
     }
 
     /**
      * Redo the last canceled action
      */
     public void redo() {
-        historyAction(redoHistory, undoHistory, selectedRedoHistory, selectedUndoHistory);
+        historyAction(redoHistory, undoHistory, redoSelectedLayers, undoSelectedLayers);
     }
 
     /**

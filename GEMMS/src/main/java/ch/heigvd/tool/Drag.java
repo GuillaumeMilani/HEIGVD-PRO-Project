@@ -6,16 +6,13 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 
 
-public class Drag implements Tool{
-
-    private Workspace workspace;
+public class Drag extends AbstractTool {
 
     private double lastX;
     private double lastY;
 
     public Drag(Workspace w){
-        this.workspace = w;
-
+        super(w);
     }
     @Override
     public void mousePressed(double x, double y) {
@@ -44,6 +41,6 @@ public class Drag implements Tool{
     @Override
     public void mouseReleased(double x, double y) {
         workspace.setCursor(Cursor.DEFAULT);
-
+        notifier.notifyHistory();
     }
 }

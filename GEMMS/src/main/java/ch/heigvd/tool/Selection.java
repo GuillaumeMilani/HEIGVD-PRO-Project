@@ -12,11 +12,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
-public class Selection implements Tool {
+public class Selection extends AbstractTool {
 
     private final Rectangle rectangle;
-    private final Workspace workspace;
-    
+
     private double lastX;
     private double lastY;
     
@@ -25,8 +24,8 @@ public class Selection implements Tool {
     
 
     public Selection(Workspace w) {
-        workspace = w;
-        
+        super(w);
+
         // Set the cursor
         workspace.getLayerTool().setCursor(Cursor.CROSSHAIR);
 

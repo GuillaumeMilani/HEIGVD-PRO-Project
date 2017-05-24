@@ -19,12 +19,17 @@ import javafx.scene.text.FontWeight;
 import javafx.util.converter.IntegerStringConverter;
 
 /**
- * Display a dialog that allow the user to set a size (width, height).
+ * <h1>NewDocumentDialog</h1>
+ * 
+ * Display a dialog that allow users to set a size and a backgoud color for
+ * the document (Workspace).
  */
 public class NewDocumentDialog {
 
     // Dialog
     private Dialog<NewDocument> dialog;
+    
+    // Color picker
     private ColorPicker colorPicker;
 
     /**
@@ -51,7 +56,7 @@ public class NewDocumentDialog {
         TextField heightText = new TextField();
         heightText.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
 
-        // Display
+        // Display label and text field
         Label description = new Label("Document size");
         description.setFont(Font.font(null, FontWeight.BOLD, 13));
         grid.add(description, 0, 0);
@@ -76,6 +81,7 @@ public class NewDocumentDialog {
             boolean isError = false;
             
             try {
+                // Get user input
                 int width = Integer.valueOf(widthText.textProperty().get());
                 int height = Integer.valueOf(heightText.textProperty().get());
                 
@@ -88,6 +94,7 @@ public class NewDocumentDialog {
                 isError = true;
             }
  
+            // Disable button if inputs are incorrect
             loginButton.setDisable(isError);
         };
         
@@ -97,7 +104,10 @@ public class NewDocumentDialog {
         // Return result
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == ButtonType.OK) {
-                return new NewDocument(Integer.valueOf(widthText.getText()), Integer.valueOf(heightText.getText()), colorPicker.getValue());
+                return new NewDocument(
+                        Integer.valueOf(widthText.getText()), 
+                        Integer.valueOf(heightText.getText()), 
+                        colorPicker.getValue());
             }
 
             return null;
@@ -105,9 +115,9 @@ public class NewDocumentDialog {
     }
 
     /**
-     * Display dialog
+     * Shows the dialog and waits for the user response
      *
-     * @return an optional pair with width and height
+     * @return an optional NewDocument
      */
     public Optional<NewDocument> showAndWait() {
         return dialog.showAndWait();

@@ -370,21 +370,6 @@ public class GEMMSStageFXMLController implements Initializable {
             }
         });
 
-        // Create bucket tool
-        Button bucket = createToolButton("", gridDrawingTools);
-        bucket.getStyleClass().add(CSSIcons.BUCKET);
-        setHoverHint(bucket, "Fill with color.");
-        bucket.setOnAction(e -> {
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-               clearSelectedButtons();
-               selectButton(bucket);
-                BucketFill b = new BucketFill(w);
-                w.setCurrentTool(b);
-                displayToolSetting(bucket, null);
-            }
-        });
-
         // Create eraser tool
         Button eraser = createToolButton("", gridDrawingTools);
         eraser.getStyleClass().add(CSSIcons.ERASER);

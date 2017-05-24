@@ -10,6 +10,8 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -25,6 +27,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Transform;
 
 
@@ -181,9 +184,13 @@ public class Workspace extends StackPane implements Serializable {
           params = new SnapshotParameters();
       } 
       
-      params.setTransform(Transform.scale(1 / getWorkspaceScaleX(), 1 / getWorkspaceScaleX()));
       params.setFill(Color.TRANSPARENT);
-      params.setViewport(new Rectangle2D(clip.getLayoutX(), clip.getLayoutY(), clip.getWidth(), clip.getHeight()));
+      try {
+          params.setTransform(clip.getLocalToParentTransform().createInverse());
+      } catch (NonInvertibleTransformException ex) {
+          Logger.getLogger(Workspace.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      params.setViewport(new Rectangle2D(clip.getBoundsInLocal().getMinX(), clip.getBoundsInLocal().getMinY(), clip.getWidth(), clip.getHeight()));
       
       return workspace.snapshot(params, image);
    }

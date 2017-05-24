@@ -5,7 +5,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 /**
- * Display a dialog that allow the user to open a project file. (*.gemms)
+ * <h1>OpenDocumentDialog</h1>
+ * 
+ * Shows a dialog that allow users to open a project file. (*.gemms)
  */
 public class OpenDocumentDialog {
     
@@ -26,12 +28,10 @@ public class OpenDocumentDialog {
         fileChooser.setTitle("Open file");
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("GEMMS", "*.gemms"));
-
-        
     }
     
     /**
-     * Display dialog
+     * Shows a new file open dialog
      * 
      * @return File
      */

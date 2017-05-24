@@ -4,10 +4,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 
-/**
- *
- * @author Guillaume Milani
- */
 public class Constants {
     public static double BUTTONS_HEIGHT = 50;
 

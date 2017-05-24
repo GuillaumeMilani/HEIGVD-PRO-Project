@@ -1,10 +1,8 @@
 package ch.heigvd.tool;
 
 import ch.heigvd.workspace.Workspace;
-import javafx.geometry.Point3D;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-
 
 public class Drag extends AbstractTool {
 

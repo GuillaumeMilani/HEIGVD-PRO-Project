@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ch.heigvd.gemms;
 
 import javafx.geometry.Insets;
@@ -17,10 +12,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
-/**
- *
- * @author mathieu
- */
 public class WelcomeInvite extends VBox {
    
    public WelcomeInvite(Label label, Button button) {

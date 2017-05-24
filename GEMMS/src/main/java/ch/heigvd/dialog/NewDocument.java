@@ -10,13 +10,13 @@ import javafx.scene.paint.Color;
 public class NewDocument {
     
     // Width of the document
-    private int width;
+    private final int width;
     
     // height of the document
-    private int height;
+    private final int height;
     
     // Background color of the document
-    private Color color;
+    private final Color color;
 
     /**
      * Constructor

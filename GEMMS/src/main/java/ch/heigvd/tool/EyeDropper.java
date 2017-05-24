@@ -4,28 +4,14 @@ import ch.heigvd.layer.GEMMSCanvas;
 import ch.heigvd.layer.GEMMSImage;
 import ch.heigvd.layer.GEMMSText;
 import ch.heigvd.workspace.Workspace;
-import java.awt.image.RenderedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.geometry.Point3D;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.transform.NonInvertibleTransformException;
-import javafx.scene.transform.Transform;
-import javax.imageio.ImageIO;
 
-/**
- *
- * @author mathieu
- */
 public class EyeDropper extends AbstractTool {
 
    // Picked color

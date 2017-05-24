@@ -7,7 +7,6 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
-import javafx.scene.transform.Transform;
 
 /**
  * ColorSet is a class that represents the application color set. It is composed
@@ -102,7 +101,7 @@ public class ColorSet {
     * current color and defines controllers element to change its state.
     */
    private class ColorPack {
-      private ColorPicker cp;
+      private final ColorPicker cp;
 
       /**
        * Constructor. Define the color from the parameter, and create the

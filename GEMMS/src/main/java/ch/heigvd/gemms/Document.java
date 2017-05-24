@@ -13,7 +13,6 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import javax.imageio.ImageIO;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;

@@ -1,15 +1,9 @@
 package ch.heigvd.tool;
 
-import ch.heigvd.workspace.History;
 import ch.heigvd.workspace.HistoryNotifier;
 import ch.heigvd.workspace.Workspace;
-import com.sun.xml.internal.ws.api.pipe.FiberContextSwitchInterceptor;
 
-import java.util.Observable;
 
-/**
- * Created by lognaume on 5/19/17.
- */
 public abstract class AbstractTool implements Tool {
     protected final Workspace workspace;
     protected HistoryNotifier notifier;

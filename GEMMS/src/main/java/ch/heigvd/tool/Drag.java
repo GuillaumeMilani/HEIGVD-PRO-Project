@@ -4,7 +4,10 @@ import ch.heigvd.workspace.Workspace;
 import javafx.geometry.Point3D;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 
 
 public class Drag implements Tool{
@@ -14,11 +17,12 @@ public class Drag implements Tool{
     private double lastX;
     private double lastY;
     private boolean isAlignementActive;
-    private final double ALIGNEMENT_DELTA = 20;
+    private AnchorPane anchorPane;
 
     public Drag(Workspace w){
         this.workspace = w;
-        isAlignementActive = true;
+        this.isAlignementActive = false;
+        this.anchorPane = workspace.getLayerTool();
     }
 
     @Override
@@ -41,29 +45,8 @@ public class Drag implements Tool{
         double offsetY = y - lastY;
 
         for(Node n : workspace.getCurrentLayers()) {
-
-            if(isAlignementActive){
-                AnchorPane anchorPane = workspace.getLayerTool();
-                double middleWorkspaceWidth = workspace.width()/2;
-                double middleWorkspaceHeight = workspace.height()/2;
-                double middleNodeWidth = (n.getBoundsInParent().getMinX() + n.getBoundsInParent().getMaxX())/2;
-                double middleNodeHeight =(n.getBoundsInParent().getMinY() + n.getBoundsInParent().getMaxY())/2 ;
-
-                if(Math.abs(x - middleWorkspaceWidth) < ALIGNEMENT_DELTA){
-                    setPosition(middleWorkspaceWidth,y,n);
-
-                }
-                if(Math.abs(y - middleWorkspaceHeight) < ALIGNEMENT_DELTA){
-                    setPosition(x,middleWorkspaceHeight,n);
-
-                }else{
-                    n.setTranslateX(n.getTranslateX() + offsetX);
-                    n.setTranslateY(n.getTranslateY() + offsetY);
-                }
-            }else {
                 n.setTranslateX(n.getTranslateX() + offsetX);
                 n.setTranslateY(n.getTranslateY() + offsetY);
-            }
         }
 
         lastX = x;
@@ -74,5 +57,37 @@ public class Drag implements Tool{
     public void mouseReleased(double x, double y) {
         workspace.setCursor(Cursor.DEFAULT);
 
+    }
+
+    public void turnAlignementOnOff(){
+        isAlignementActive = !isAlignementActive;
+        if(isAlignementActive){
+            printAlignement();
+        }else{
+            anchorPane.getChildren().clear();
+        }
+    }
+
+    private void printAlignement(){
+        Canvas alignement = new Canvas(workspace.width(),workspace.height());
+        GraphicsContext gc = alignement.getGraphicsContext2D();
+        gc.setStroke(Color.GREEN);
+        //Lignes principales
+        gc.setLineWidth(2);
+        gc.strokeLine(workspace.width()/2, 0, workspace.width()/2, workspace.height());
+        gc.strokeLine(0, workspace.height()/2, workspace.height(), workspace.height()/2);
+
+        //Lignes secondaires
+        gc.setLineWidth(1);
+        gc.strokeLine(workspace.width()/4, 0, workspace.width()/4, workspace.height());
+        gc.strokeLine(workspace.width()*3/4, 0, workspace.width()*3/4, workspace.height());
+        gc.strokeLine(0, workspace.height()/4, workspace.height(), workspace.height()/4);
+        gc.strokeLine(0, workspace.height()/4*3, workspace.height(), workspace.height()*3/4);
+
+        anchorPane.getChildren().add(alignement);
+    }
+
+    public boolean isAlignementActive(){
+        return isAlignementActive;
     }
 }

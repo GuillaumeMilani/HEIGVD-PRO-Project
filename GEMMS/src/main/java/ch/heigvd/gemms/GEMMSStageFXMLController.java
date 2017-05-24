@@ -156,7 +156,52 @@ public class GEMMSStageFXMLController implements Initializable {
         welcomeTab.setText("Welcome !");
         workspaces.getTabs().add(welcomeTab);
         
-        
+               // Register scroll event for zoom
+       workspaces.setOnScroll(new EventHandler<ScrollEvent>() {
+          @Override
+          public void handle(ScrollEvent event) {
+             Workspace workspace = getCurrentWorkspace();
+             if (workspace != null) {
+                if (event.isControlDown()) {
+                   if (event.getDeltaY() > 0) {
+                      workspace.zoom(1.05);
+                   } else {
+                      workspace.zoom(0.95);
+                   }
+                }
+             }
+          }
+       });
+
+       EventHandler dragEventHandler = new EventHandler<MouseEvent>() {
+          private double x;
+          private double y;
+
+          @Override
+          public void handle(MouseEvent event) {
+             Workspace workspace = getCurrentWorkspace();
+             if (workspace != null) {
+                if (event.isShiftDown()) {
+                   if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
+                      x = event.getX();
+                      y = event.getY();
+                   } else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
+                      workspace.move(event.getX() - x, event.getY() - y);
+                      x = event.getX();
+                      y = event.getY();
+                   }
+                   event.consume();
+                } else {
+                   x = event.getX();
+                   y = event.getY();
+                }
+             }
+          }
+       };
+       workspaces.addEventFilter(MouseEvent.ANY, dragEventHandler);
+       workspaces.addEventHandler(MouseEvent.ANY, dragEventHandler);
+
+
         // Tab changed action
         workspaces.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> ov, Tab t, Tab t1) -> {
            Workspace w = getCurrentWorkspace();
@@ -851,7 +896,7 @@ public class GEMMSStageFXMLController implements Initializable {
             }
 
             Workspace w = document.workspace();
-
+            
             // Clear
             layerController.getChildren().clear();
             layerController.getChildren().add(w.getWorkspaceController());
@@ -860,7 +905,7 @@ public class GEMMSStageFXMLController implements Initializable {
             Tab tab = new Tab(document.name(), w);
             workspaces.getTabs().add(tab);
             workspaces.getSelectionModel().select(tab);
-
+            
             documents.add(document);
         }
     }

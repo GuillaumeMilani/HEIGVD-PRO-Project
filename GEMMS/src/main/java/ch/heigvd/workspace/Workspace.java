@@ -57,7 +57,7 @@ public class Workspace extends StackPane implements Serializable {
 
    private History history;
 
-   private HistoryNotifier historyNotifier = new HistoryNotifier();
+   private HistoryNotifier historyNotifier;
 
 
    /**
@@ -79,6 +79,8 @@ public class Workspace extends StackPane implements Serializable {
       
       layerTools = new AnchorPane();
       getChildren().add(layerTools);
+      
+      historyNotifier = new HistoryNotifier();
       
       clip = new Rectangle(width, height);
       

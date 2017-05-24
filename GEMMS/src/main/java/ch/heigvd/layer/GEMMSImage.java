@@ -10,6 +10,7 @@ import java.io.Serializable;
 import javafx.geometry.Point3D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
@@ -93,6 +94,7 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
             s.writeDouble(c.getSaturation());
             s.writeDouble(c.getBrightness());
             s.writeDouble(((SepiaTone) c.getInput()).getLevel());
+            s.writeDouble(((GaussianBlur) ((SepiaTone) c.getInput()).getInput()).getRadius());
         }else{
             s.writeBoolean(false);
         }
@@ -161,7 +163,9 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
             c.setHue(s.readDouble());
             c.setSaturation(s.readDouble());
             c.setBrightness(s.readDouble());
-            c.setInput(new SepiaTone(s.readDouble()));
+            SepiaTone st = new SepiaTone(s.readDouble());
+            st.setInput(new GaussianBlur(s.readDouble()));
+            c.setInput(st);
             setEffect(c);
         }
 

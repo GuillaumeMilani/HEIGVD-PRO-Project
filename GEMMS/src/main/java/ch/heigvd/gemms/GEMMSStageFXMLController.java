@@ -476,6 +476,7 @@ public class GEMMSStageFXMLController implements Initializable {
                     for (Node n : w.getCurrentLayers()) {
                         n.setOpacity(new_val.doubleValue());
                     }
+                    w.notifyHistory();
                 }
                 opacityValue.setText(String.format("%.2f", new_val));
 
@@ -490,6 +491,7 @@ public class GEMMSStageFXMLController implements Initializable {
                     for (Node n : w.getCurrentLayers()) {
                         ((SepiaTone) getColorAdjust(n).getInput()).setLevel(new_val.doubleValue());
                     }
+                    w.notifyHistory();
                 }
                 sepiaValue.setText(String.format("%.2f", new_val));
             }
@@ -503,6 +505,7 @@ public class GEMMSStageFXMLController implements Initializable {
                     for (Node n : w.getCurrentLayers()) {
                         getColorAdjust(n).setSaturation(new_val.doubleValue());
                     }
+                    w.notifyHistory();
                 }
                 saturationValue.setText(String.format("%.2f", new_val));
             }
@@ -516,6 +519,7 @@ public class GEMMSStageFXMLController implements Initializable {
                     for (Node n : w.getCurrentLayers()) {
                         getColorAdjust(n).setContrast(new_val.doubleValue());
                     }
+                    w.notifyHistory();
                 }
                 contrastValue.setText(String.format("%.2f", new_val));
             }
@@ -529,6 +533,7 @@ public class GEMMSStageFXMLController implements Initializable {
                     for (Node n : w.getCurrentLayers()) {
                         getColorAdjust(n).setBrightness(new_val.doubleValue());
                     }
+                    w.notifyHistory();
                 }
                 brightnessValue.setText(String.format("%.2f", new_val));
             }
@@ -552,8 +557,9 @@ public class GEMMSStageFXMLController implements Initializable {
                     getColorAdjust(n).setSaturation(-1);
                     saturation.setValue(-1);
                 }
-                
-              displayToolSetting(BW, null);
+                w.notifyHistory();
+
+                displayToolSetting(BW, null);
             }
         });
         
@@ -575,7 +581,9 @@ public class GEMMSStageFXMLController implements Initializable {
                     //Finally, set the hue to node
                     getColorAdjust(n).setHue(hue);
                 }
-              displayToolSetting(tint, null);
+                w.notifyHistory();
+
+                displayToolSetting(tint, null);
             }
         });
         
@@ -590,6 +598,8 @@ public class GEMMSStageFXMLController implements Initializable {
                     ColorAdjust c = getColorAdjust(n);
                     c.setHue(0);
                 }
+                w.notifyHistory();
+
                 opacity.setValue(1);
                 saturation.setValue(0);
                 sepia.setValue(0);
@@ -611,7 +621,7 @@ public class GEMMSStageFXMLController implements Initializable {
                 // ---------- DEL ----------
 
                 // Drop the current selected layers
-                getCurrentWorkspace().getCurrentLayers().forEach(n->getCurrentWorkspace().getLayers().remove(n));
+                getCurrentWorkspace().getCurrentLayers().forEach(n->getCurrentWorkspace().removeLayer(n));
 
             } else if (Constants.CTRL_Z.match(keyEvent)) {
                 // ---------- CTRL + Z ----------

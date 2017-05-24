@@ -58,7 +58,7 @@ public class Workspace extends StackPane implements Serializable {
    private History history;
 
    private HistoryNotifier historyNotifier = new HistoryNotifier();
-  
+
 
    /**
     * Constructor for a new instance of Workspace. The Workspace extends a Pane
@@ -398,8 +398,7 @@ public class Workspace extends StackPane implements Serializable {
    public History getHistory() {
       return history;
    }
-
-   public void setHistory(History history) {
-      this.history = history;
+   public void notifyHistory() {
+      historyNotifier.notifyHistory();
    }
 }

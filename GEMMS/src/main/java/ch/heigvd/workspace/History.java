@@ -13,17 +13,31 @@ import java.util.*;
  * It is then possible to undo() (restore previous state) or redo() (restore state before undo())
  */
 public class History implements Observer {
+    /**
+     * Stacks to save the serialized (& compressed) layers states
+     */
     private Stack<String> undoHistory;
     private Stack<String> redoHistory;
-    private String currentState;
 
-    private boolean actionChain = false;
+    /**
+     * Stacks to save the currently selected layers
+     */
+    private Stack<List<Integer>> selectedUndoHistory;
+    private Stack<List<Integer>> selectedRedoHistory;
+
+    /**
+     * Contains the data to save the current states
+     */
+    private String currentState;
+    private List<Integer> currentIndexes;
 
     private Workspace workspace;
 
     public History(Workspace workspace) {
         this.undoHistory = new Stack();
         this.redoHistory = new Stack();
+        this.selectedUndoHistory = new Stack();
+        this.selectedRedoHistory = new Stack();
         this.workspace = workspace;
     }
 
@@ -32,51 +46,82 @@ public class History implements Observer {
         save();
     }
 
+    /**
+     * Save the current states to the stacks
+     */
     private void save() {
-        actionChain = false;
+        System.out.println("Save");
+        // If a modification is done, a new "branch" begins. No action to redo anymore
         redoHistory.clear();
+        selectedRedoHistory.clear();
 
-        System.out.println("Saving " + workspace.getLayers().size() + " layers");
         try {
-            undoHistory.push(currentState);
+            // Get the selected layers indexes
+            List<Integer> indexes = new LinkedList<>();
+            workspace.getCurrentLayers().forEach(n -> indexes.add(workspace.getLayers().indexOf(n)));
+
+            // Push the current states except the first time an action is done
+            if (currentState != null) {
+                selectedUndoHistory.push(currentIndexes);
+                undoHistory.push(currentState);
+            }
+
+            // Save the current states
             currentState = Utils.serializeNodeList(workspace.getLayers());
+            currentIndexes = indexes;
         } catch (Exception e) {
             // TODO: Manage exceptions
             e.printStackTrace();
         }
     }
 
+    /**
+     * Undo the last action (rollback to layers precedent state)
+     */
     public void undo() {
-        historyAction(undoHistory, redoHistory);
+        historyAction(undoHistory, redoHistory, selectedUndoHistory, selectedRedoHistory);
     }
 
+    /**
+     * Redo the last canceled action
+     */
     public void redo() {
-        historyAction(redoHistory, undoHistory);
+        historyAction(redoHistory, undoHistory, selectedRedoHistory, selectedUndoHistory);
     }
 
-    private void historyAction(Stack<String> takeFrom, Stack<String> putIn) {
-        if (!takeFrom.isEmpty()) {
+    /**
+     * Restore the history from one stack (and save the current state in the other stack)
+     * @param layersTakeFrom
+     * @param layersPutIn
+     * @param indexesTakeFrom
+     * @param indexesPutIn
+     */
+    private void historyAction(Stack<String> layersTakeFrom, Stack<String> layersPutIn,
+                               Stack<List<Integer>> indexesTakeFrom, Stack<List<Integer>> indexesPutIn) {
+        if (!layersTakeFrom.isEmpty()) {
+            System.out.println("Action");
 
             // Save current state
-            putIn.push(currentState);
-
-            actionChain = true;
+            layersPutIn.push(currentState);
+            indexesPutIn.push(currentIndexes);
 
             try {
                 workspace.getLayers().clear();
+                // Selected layers
+                workspace.getCurrentLayers().clear();
 
-                String poppedElement = takeFrom.pop();
+                currentState = layersTakeFrom.pop();
+                currentIndexes = indexesTakeFrom.pop();
 
-                workspace.getLayers().addAll(Utils.deserializeNodeList(poppedElement));
+                workspace.getLayers().addAll(Utils.deserializeNodeList(currentState));
+                currentIndexes.forEach(i -> workspace.selectLayerByIndex(i));
 
-                currentState = poppedElement;
             } catch (Exception e) {
                 // TODO: Manage exceptions
                 e.printStackTrace();
             }
 
-            // Selected layers
-            workspace.getCurrentLayers().clear();
+
         }
     }
 }

@@ -117,46 +117,6 @@ public class Workspace extends StackPane implements Serializable {
          }
       });
 
-      // Register scroll event for zoom
-      setOnScroll(new EventHandler<ScrollEvent>() {
-         @Override
-         public void handle(ScrollEvent event) {
-            if (event.isControlDown()) {
-               if (event.getDeltaY() > 0) {
-                  zoom(1.05);
-               } else {
-                  zoom(0.95);
-               }
-            }
-         }
-      });
-
-      EventHandler dragEventHandler = new EventHandler<MouseEvent>() {
-         private double x;
-         private double y;
-
-         @Override
-         public void handle(MouseEvent event) {
-            if (event.isShiftDown()) {
-               if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
-                  x = event.getX();
-                  y = event.getY();
-               } else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
-                  move(event.getX() - x, event.getY() - y);
-                  x = event.getX();
-                  y = event.getY();
-               }
-               event.consume();
-            } else {
-               x = event.getX();
-               y = event.getY();
-            }
-         }
-      };
-
-      addEventFilter(MouseEvent.ANY, dragEventHandler);
-
-      addEventHandler(MouseEvent.ANY, dragEventHandler);
 
       // History
       this.history = new History(this);

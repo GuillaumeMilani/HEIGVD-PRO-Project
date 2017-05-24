@@ -20,7 +20,9 @@ import javafx.util.converter.IntegerStringConverter;
 
 
 /**
- * Display a dialog that allow the user to set a resize.
+ * <h1>OpenDocumentDialog</h1>
+ * 
+ * Shows a dialog that allow the user to set resize value.
  */
 public class ResizeDialog {
     
@@ -41,13 +43,13 @@ public class ResizeDialog {
         // Set button
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-        
+        // Set GridPane
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
 
-        // Set field
+        // Set text field
         TextField widthText = new TextField();
         widthText.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
         widthText.setText(String.valueOf(workspace.width()));
@@ -64,6 +66,7 @@ public class ResizeDialog {
         offsetYText.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
         offsetYText.setText("0");
 
+        // Shows label and text field
         Label description = new Label("Document size");
         description.setFont(Font.font(null, FontWeight.BOLD, 13));
         grid.add(description, 0, 0);
@@ -90,6 +93,7 @@ public class ResizeDialog {
             boolean isError = false;
             
             try {
+                // Get user input
                 int width = Integer.valueOf(widthText.textProperty().get());
                 int height = Integer.valueOf(heightText.textProperty().get());
                 int offsetX = Integer.valueOf(offsetXText.textProperty().get());
@@ -104,6 +108,7 @@ public class ResizeDialog {
                 isError = true;
             }
  
+            // Disable button if inputs are incorrect
             loginButton.setDisable(isError);
             
         };
@@ -128,9 +133,9 @@ public class ResizeDialog {
     }
     
     /**
-     * Display dialog
+     * Shows the dialog and waits for the user response
      *
-     * @return an optional rectangle
+     * @return an optional rectangle that contains resize value
      */
     public Optional<Rectangle> showAndWait() {
         return dialog.showAndWait();

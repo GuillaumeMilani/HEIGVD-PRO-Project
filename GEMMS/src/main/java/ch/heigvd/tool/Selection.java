@@ -12,17 +12,30 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+/**
+ * <h1>Selection</h1>
+ * 
+ * The Selection tool class. Allow users to select an area of workspace with a 
+ * box.
+ */
 public class Selection extends AbstractTool {
 
+    // Selection box
     private final Rectangle rectangle;
 
+    // Last mouse position
     private double lastX;
     private double lastY;
     
+    // Flag
     private boolean isMoved;
     private boolean isDragged;
     
-
+    /**
+     * Constructor
+     * 
+     * @param w workspace
+     */
     public Selection(Workspace w) {
         super(w);
 
@@ -75,6 +88,7 @@ public class Selection extends AbstractTool {
         
         Point3D p = PositionMapper.convert(rectangle, new Point3D(x, y, 0));
         
+        // Create a selection box
         if (!rectangle.contains(new Point2D(p.getX(), p.getY()))) {
             
             workspace.getLayerTool().getChildren().remove(rectangle);
@@ -88,18 +102,22 @@ public class Selection extends AbstractTool {
 
             isDragged = true;
         }
+        // When pressed on selection box, set the flag isMoving
         else {
             workspace.getLayerTool().setCursor(Cursor.MOVE);
             
             isMoved = true;
         }
 
+        // Save last mouse position
         lastX = x; 
         lastY = y;
     }
 
     @Override
     public void mouseDragged(double x, double y) {
+        
+        // Resize the selection box
         if(isDragged) {
             double width = x - rectangle.getX();
             double height = y - rectangle.getY();
@@ -119,7 +137,7 @@ public class Selection extends AbstractTool {
             rectangle.setWidth(Math.abs(width));
             rectangle.setHeight(Math.abs(height));
         }
-        
+        // Moving the selection box
         else if(isMoved) {
             double addX = x - lastX;
             double addY = y - lastY;
@@ -140,6 +158,11 @@ public class Selection extends AbstractTool {
         workspace.getLayerTool().setCursor(Cursor.DEFAULT);
     }
 
+    /**
+     * Get selection box
+     * 
+     * @return rectangle
+     */
     public Rectangle getRectangle() {
         return rectangle;
     }

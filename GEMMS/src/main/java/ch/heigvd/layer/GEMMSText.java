@@ -19,7 +19,11 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 
-
+/**
+ * <h1>GEMMSText</h1>
+ * 
+ * This class was created to implement Serializable
+ */
 public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, LayerListable {
 
     public static final int DEFAULT_SIZE = 12;
@@ -53,6 +57,12 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
         setTextAlignment(TextAlignment.CENTER);
     }
 
+    /**
+     * Write all informations for serialization
+     * 
+     * @param s output stream
+     * @throws IOException 
+     */
     private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
 
@@ -124,6 +134,12 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
         }
     }
 
+    /**
+     * Read all informations for serialization
+     * 
+     * @param s input stream
+     * @throws IOException 
+     */
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
         // Set the test
         setText((String) s.readObject());

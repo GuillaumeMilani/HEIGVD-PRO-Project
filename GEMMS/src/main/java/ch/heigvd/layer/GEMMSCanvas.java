@@ -10,6 +10,9 @@ import java.util.logging.Logger;
 import javafx.geometry.Point3D;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
@@ -89,6 +92,22 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
         s.writeDouble(getRotationAxis().getX());
         s.writeDouble(getRotationAxis().getY());
         s.writeDouble(getRotationAxis().getZ());
+        
+        //Write effect info
+        ColorAdjust c;
+        if(getEffect() instanceof ColorAdjust){
+            s.writeBoolean(true);
+            c = ((ColorAdjust) getEffect());
+            s.writeDouble(c.getContrast());
+            s.writeDouble(c.getHue());
+            s.writeDouble(c.getSaturation());
+            s.writeDouble(c.getBrightness());
+            s.writeDouble(((SepiaTone) c.getInput()).getLevel());
+            s.writeDouble(((GaussianBlur) ((SepiaTone) c.getInput()).getInput()).getRadius());
+        }else{
+            s.writeBoolean(false);
+        }
+
 
         // Write Transformation
         s.writeInt(getTransforms().size());
@@ -145,6 +164,20 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
         setRotate(s.readDouble());
         setRotationAxis(new Point3D(s.readDouble(), s.readDouble(), s.readDouble()));
 
+        //Boolean to notify if effects are on their way, if so read them and apply
+        if(s.readBoolean()){
+            ColorAdjust c = new ColorAdjust();
+            c.setContrast(s.readDouble());
+            c.setHue(s.readDouble());
+            c.setSaturation(s.readDouble());
+            c.setBrightness(s.readDouble());
+            SepiaTone st = new SepiaTone(s.readDouble());
+            st.setInput(new GaussianBlur(s.readDouble()));
+            c.setInput(st);
+            setEffect(c);
+        }
+
+        
         // Set Transformation
         int sizeTransformation = s.readInt();
         for (int i = 0; i < sizeTransformation; i++) {

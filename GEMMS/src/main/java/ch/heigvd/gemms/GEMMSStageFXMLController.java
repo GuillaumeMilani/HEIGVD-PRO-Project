@@ -56,6 +56,7 @@ import javafx.scene.image.Image;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -158,7 +159,52 @@ public class GEMMSStageFXMLController implements Initializable {
         welcomeTab.setText("Welcome !");
         workspaces.getTabs().add(welcomeTab);
         
-        
+               // Register scroll event for zoom
+       workspaces.setOnScroll(new EventHandler<ScrollEvent>() {
+          @Override
+          public void handle(ScrollEvent event) {
+             Workspace workspace = getCurrentWorkspace();
+             if (workspace != null) {
+                if (event.isControlDown()) {
+                   if (event.getDeltaY() > 0) {
+                      workspace.zoom(1.05);
+                   } else {
+                      workspace.zoom(0.95);
+                   }
+                }
+             }
+          }
+       });
+
+       EventHandler dragEventHandler = new EventHandler<MouseEvent>() {
+          private double x;
+          private double y;
+
+          @Override
+          public void handle(MouseEvent event) {
+             Workspace workspace = getCurrentWorkspace();
+             if (workspace != null) {
+                if (event.isShiftDown()) {
+                   if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
+                      x = event.getX();
+                      y = event.getY();
+                   } else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
+                      workspace.move(event.getX() - x, event.getY() - y);
+                      x = event.getX();
+                      y = event.getY();
+                   }
+                   event.consume();
+                } else {
+                   x = event.getX();
+                   y = event.getY();
+                }
+             }
+          }
+       };
+       workspaces.addEventFilter(MouseEvent.ANY, dragEventHandler);
+       workspaces.addEventHandler(MouseEvent.ANY, dragEventHandler);
+
+
         // Tab changed action
         workspaces.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> ov, Tab t, Tab t1) -> {
            Workspace w = getCurrentWorkspace();
@@ -449,12 +495,14 @@ public class GEMMSStageFXMLController implements Initializable {
         final Slider saturation = new Slider(-1, 1, 0);
         final Slider contrast = new Slider(-1, 1, 0);
         final Slider brightness = new Slider(-1, 1, 0);
+        final Slider blur = new Slider (0, 100, 0);
         
         final Label opacityLabel = new Label("Opacity:");
         final Label sepiaLabel = new Label("Sepia:");
         final Label saturationLabel = new Label("Saturation:");
         final Label contrastLabel = new Label("Contrast:");
         final Label brightnessLabel = new Label("Brightness:");
+        final Label blurLabel = new Label("Blur:");
         
         final Label opacityValue = new Label(
                 Double.toString(opacity.getValue()));
@@ -466,6 +514,8 @@ public class GEMMSStageFXMLController implements Initializable {
                 Double.toString(contrast.getValue()));
         final Label brightnessValue = new Label(
                 Double.toString(brightness.getValue()));
+        final Label blurValue = new Label(
+                Double.toString(blur.getValue()));
 
         opacity.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov,
@@ -534,6 +584,19 @@ public class GEMMSStageFXMLController implements Initializable {
                 brightnessValue.setText(String.format("%.2f", new_val));
             }
         });
+        
+        blur.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov,
+                    Number old_val, Number new_val) {
+                Workspace w = getCurrentWorkspace();
+                if (w != null) {
+                    for (Node n : w.getCurrentLayers()) {
+                        setBlurRadius(n, new_val.intValue());
+                    }
+                }
+                blurValue.setText(String.format("%d", new_val.intValue()));
+            }
+        });
 
         EventHandler eh = new EventHandler() {
             @Override
@@ -555,6 +618,7 @@ public class GEMMSStageFXMLController implements Initializable {
         createSlider(gridSliders, saturationLabel, saturation, saturationValue, 3);
         createSlider(gridSliders, contrastLabel, contrast, contrastValue, 4);
         createSlider(gridSliders, brightnessLabel, brightness, brightnessValue, 5);
+        createSlider(gridSliders, blurLabel, blur, blurValue, 6);
 
         // Create filter button
         Button BW = createToolButton("B&W", gridFilterTools);
@@ -596,6 +660,7 @@ public class GEMMSStageFXMLController implements Initializable {
                 displayToolSetting(tint, null);
             }
         });
+
         
         // Create filter button
         Button reset = createToolButton("Reset", gridFilterTools);
@@ -607,6 +672,7 @@ public class GEMMSStageFXMLController implements Initializable {
                 for (Node n : w.getCurrentLayers()) {
                     ColorAdjust c = getColorAdjust(n);
                     c.setHue(0);
+                    setBlurRadius(n, 0);
                 }
                 w.notifyHistory();
 
@@ -870,7 +936,7 @@ public class GEMMSStageFXMLController implements Initializable {
             }
 
             Workspace w = document.workspace();
-
+            
             // Clear
             layerController.getChildren().clear();
             layerController.getChildren().add(w.getWorkspaceController());
@@ -879,7 +945,7 @@ public class GEMMSStageFXMLController implements Initializable {
             Tab tab = new Tab(document.name(), w);
             workspaces.getTabs().add(tab);
             workspaces.getSelectionModel().select(tab);
-
+            
             documents.add(document);
         }
     }
@@ -1018,10 +1084,21 @@ public class GEMMSStageFXMLController implements Initializable {
         if(!(n.getEffect() instanceof ColorAdjust)){
             ColorAdjust c = new ColorAdjust();
             SepiaTone s = new SepiaTone(0);
+            GaussianBlur g = new GaussianBlur(0);
+            s.setInput(g);
             c.setInput(s);
             n.setEffect(c);
         }
         return ((ColorAdjust) n.getEffect());
+    }
+
+    /**
+     * Sets GaussianBlur radius to desired amount for a given node.
+     * @param n
+     * @param i 
+     */
+    private void setBlurRadius(Node n, int i) {
+        ((GaussianBlur) (((SepiaTone) getColorAdjust(n).getInput())).getInput()).setRadius(i);
     }
     
     private void setHoverHint(Button button, String text) {
@@ -1044,6 +1121,5 @@ public class GEMMSStageFXMLController implements Initializable {
           }
 
        });
-       
     }
 }

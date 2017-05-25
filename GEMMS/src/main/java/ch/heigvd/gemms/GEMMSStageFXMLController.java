@@ -87,8 +87,6 @@ public class GEMMSStageFXMLController implements Initializable {
     @FXML
     private GridPane gridFilterTools;
     @FXML
-    private GridPane gridSliders;
-    @FXML
     private GridPane gridModificationTools;
     
     

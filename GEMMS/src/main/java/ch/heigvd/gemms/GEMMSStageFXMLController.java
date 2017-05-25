@@ -54,12 +54,17 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.effect.GaussianBlur;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 
 
@@ -597,18 +602,37 @@ public class GEMMSStageFXMLController implements Initializable {
         saturation.setOnMouseReleased(eh);
         contrast.setOnMouseReleased(eh);
         brightness.setOnMouseReleased(eh);
-
-        gridSliders.setPadding(new Insets(10, 10, 10, 10));
-        createSlider(gridSliders, "Opacity:", opacity, opacityValue, 1);
-        createSlider(gridSliders, "Sepia:", sepia, sepiaValue, 2);
-        createSlider(gridSliders, "Saturation:", saturation, saturationValue, 3);
-        createSlider(gridSliders, "Contrast:", contrast, contrastValue, 4);
-        createSlider(gridSliders, "Brightness:", brightness, brightnessValue, 5);
-        createSlider(gridSliders, "Blur", blur, blurValue, 6);
+        
+        // Container for effect buttons and sliders
+        GridPane effectsContainer = new GridPane();
+        effectsContainer.setPadding(new Insets(15));
+        effectsContainer.setBackground(new Background(new BackgroundFill(Color.web("#ededed"), CornerRadii.EMPTY, Insets.EMPTY)));
+        effectsContainer.setStyle("-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.15) , 3 ,0 , 3 , 3 );");
+        effectsContainer.setHgap(5);
+        effectsContainer.setVgap(10);
+        effectsContainer.setLayoutX(-10000);
+        effectsContainer.setLayoutY(0);
+        // Add it to the mainAnchorPane
+        mainAnchorPane.getChildren().add(effectsContainer);
+        
+        // GridPane to contain the effects buttons, not the sliders
+        GridPane effectButtonsContainer = new GridPane();
+        effectButtonsContainer.setPrefWidth(153);
+        effectButtonsContainer.setMaxWidth(153);
+        effectButtonsContainer.setHgap(10);
+        // Add column constraints
+        for (int i = 0; i < 3; ++i) {
+            ColumnConstraints c = new ColumnConstraints();
+            c.setPercentWidth(100/3.0);
+            c.setHgrow(Priority.SOMETIMES);
+            c.setMinWidth(10);
+            c.setMaxWidth(100);
+            effectButtonsContainer.getColumnConstraints().add(c);
+        }
 
         // Create filter button
-        Button BW = createToolButton("B&W", gridFilterTools);
-        setHoverHint(BW, "Apply a Black and White filter.");
+        Button BW = createToolButton("B&W", effectButtonsContainer);
+        setHoverHint(BW, "Apply a black & white filter.");
         BW.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if (w != null) {
@@ -624,8 +648,8 @@ public class GEMMSStageFXMLController implements Initializable {
         });
         
         // Create filter button
-        Button tint = createToolButton("Tint", gridFilterTools);
-        setHoverHint(tint, "Apply a Tint filter of the current color.");
+        Button tint = createToolButton("Tint", effectButtonsContainer);
+        setHoverHint(tint, "Apply a color filter of the current color.");
         tint.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if (w != null) {
@@ -651,7 +675,7 @@ public class GEMMSStageFXMLController implements Initializable {
 
         
         // Create filter button
-        Button reset = createToolButton("Reset", gridFilterTools);
+        Button reset = createToolButton("Reset", effectButtonsContainer);
         setHoverHint(reset, "Reset all color effects.");
         reset.setOnAction((ActionEvent e) -> {
            clearSelectedButtons();
@@ -673,6 +697,56 @@ public class GEMMSStageFXMLController implements Initializable {
                 displayToolSetting(reset, null);
             }
         });
+        
+        // Add the sliders to the effects container
+       createSlider(effectsContainer, "Opacity:", opacity, opacityValue, 1);
+       createSlider(effectsContainer, "Sepia:", sepia, sepiaValue, 2);
+       createSlider(effectsContainer, "Saturation:", saturation, saturationValue, 3);
+       createSlider(effectsContainer, "Contrast:", contrast, contrastValue, 4);
+       createSlider(effectsContainer, "Brightness:", brightness, brightnessValue, 5);
+       createSlider(effectsContainer, "Blur", blur, blurValue, 6);
+       
+       // Add the buttons on the first row
+       effectsContainer.add(effectButtonsContainer, 0, 0);
+       GridPane.setColumnSpan(effectButtonsContainer, 3);
+       
+       // Create a button to toggle the effect panel
+       Button effectsToggl = createToolButton("Effects", gridFilterTools);
+       setHoverHint(effectsToggl, "Open/Close effects panel.");
+       effectsToggl.setPrefWidth(160);
+       toolButtons.remove(effectsToggl);
+       // Set the toggle action
+       effectsToggl.setOnAction((ActionEvent e) -> {
+          // If the layoutX property >= 0, then we assume the container is visible
+          if (effectsContainer.getLayoutX() >= 0) {
+             //Hide the container
+             effectsToggl.getStyleClass().remove("selected");
+             effectsContainer.setLayoutX(-10000);
+             effectsContainer.setLayoutY(0);
+          } else { // The container is not visible
+             selectButton(effectsToggl);
+
+             // Get height of the window
+             double windowHeight = mainAnchorPane.getBoundsInParent().getHeight();
+
+             // Get the height of the container
+             double containerHeight = effectsContainer.getBoundsInParent().getHeight();
+
+             // Get the ideal position of the panel
+             double posX = effectsToggl.localToScene(effectsToggl.getBoundsInLocal()).getMinX();
+             double posY = effectsToggl.localToScene(effectsToggl.getBoundsInLocal()).getMaxY();
+
+             // If the container would overflow from the window
+             if (posY + containerHeight > windowHeight) {
+                posX = 180;
+                posY = windowHeight - containerHeight;
+             }
+             
+             // Set the container position
+             effectsContainer.setLayoutX(posX);
+             effectsContainer.setLayoutY(posY);
+          }
+       });
 
         mainAnchorPane.setOnKeyPressed(keyEvent -> {
             // ---------- ESC ----------
@@ -680,6 +754,7 @@ public class GEMMSStageFXMLController implements Initializable {
             if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {
                 // Disable current tool
                 getCurrentWorkspace().setCurrentTool(null);
+                clearSelectedButtons();
 
             } else if (keyEvent.getCode().equals(KeyCode.DELETE)) {
                 // ---------- DEL ----------

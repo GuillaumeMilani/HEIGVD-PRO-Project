@@ -5,7 +5,8 @@ import ch.heigvd.workspace.Workspace;
 import javafx.scene.canvas.GraphicsContext;
 
 /**
- * The Eraser clear canvas pixels content. 
+ * <h1>Eraser</h1>
+ * The Eraser clear JavaFx Canvas pixels content. 
  */
 public class Eraser extends LineTool implements SizeConfigurableTool {
    

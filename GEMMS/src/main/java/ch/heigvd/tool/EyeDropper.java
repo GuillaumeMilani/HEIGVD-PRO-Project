@@ -12,31 +12,54 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
+/**
+ * <h1>EyeDropper</h1>
+ * 
+ * EyeDropper objects read color information from GEMMSCanvas, GEMMSImage and 
+ * GEMMSText objects, and when a Color is available, sets the current ColorSet 
+ * instance value to this new Color.
+ */
 public class EyeDropper extends AbstractTool {
 
    // Picked color
    private Paint pickedColor;
-
+   
+   /**
+    * Constructor. 
+    * @param workspace the workspace to work on.
+    */
    public EyeDropper(Workspace workspace) {
       super(workspace);
       this.pickedColor = null;
    }
-
+   
+   /**
+    * Get the top layer of the currently selected layers.
+    * @return the Node corresponding to the top layer.
+    */
    private Node getTopLayer() {
       List<Node> layers = workspace.getCurrentLayers();
       if (layers.isEmpty()) {
          return null;
       } else {
-         return layers.get(0);
+         return layers.get(layers.size()-1);
       }
    }
-
+   
+   /**
+    * Pick the Color from the top layer, at the (x, y) position.
+    * @param x the x coordinate 
+    * @param y the y coordinate
+    * @return the Color at this point
+    */
    private Paint pickColor(int x, int y) {
+      // Get the top layer selected
       Node layer = getTopLayer();
+      
+      // If it is a GEMMSText, simply return the color of the Text
       if (GEMMSText.class.isInstance(layer)) {
          return ((GEMMSText) layer).getFill();
       } else if (GEMMSCanvas.class.isInstance(layer) || GEMMSImage.class.isInstance(layer)) {
-         
          
          // Write a snapshot of the canvas or image to be able to look up pixels
          WritableImage wi = new WritableImage((int) layer.getBoundsInParent().getWidth(), (int) layer.getBoundsInParent().getHeight());
@@ -54,20 +77,37 @@ public class EyeDropper extends AbstractTool {
             return pr.getColor((int) pickX, (int) pickY);
          }
       }
-
+      
+      // else return null
       return null;
    }
-
+   
+   /**
+    * On mouse pressed, the current picked color is updated.
+    * @param x the x coordinate of the color to pick
+    * @param y the y coordinate of the color to pick
+    */
    @Override
    public void mousePressed(double x, double y) {
       pickedColor = pickColor((int) x, (int) y);
    }
-
+   
+   /**
+    * On mouse dragged, the current picked color is updated.
+    * @param x the x coordinate of the color to pick
+    * @param y the y coordinate of the color to pick
+    */
    @Override
    public void mouseDragged(double x, double y) {
       pickedColor = pickColor((int) x, (int) y);
    }
-
+   
+   /**
+    * On mouse released, the current picked color is updated and the  
+    * ColorSet Color instance is updated.
+    * @param x the x coordinate of the color to pick
+    * @param y the y coordinate of the color to pick
+    */
    @Override
    public void mouseReleased(double x, double y) {
       pickedColor = pickColor((int) x, (int) y);

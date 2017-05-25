@@ -6,10 +6,11 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 /**
- * The Brush tool class. Brush objects are tools that draw lines on a JavafX
+ * <h1>Brush</h1>
+ * Brush objects are tools that draw lines on a JavafX
  * Canvas object. It is possible to set the color and the width of the brush.
- *
- * @author mathieu
+ * 
+ * Brush is a LineTool subclass. LineTool implements all the drawing algorithm.
  */
 public class Brush extends LineTool implements SizeConfigurableTool {
 
@@ -18,7 +19,7 @@ public class Brush extends LineTool implements SizeConfigurableTool {
 
    /**
     * Constructor. Sets the default usage values which are a the color black and
-    * a size of 1px.
+    * a size of 5px.
     *
     * @param workspace the Workspace to work on
     */
@@ -91,6 +92,11 @@ public class Brush extends LineTool implements SizeConfigurableTool {
       return size;
    }
    
+   /**
+    * Update the color to use
+    * @param x the x coordinate
+    * @param y the y coordinate
+    */
    @Override
    public void mousePressed(double x, double y) {
       setColor(ColorSet.getInstance().getColor());

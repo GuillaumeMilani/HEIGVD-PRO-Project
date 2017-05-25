@@ -8,13 +8,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
 /**
+ * <h1>LineTool</h1>
+ * 
  * The LineTool class represents objects that need to take actions following the
  * mouse such as a paint brush, or an eraser. The LineTool is in charge of
- * "drawing" perfect lines (using the Bresenham algorithm), calling the
- * drawPixel method each time it should paint or more generally apply a
- * treatment to a pixel of the canvas.
- *
- * @author mathieu
+ * "drawing" lines (using the Bresenham algorithm), calling the
+ * drawPixel method each time it should construct a part of the line.
  */
 public abstract class LineTool extends AbstractTool {
 
@@ -24,7 +23,8 @@ public abstract class LineTool extends AbstractTool {
    // Last registered coordinates of the tool
    protected int x;
    protected int y;
-
+   
+   // Fix to draw even if the pressed event wasn't registered
    protected boolean started = false;
 
    /**

@@ -9,14 +9,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
 /**
+ * <h1>ColorSet</h1>
+ * 
  * ColorSet is a class that represents the application color set. It is composed
  * of two main ColorPack, which keep track of two colors that the application
  * interface is currently using.
  *
- * The class uses the singleton pattern to provide the unique instance of
+ * The class uses the singleton pattern to provide a unique instance of
  * ColorSet.
- *
- * @author mathieu
  */
 public class ColorSet {
 
@@ -101,6 +101,7 @@ public class ColorSet {
     * current color and defines controllers element to change its state.
     */
    private class ColorPack {
+      // The ColorPicker tha manages the color.
       private final ColorPicker cp;
 
       /**

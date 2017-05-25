@@ -1,6 +1,7 @@
 package ch.heigvd.workspace;
 
 import ch.heigvd.gemms.Utils;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.image.WritableImage;
 
@@ -46,6 +47,7 @@ public class History implements Observer {
         this.redoSelectedLayers = new Stack();
         this.undoHistory = new Stack();
         this.redoHistory = new Stack();
+        this.undoImages = FXCollections.observableList();
         this.workspace = workspace;
     }
 

@@ -122,12 +122,6 @@
     -fx-background-repeat: no-repeat;
     -fx-background-size: 50%;
 }
-.bucket-icon {
-    -fx-background-image: url("../img/bucket-icon.png");
-    -fx-background-position: center;
-    -fx-background-repeat: no-repeat;
-    -fx-background-size: 60%;
-}
 .crop-icon {
     -fx-background-image: url("../img/crop-icon.png");
     -fx-background-position: center;

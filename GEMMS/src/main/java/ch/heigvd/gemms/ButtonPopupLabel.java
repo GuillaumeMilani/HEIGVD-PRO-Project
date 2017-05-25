@@ -9,6 +9,13 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
+/**
+ * <h1>ButtonPopuLabel</h1>
+ * 
+ * Create a button popup label styling to describe a button function. 
+ * This class styles a HBox. Use it to have similar look between all buttons 
+ * labels.
+ */
 public class ButtonPopupLabel extends HBox {
 
    public ButtonPopupLabel(String text) {

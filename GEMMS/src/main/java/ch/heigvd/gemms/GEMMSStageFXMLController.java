@@ -423,7 +423,7 @@ public class GEMMSStageFXMLController implements Initializable {
             if(w != null) {
                clearSelectedButtons();
                selectButton(rotate);
-                w.setCurrentTool(new ch.heigvd.tool.RotateTool(w));
+                w.setCurrentTool(new ch.heigvd.tool.Rotate(w));
               displayToolSetting(rotate, null);
             }
         });

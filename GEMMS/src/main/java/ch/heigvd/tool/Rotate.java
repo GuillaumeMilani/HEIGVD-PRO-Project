@@ -7,20 +7,27 @@ import javafx.scene.Node;
 
 
 
-public class RotateTool extends AbstractTool {
+public class Rotate extends AbstractTool {
+
+    //The old x coordonate
     private double mouseX;
+    //The list of selected Nodes
+    private List<Node> layers;
 
-    List<Node> layers;
-
-    public RotateTool(Workspace w){
+    /**
+     * Constructor of Rotate Tool
+     *
+     * @param w workspace to crop
+     */
+    public Rotate(Workspace w){
         super(w);
     }
 
     @Override
     public void mousePressed(double x, double y) {
         mouseX = x;
-        layers = workspace.getCurrentLayers();
         workspace.setCursor(Cursor.E_RESIZE);
+        layers = workspace.getCurrentLayers();
 
     }
 
@@ -33,7 +40,6 @@ public class RotateTool extends AbstractTool {
             node.setRotationAxis(javafx.scene.transform.Rotate.Z_AXIS);
             node.setRotate(node.getRotate()-newX);
         }
-
         mouseX = x;
     }
 

@@ -14,7 +14,7 @@ import javafx.scene.paint.Color;
 public class Brush extends LineTool implements SizeConfigurableTool {
 
    // Color of the brush
-   Color color;
+   private Color color;
 
    /**
     * Constructor. Sets the default usage values which are a the color black and

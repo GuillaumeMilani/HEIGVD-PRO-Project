@@ -6,7 +6,6 @@ import javafx.scene.canvas.GraphicsContext;
 
 /**
  * The Eraser clear canvas pixels content. 
- * @author mathieu
  */
 public class Eraser extends LineTool implements SizeConfigurableTool {
    

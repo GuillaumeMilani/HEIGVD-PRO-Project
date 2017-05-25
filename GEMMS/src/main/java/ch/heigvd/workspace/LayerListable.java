@@ -1,10 +1,13 @@
 package ch.heigvd.workspace;
 
 /**
+ * <h1>LayerListable</h1>
+ * 
  * This interface reprsents objects that can be listed inside the workspace
  * Listview.
  */
 public interface LayerListable {
+   
    /**
     * This method should return the name of the layer that will be displayed in 
     * the ListView.

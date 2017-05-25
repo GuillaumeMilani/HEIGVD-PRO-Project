@@ -25,6 +25,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
+ * <h1>LayerList</h1>
+ * 
  * A LayerList object is a UI component that displays the content of a targeted
  * ObservableList as a list of layers, each element of the list acting as a
  * layer.
@@ -39,8 +41,7 @@ import javafx.scene.layout.VBox;
  * cell factory for the LayerList to used. It is done by implementing the
  * ICellFactory interface and by passing it in the constructor, or using the
  * appropriate method.
- *
- * @author Mathieu Monteverde
+ * @param <T> the type of elements represented
  */
 public class LayerList<T> extends VBox {
 

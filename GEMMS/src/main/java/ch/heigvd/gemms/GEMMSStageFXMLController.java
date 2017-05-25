@@ -536,7 +536,6 @@ public class GEMMSStageFXMLController implements Initializable {
                     for (Node n : w.getCurrentLayers()) {
                         getColorAdjust(n).setSaturation(new_val.doubleValue());
                     }
-                    w.notifyHistory();
                 }
                 saturationValue.setText(String.format("%.2f", new_val));
             }

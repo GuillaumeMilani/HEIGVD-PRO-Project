@@ -10,8 +10,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
 /**
+ * <h1>ToolSettingsContainer</h1>
+ * 
  * ToolSettingsContainer are meant to contain ToolSettings.
- * @author mathieu
  */
 public class ToolSettingsContainer extends HBox {
    public ToolSettingsContainer(Node... settings) {

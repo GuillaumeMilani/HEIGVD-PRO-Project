@@ -7,12 +7,11 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.paint.Color;
 
 /**
+ * <h1>ToolColorSettings</h1>
+ * 
  * ToolColorSettings manages ColorConfigurableTools and offers a javafx control
  * element to do so. It uses a ColorPicker to keep track of an active color 
  * and to allow the user to select a color.
- * 
- * 
- * @author Mathieu Monteverde
  */
 public class ToolColorSettings extends ToolSettings {
 

@@ -3,10 +3,11 @@ package ch.heigvd.tool.settings;
 import javafx.scene.text.Font;
 
 /**
+ * <h1>FontConfigurableTool</h1>
+ * 
  * The FontConfigurableTool represents tools that can change Font settings.
  * It uses JavaFx javafx.scene.text.font Font instances to represent font-family
  * and font-sizes for example.
- * @author mathieu
  */
 public interface FontConfigurableTool {
    /**

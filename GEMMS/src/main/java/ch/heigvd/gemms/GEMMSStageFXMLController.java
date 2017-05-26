@@ -623,6 +623,7 @@ public class GEMMSStageFXMLController implements Initializable {
         saturation.setOnMouseReleased(eh);
         contrast.setOnMouseReleased(eh);
         brightness.setOnMouseReleased(eh);
+        blur.setOnMouseReleased(eh);
         
         // Container for effect buttons and sliders
         GridPane effectsContainer = new GridPane();

@@ -214,6 +214,8 @@ public class GEMMSStageFXMLController implements Initializable {
             }
             // Suppress tab
             else {
+              if (Workspace.class.isInstance(t.getContent())) {
+              
                 // Get workspace
                 w = (Workspace)t.getContent();
                 
@@ -228,6 +230,7 @@ public class GEMMSStageFXMLController implements Initializable {
                 
                 // Clear
                 layerController.getChildren().clear();
+              }
             }
         });
         

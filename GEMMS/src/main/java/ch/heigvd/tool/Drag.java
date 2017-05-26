@@ -15,15 +15,15 @@ public class Drag extends AbstractTool {
     //The old coordinates
     private double lastX;
     private double lastY;
-      //The list of selected Nodes
+    //The list of selected Nodes
     private List<Node> layers;
+    //Boolean to know if the alignement is active or not
     private boolean isAlignementActive;
+    //An AnchorPane to draw line on top of workspace's layers
     private AnchorPane anchorPane;
 
     public Drag(Workspace w){
-              super(w);
-
-        this.workspace = w;
+        super(w);
         this.isAlignementActive = false;
         this.anchorPane = workspace.getLayerTool();
     }

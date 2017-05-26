@@ -10,8 +10,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 
 /**
+ * <h1>DefaultCell</h1>
+ * 
  * Default Cell implementation for the GEMMS application.
- * @author mathieu
+ * @param <T> the type of elements represented
  */
 public class DefaultCell<T> extends Cell<T> {
 

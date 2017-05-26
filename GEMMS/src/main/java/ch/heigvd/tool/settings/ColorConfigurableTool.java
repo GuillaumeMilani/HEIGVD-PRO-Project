@@ -3,9 +3,10 @@ package ch.heigvd.tool.settings;
 import javafx.scene.paint.Color;
 
 /**
- * this interface represents tools that can change color. The ToolColorSettings
+ * <h1>ColorConfigurableTool</h1>
+ * 
+ * This interface represents tools that can change color. The ToolColorSettings
  * objects use this interface to manage a tool color.
- * @author mathieu
  */
 public interface ColorConfigurableTool {
    /**

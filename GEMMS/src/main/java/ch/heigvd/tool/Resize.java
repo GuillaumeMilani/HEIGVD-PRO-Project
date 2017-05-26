@@ -1,29 +1,35 @@
 package ch.heigvd.tool;
 
-import ch.heigvd.layer.GEMMSCanvas;
 import ch.heigvd.workspace.Workspace;
-        import javafx.scene.Cursor;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.transform.*;
-
 import java.util.List;
 
+public class Resize extends AbstractTool {
 
-public class Resize implements Tool {
-
-    private final Workspace workspace;
+    //The old x coordonate
     private double mouseX;
-    private final double FACTEUR = 0.001;
+    //The factor of resizing
+    private final double FACTOR = 0.001;
+    //The direction of resizing (left -> right)
+    private final int DIRECTION = -1;
+    //The list of selected Nodes
+    private List<Node> layers;
 
-
+    /**
+     * Constructor of Resize Tool
+     *
+     * @param w workspace to crop
+     */
     public Resize(Workspace w){
-        this.workspace = w;
+        super(w);
     }
 
     @Override
     public void mousePressed(double x, double y) {
         mouseX = x;
         workspace.setCursor(Cursor.E_RESIZE);
+        layers = workspace.getCurrentLayers();
     }
 
     @Override
@@ -32,11 +38,9 @@ public class Resize implements Tool {
 
         double newX = x - mouseX;
 
-        List<Node> layers = workspace.getCurrentLayers();
-
         double newScale;
         for (Node node : layers) {
-            newScale = node.getScaleX() + (newX * FACTEUR)*-1; //*-1 pour changer de sens gauche -> droite
+            newScale = node.getScaleX() + (newX * FACTOR)*DIRECTION;
             if(newScale>=0) {
                 node.setScaleX(newScale);
                 node.setScaleY(newScale);
@@ -50,5 +54,6 @@ public class Resize implements Tool {
     @Override
     public void mouseReleased(double x, double y) {
         workspace.setCursor(Cursor.DEFAULT);
+        notifier.notifyHistory();
     }
 }

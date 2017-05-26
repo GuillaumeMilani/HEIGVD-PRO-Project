@@ -1,19 +1,18 @@
 package ch.heigvd.workspace;
 
-import ch.heigvd.gemms.Constants;
 import ch.heigvd.tool.Tool;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
-import javafx.event.ActionEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.control.Button;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
@@ -21,12 +20,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.transform.Transform;
+import javafx.scene.transform.NonInvertibleTransformException;
 
-
-/**
- * @author mathieu
- */
 public class Workspace extends StackPane implements Serializable {
 
    // Workspace that displays layers
@@ -50,7 +45,11 @@ public class Workspace extends StackPane implements Serializable {
    
    // Current selected tool
    private Tool currentTool;
-  
+
+   private History history;
+
+   private HistoryNotifier historyNotifier;
+
 
    /**
     * Constructor for a new instance of Workspace. The Workspace extends a Pane
@@ -71,6 +70,8 @@ public class Workspace extends StackPane implements Serializable {
       
       layerTools = new AnchorPane();
       getChildren().add(layerTools);
+      
+      historyNotifier = new HistoryNotifier();
       
       clip = new Rectangle(width, height);
       
@@ -109,46 +110,10 @@ public class Workspace extends StackPane implements Serializable {
          }
       });
 
-      // Register scroll event for zoom
-      setOnScroll(new EventHandler<ScrollEvent>() {
-         @Override
-         public void handle(ScrollEvent event) {
-            if (event.isControlDown()) {
-               if (event.getDeltaY() > 0) {
-                  zoom(1.05);
-               } else {
-                  zoom(0.95);
-               }
-            }
-         }
-      });
 
-      EventHandler dragEventHandler = new EventHandler<MouseEvent>() {
-         private double x;
-         private double y;
-
-         @Override
-         public void handle(MouseEvent event) {
-            if (event.isShiftDown()) {
-               if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
-                  x = event.getX();
-                  y = event.getY();
-               } else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
-                  move(event.getX() - x, event.getY() - y);
-                  x = event.getX();
-                  y = event.getY();
-               }
-               event.consume();
-            } else {
-               x = event.getX();
-               y = event.getY();
-            }
-         }
-      };
-
-      addEventFilter(MouseEvent.ANY, dragEventHandler);
-
-      addEventHandler(MouseEvent.ANY, dragEventHandler);
+      // History
+      this.history = new History(this);
+      historyNotifier.addObserver(history);
    }
    
    
@@ -169,9 +134,13 @@ public class Workspace extends StackPane implements Serializable {
           params = new SnapshotParameters();
       } 
       
-      params.setTransform(Transform.scale(1 / getWorkspaceScaleX(), 1 / getWorkspaceScaleX()));
       params.setFill(Color.TRANSPARENT);
-      params.setViewport(new Rectangle2D(clip.getLayoutX(), clip.getLayoutY(), clip.getWidth(), clip.getHeight()));
+      try {
+          params.setTransform(clip.getLocalToParentTransform().createInverse());
+      } catch (NonInvertibleTransformException ex) {
+          Logger.getLogger(Workspace.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      params.setViewport(new Rectangle2D(clip.getBoundsInLocal().getMinX(), clip.getBoundsInLocal().getMinY(), clip.getWidth(), clip.getHeight()));
       
       return workspace.snapshot(params, image);
    }
@@ -184,7 +153,9 @@ public class Workspace extends StackPane implements Serializable {
       workspace.getChildren().add(node);
       layerList.clearSelection();
       layerList.selectTopLayer();
-      
+
+      historyNotifier.notifyHistory();
+
       //layerList.getItems().add(node);
       //layerList.getSelectionModel().clearSelection();
       //layerList.getSelectionModel().selectLast();
@@ -197,13 +168,13 @@ public class Workspace extends StackPane implements Serializable {
    public void removeLayer(Node node) {
       workspace.getChildren().remove(node);
       layerList.selectTopLayer();
+      historyNotifier.notifyHistory();
    }
    
    
    public List<Node> getCurrentLayers() {
       return layerList.getSelectedItems();
    }
-
    
    /**
     * @return
@@ -212,7 +183,6 @@ public class Workspace extends StackPane implements Serializable {
       return workspace.getChildren();
    }
 
-   
    /**
     * @param factor
     */
@@ -240,15 +210,6 @@ public class Workspace extends StackPane implements Serializable {
       clip.setTranslateX(clip.getTranslateX() + x);
       clip.setTranslateY(clip.getTranslateY() + y);
    }
-
-   
-   /**
-    *
-    */
-   public void crop() {
-
-   }
-   
    
    public void resizeCanvas(int width, int height, int offsetX, int offsetY) {
       this.width = width;
@@ -380,5 +341,12 @@ public class Workspace extends StackPane implements Serializable {
       for (int i = 0; i < nbLayers; ++i) {
          addLayer((Node) s.readObject());
       }
+   }
+
+   public History getHistory() {
+      return history;
+   }
+   public void notifyHistory() {
+      historyNotifier.notifyHistory();
    }
 }

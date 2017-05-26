@@ -1,8 +1,7 @@
-/* 
-    Created on : May 3, 2017, 1:55:33 PM
-    Author     : mathieu
+/*
+  CSS Icons
+  CSS file to specify CSS icon classes.
 */
-
 .text-icon {
     -fx-background-image: url("../img/text-icon.png");
     -fx-background-position: center;
@@ -122,12 +121,6 @@
     -fx-background-position: center;
     -fx-background-repeat: no-repeat;
     -fx-background-size: 50%;
-}
-.bucket-icon {
-    -fx-background-image: url("../img/bucket-icon.png");
-    -fx-background-position: center;
-    -fx-background-repeat: no-repeat;
-    -fx-background-size: 60%;
 }
 .crop-icon {
     -fx-background-image: url("../img/crop-icon.png");

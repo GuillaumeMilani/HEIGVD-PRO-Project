@@ -11,13 +11,10 @@ import javafx.scene.shape.Rectangle;
  * The Crop tool class. Allow users to crop the workspace with a box.
  * It resize the workspace but do not resize the layers.
  */
-public class Crop  implements Tool {
+public class Crop extends AbstractTool {
     
     // Crop box
     private final Rectangle rectangle;
-    
-    // Workspace to crop
-    private final Workspace workspace;
     
     // Last mouse position
     private double lastX;
@@ -35,8 +32,8 @@ public class Crop  implements Tool {
      * @param w workspace to crop
      */
     public Crop(Workspace w) {
-        workspace = w;
-        
+        super(w);
+
         // Set the cursor
         workspace.getLayerTool().setCursor(Cursor.CROSSHAIR);
 
@@ -132,7 +129,12 @@ public class Crop  implements Tool {
             rectangle.getWidth() > 0 && 
             rectangle.getHeight() > 0) {
 
-            workspace.resizeCanvas((int)rectangle.getWidth(), (int)rectangle.getHeight(), -(int)rectangle.getBoundsInParent().getMinX(), -(int)rectangle.getBoundsInParent().getMinY());
+            workspace.resizeCanvas(
+                    (int)rectangle.getWidth(), 
+                    (int)rectangle.getHeight(), 
+                    -(int)rectangle.getBoundsInParent().getMinX(), 
+                    -(int)rectangle.getBoundsInParent().getMinY());
+            
             rectangle.setWidth(0);
             rectangle.setHeight(0);
             rectangle.setX(0);

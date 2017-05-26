@@ -1,20 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ch.heigvd.gemms;
 
 /**
- *
- * @author mathieu
- */
-
-/**
- * This class regroups the constants to apply CSSIcons to JavaFx elements.
+ * <h1>CSSIcons</h1>
+ * 
+ * This class contains the constants to apply CSSIcons to JavaFx elements.
  * Each field in this class should have a corresponding description inside
- * the CSSIcons file. This file should be loaded in the JavaFx application 
+ * the CSSIcons file. Said file should be loaded in the JavaFx application 
  * separately.
+ * 
+ * Each class name corresponds to an icon image. All images come from the 
+ * Iconmonstr website (iconmonstr.com) if not said otherwise.
  */
 public class CSSIcons {
    
@@ -40,11 +35,11 @@ public class CSSIcons {
    public static final String EYE_DROPPER="eye-dropper-icon";
    public static final String TEXT_TOOL = "text-tool-icon";
    
+
+   // LayerList controller buttons
    public static final String TRASH = "trash-icon";
    public static final String UP_ARROW = "up-icon";
    public static final String DOWN_ARROW = "down-icon";
-   
-   public static final String BUCKET = "bucket-icon";
    public static final String TRANSLATE = "translate-icon";
    public static final String ROTATE = "rotate-icon";
    public static final String SCALE = "scale-icon";

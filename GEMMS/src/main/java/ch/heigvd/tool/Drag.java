@@ -1,7 +1,6 @@
 package ch.heigvd.tool;
 
 import ch.heigvd.workspace.Workspace;
-import javafx.geometry.Point3D;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
@@ -9,17 +8,21 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
+import java.util.List;
 
-public class Drag implements Tool{
+public class Drag extends AbstractTool {
 
-    private Workspace workspace;
-
+    //The old coordinates
     private double lastX;
     private double lastY;
+      //The list of selected Nodes
+    private List<Node> layers;
     private boolean isAlignementActive;
     private AnchorPane anchorPane;
 
     public Drag(Workspace w){
+              super(w);
+
         this.workspace = w;
         this.isAlignementActive = false;
         this.anchorPane = workspace.getLayerTool();
@@ -31,6 +34,7 @@ public class Drag implements Tool{
 
         lastX = x;
         lastY = y;
+        layers = workspace.getCurrentLayers();
     }
 
     private void setPosition(double x, double y, Node n){
@@ -41,12 +45,13 @@ public class Drag implements Tool{
     @Override
     public void mouseDragged(double x, double y) {
 
+        //offsets to change coordonates
         double offsetX = x - lastX;
         double offsetY = y - lastY;
 
-        for(Node n : workspace.getCurrentLayers()) {
-                n.setTranslateX(n.getTranslateX() + offsetX);
-                n.setTranslateY(n.getTranslateY() + offsetY);
+        for(Node n : layers) {
+            n.setTranslateX(n.getTranslateX() + offsetX);
+            n.setTranslateY(n.getTranslateY() + offsetY);
         }
 
         lastX = x;
@@ -56,7 +61,7 @@ public class Drag implements Tool{
     @Override
     public void mouseReleased(double x, double y) {
         workspace.setCursor(Cursor.DEFAULT);
-
+        notifier.notifyHistory();
     }
 
     public void turnAlignementOnOff(){

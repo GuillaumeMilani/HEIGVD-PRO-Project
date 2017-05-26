@@ -3,10 +3,10 @@ package ch.heigvd.workspace;
 import javafx.scene.layout.HBox;
 
 /**
- * Cell object are used to represent elements in a LayerList layer list. 
+ * <h1>CELL</h1>
+ * Cell object are used to represent elements in a LayerList. 
  * 
- * @author mathieu
- * @param <T> the type of element being represented
+ * @param <T> the type of element represented
  */
 public abstract class Cell<T> extends HBox{
    // The cell index in the displayed LayerList panel

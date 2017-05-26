@@ -10,11 +10,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 /**
+ * <h1>ToolFontSettings</h1>
+ * 
  * ToolFontSettings manage FontConfigurableTools. Its purpose is to offer 
  * JavaFx control elements to change the size and the family of the targeted 
  * tool.
- * 
- * @author Mathieu Monteverde
  */
 public class ToolFontSettings extends ToolSettings{
 

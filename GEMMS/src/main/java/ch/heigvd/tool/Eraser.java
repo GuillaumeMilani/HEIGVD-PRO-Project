@@ -5,8 +5,8 @@ import ch.heigvd.workspace.Workspace;
 import javafx.scene.canvas.GraphicsContext;
 
 /**
- * The Eraser clear canvas pixels content. 
- * @author mathieu
+ * <h1>Eraser</h1>
+ * The Eraser clear JavaFx Canvas pixels content. 
  */
 public class Eraser extends LineTool implements SizeConfigurableTool {
    
@@ -51,6 +51,7 @@ public class Eraser extends LineTool implements SizeConfigurableTool {
     * Get the size of the eraser in pixels
     * @return the size of the brush
     */
+   @Override
    public int getSize() {
       return size;
    }

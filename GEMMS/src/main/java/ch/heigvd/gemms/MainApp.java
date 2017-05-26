@@ -5,6 +5,7 @@ import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 
@@ -27,9 +28,12 @@ public class MainApp extends Application {
         scene.getStylesheets().add("/styles/ColorSet.css");
         
         stage.setTitle("GEMMS 2017");
+        stage.getIcons().add(new Image("/img/main-logo.png"));
         stage.setScene(scene);
         
         stage.show();
+        
+        controller.getWelcomeTab().show();
     }
 
     /**

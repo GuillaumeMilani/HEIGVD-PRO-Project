@@ -8,7 +8,6 @@ import ch.heigvd.dialog.ResizeDialog;
 
 import ch.heigvd.layer.GEMMSText;
 import ch.heigvd.layer.GEMMSCanvas;
-import ch.heigvd.layer.IGEMMSNode;
 import ch.heigvd.layer.GEMMSImage;
 
 import ch.heigvd.tool.*;
@@ -31,8 +30,8 @@ import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.event.*;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -46,21 +45,32 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.NonInvertibleTransformException;
+import javafx.scene.control.Dialog;
 
 
 
@@ -82,8 +92,6 @@ public class GEMMSStageFXMLController implements Initializable {
     @FXML
     private GridPane gridFilterTools;
     @FXML
-    private GridPane gridSliders;
-    @FXML
     private GridPane gridModificationTools;
     
     
@@ -104,11 +112,10 @@ public class GEMMSStageFXMLController implements Initializable {
     // List of documents
     private ArrayList<Document> documents;
     
-    // Tab to wlecom users and invite to click
-    private Tab welcomeTab;
-    
     // List of created tool buttons
-    LinkedList<Button> toolButtons = new LinkedList();
+    private LinkedList<Button> toolButtons = new LinkedList();
+    
+    private Dialog welcomeTab;
     
     
     @Override
@@ -118,7 +125,8 @@ public class GEMMSStageFXMLController implements Initializable {
         documents = new ArrayList<>();
         
         // Add a welcom panel 
-        welcomeTab = new Tab();
+        welcomeTab = new Dialog();
+        welcomeTab.getDialogPane().getStylesheets().add("/styles/CSSIcons.css");
         StackPane welcomeContainer = new StackPane(); // Container to center
         GridPane welcomeGrid = new GridPane(); // Grid for multiple panels
         
@@ -127,16 +135,18 @@ public class GEMMSStageFXMLController implements Initializable {
         newButtonInvite.getStyleClass().add("new-document-button");
         newButtonInvite.setOnAction(e -> {
            newButtonAction(e);
+           welcomeTab.hide();
         });
-        WelcomeInvite newInvite = new WelcomeInvite(new Label("Créer un nouveau document."), newButtonInvite);
+        WelcomeInvite newInvite = new WelcomeInvite(new Label("Create a new document."), newButtonInvite);
         
         // Button for open document invite
         Button openButtonInvite = new Button();
         openButtonInvite.getStyleClass().add("open-document-button");
         openButtonInvite.setOnAction(e -> {
            openButtonAction(e);
+           welcomeTab.hide();
         });
-        WelcomeInvite openInvite = new WelcomeInvite(new Label("Ouvrir un document GEMMS."), openButtonInvite);
+        WelcomeInvite openInvite = new WelcomeInvite(new Label("open a GEMMS document."), openButtonInvite);
         
         // Add invites
         welcomeGrid.add(newInvite, 0, 0);
@@ -152,11 +162,56 @@ public class GEMMSStageFXMLController implements Initializable {
         StackPane.setAlignment(welcomeGrid, Pos.CENTER);
         
         // Welcome tab parameters
-        welcomeTab.setContent(welcomeContainer);
-        welcomeTab.setText("Welcome !");
-        workspaces.getTabs().add(welcomeTab);
+        welcomeTab.getDialogPane().setContent(welcomeContainer);
+        welcomeTab.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        welcomeTab.setTitle("Welcome !");
         
-        
+               // Register scroll event for zoom
+       workspaces.setOnScroll(new EventHandler<ScrollEvent>() {
+          @Override
+          public void handle(ScrollEvent event) {
+             Workspace workspace = getCurrentWorkspace();
+             if (workspace != null) {
+                if (event.isControlDown()) {
+                   if (event.getDeltaY() > 0) {
+                      workspace.zoom(1.05);
+                   } else {
+                      workspace.zoom(0.95);
+                   }
+                }
+             }
+          }
+       });
+
+       EventHandler dragEventHandler = new EventHandler<MouseEvent>() {
+          private double x;
+          private double y;
+
+          @Override
+          public void handle(MouseEvent event) {
+             Workspace workspace = getCurrentWorkspace();
+             if (workspace != null) {
+                if (event.isShiftDown()) {
+                   if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
+                      x = event.getX();
+                      y = event.getY();
+                   } else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
+                      workspace.move(event.getX() - x, event.getY() - y);
+                      x = event.getX();
+                      y = event.getY();
+                   }
+                   event.consume();
+                } else {
+                   x = event.getX();
+                   y = event.getY();
+                }
+             }
+          }
+       };
+       workspaces.addEventFilter(MouseEvent.ANY, dragEventHandler);
+       workspaces.addEventHandler(MouseEvent.ANY, dragEventHandler);
+
+
         // Tab changed action
         workspaces.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> ov, Tab t, Tab t1) -> {
            Workspace w = getCurrentWorkspace();
@@ -166,6 +221,7 @@ public class GEMMSStageFXMLController implements Initializable {
             }
             // Suppress tab
             else {
+              
                 // Get workspace
                 w = (Workspace)t.getContent();
                 
@@ -180,7 +236,7 @@ public class GEMMSStageFXMLController implements Initializable {
                 
                 // Clear
                 layerController.getChildren().clear();
-            }
+              }
         });
         
         
@@ -200,7 +256,7 @@ public class GEMMSStageFXMLController implements Initializable {
                Optional<String> result = TextTool.getDialogText(null);
                if (result.isPresent()) {
                   GEMMSText t = new GEMMSText(w.width()/2, w.height()/2, result.get());
-                  t.setFill(ColorSet.getInstance().getColor());
+                  t.setFill(textColor.getColor());
                   t.setFont(textFont.getFont());
                   t.setTranslateX(-t.getBoundsInParent().getWidth() / 2);
                   w.addLayer(t);
@@ -322,21 +378,6 @@ public class GEMMSStageFXMLController implements Initializable {
             }
         });
 
-        // Create bucket tool
-        Button bucket = createToolButton("", gridDrawingTools);
-        bucket.getStyleClass().add(CSSIcons.BUCKET);
-        setHoverHint(bucket, "Fill with color.");
-        bucket.setOnAction(e -> {
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-               clearSelectedButtons();
-               selectButton(bucket);
-                BucketFill b = new BucketFill(w);
-                w.setCurrentTool(b);
-                displayToolSetting(bucket, null);
-            }
-        });
-
         // Create eraser tool
         Button eraser = createToolButton("", gridDrawingTools);
         eraser.getStyleClass().add(CSSIcons.ERASER);
@@ -409,7 +450,7 @@ public class GEMMSStageFXMLController implements Initializable {
             if(w != null) {
                clearSelectedButtons();
                selectButton(rotate);
-                w.setCurrentTool(new ch.heigvd.tool.RotateTool(w));
+                w.setCurrentTool(new ch.heigvd.tool.Rotate(w));
               displayToolSetting(rotate, null);
             }
         });
@@ -457,20 +498,15 @@ public class GEMMSStageFXMLController implements Initializable {
         });
         
         
-        
         //Create various sliders
         final Slider opacity = new Slider(0, 1, 1);
         final Slider sepia = new Slider(0, 1, 0);
         final Slider saturation = new Slider(-1, 1, 0);
         final Slider contrast = new Slider(-1, 1, 0);
         final Slider brightness = new Slider(-1, 1, 0);
-        
-        final Label opacityLabel = new Label("Opacity:");
-        final Label sepiaLabel = new Label("Sepia:");
-        final Label saturationLabel = new Label("Saturation:");
-        final Label contrastLabel = new Label("Contrast:");
-        final Label brightnessLabel = new Label("Brightness:");
-        
+        final Slider blur = new Slider (0, 100, 0);
+  
+        //Create labels to show current slider value
         final Label opacityValue = new Label(
                 Double.toString(opacity.getValue()));
         final Label sepiaValue = new Label(
@@ -481,8 +517,12 @@ public class GEMMSStageFXMLController implements Initializable {
                 Double.toString(contrast.getValue()));
         final Label brightnessValue = new Label(
                 Double.toString(brightness.getValue()));
+        final Label blurValue = new Label(
+                Double.toString(blur.getValue()));
 
+        //Add a ChangeListener to each slider so that they may modify current layers
         opacity.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
             public void changed(ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) {
 
@@ -498,6 +538,7 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         sepia.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
             public void changed(ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) {
                 Workspace w = getCurrentWorkspace();
@@ -511,6 +552,7 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         saturation.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
             public void changed(ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) {
                 Workspace w = getCurrentWorkspace();
@@ -524,6 +566,7 @@ public class GEMMSStageFXMLController implements Initializable {
         });
         
         contrast.valueProperty().addListener(new ChangeListener<Number>() {
+                @Override
                 public void changed(ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) {
                 Workspace w = getCurrentWorkspace();
@@ -537,6 +580,7 @@ public class GEMMSStageFXMLController implements Initializable {
         });
         
         brightness.valueProperty().addListener(new ChangeListener<Number>() {
+                @Override
                 public void changed(ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) {
                 Workspace w = getCurrentWorkspace();
@@ -548,17 +592,68 @@ public class GEMMSStageFXMLController implements Initializable {
                 brightnessValue.setText(String.format("%.2f", new_val));
             }
         });
+        
+        blur.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> ov,
+                    Number old_val, Number new_val) {
+                Workspace w = getCurrentWorkspace();
+                if (w != null) {
+                    for (Node n : w.getCurrentLayers()) {
+                        setBlurRadius(n, new_val.intValue());
+                    }
+                }
+                blurValue.setText(String.format("%d", new_val.intValue()));
+            }
+        });
 
-        gridSliders.setPadding(new Insets(10, 10, 10, 10));
-        createSlider(gridSliders, opacityLabel, opacity, opacityValue, 1);
-        createSlider(gridSliders, sepiaLabel, sepia, sepiaValue, 2);
-        createSlider(gridSliders, saturationLabel, saturation, saturationValue, 3);
-        createSlider(gridSliders, contrastLabel, contrast, contrastValue, 4);
-        createSlider(gridSliders, brightnessLabel, brightness, brightnessValue, 5);
+        //
+        EventHandler eh = new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                Workspace w = getCurrentWorkspace();
+                if(w != null){
+                    getCurrentWorkspace().notifyHistory();
+                }
+            }
+        };
+
+        opacity.setOnMouseReleased(eh);
+        sepia.setOnMouseReleased(eh);
+        saturation.setOnMouseReleased(eh);
+        contrast.setOnMouseReleased(eh);
+        brightness.setOnMouseReleased(eh);
+        
+        // Container for effect buttons and sliders
+        GridPane effectsContainer = new GridPane();
+        effectsContainer.setPadding(new Insets(15));
+        effectsContainer.setBackground(new Background(new BackgroundFill(Color.web("#ededed"), CornerRadii.EMPTY, Insets.EMPTY)));
+        effectsContainer.setStyle("-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.15) , 3 ,0 , 3 , 3 );");
+        effectsContainer.setHgap(5);
+        effectsContainer.setVgap(10);
+        effectsContainer.setLayoutX(-10000);
+        effectsContainer.setLayoutY(0);
+        // Add it to the mainAnchorPane
+        mainAnchorPane.getChildren().add(effectsContainer);
+        
+        // GridPane to contain the effects buttons, not the sliders
+        GridPane effectButtonsContainer = new GridPane();
+        effectButtonsContainer.setPrefWidth(153);
+        effectButtonsContainer.setMaxWidth(153);
+        effectButtonsContainer.setHgap(10);
+        // Add column constraints
+        for (int i = 0; i < 3; ++i) {
+            ColumnConstraints c = new ColumnConstraints();
+            c.setPercentWidth(100/3.0);
+            c.setHgrow(Priority.SOMETIMES);
+            c.setMinWidth(10);
+            c.setMaxWidth(100);
+            effectButtonsContainer.getColumnConstraints().add(c);
+        }
 
         // Create filter button
-        Button BW = createToolButton("B&W", gridFilterTools);
-        setHoverHint(BW, "Apply a Black and White filter.");
+        Button BW = createToolButton("B&W", effectButtonsContainer);
+        setHoverHint(BW, "Apply a black & white filter.");
         BW.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if (w != null) {
@@ -567,19 +662,22 @@ public class GEMMSStageFXMLController implements Initializable {
                     getColorAdjust(n).setSaturation(-1);
                     saturation.setValue(-1);
                 }
-                
-              displayToolSetting(BW, null);
+                w.notifyHistory();
+
+                displayToolSetting(BW, null);
             }
         });
         
         // Create filter button
-        Button tint = createToolButton("Tint", gridFilterTools);
-        setHoverHint(tint, "Apply a Tint filter.");
+        Button tint = createToolButton("Tint", effectButtonsContainer);
+        setHoverHint(tint, "Apply a color filter of the current color.");
         tint.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if (w != null) {
                clearSelectedButtons();
                 for (Node n : w.getCurrentLayers()) {
+                    //Algorithm to convert color to hue:
+                    //https://stackoverflow.com/questions/31587092
                     //Get hue between 0-360
                     double hue = ColorSet.getInstance().getColor().getHue();
                     //Add 180 and modulo 360 to get target colour
@@ -590,12 +688,15 @@ public class GEMMSStageFXMLController implements Initializable {
                     //Finally, set the hue to node
                     getColorAdjust(n).setHue(hue);
                 }
-              displayToolSetting(tint, null);
+                w.notifyHistory();
+
+                displayToolSetting(tint, null);
             }
         });
+
         
         // Create filter button
-        Button reset = createToolButton("Reset", gridFilterTools);
+        Button reset = createToolButton("Reset", effectButtonsContainer);
         setHoverHint(reset, "Reset all color effects.");
         reset.setOnAction((ActionEvent e) -> {
            clearSelectedButtons();
@@ -604,7 +705,10 @@ public class GEMMSStageFXMLController implements Initializable {
                 for (Node n : w.getCurrentLayers()) {
                     ColorAdjust c = getColorAdjust(n);
                     c.setHue(0);
+                    setBlurRadius(n, 0);
                 }
+                w.notifyHistory();
+
                 opacity.setValue(1);
                 saturation.setValue(0);
                 sepia.setValue(0);
@@ -614,6 +718,56 @@ public class GEMMSStageFXMLController implements Initializable {
                 displayToolSetting(reset, null);
             }
         });
+        
+        // Add the sliders to the effects container
+       createSlider(effectsContainer, "Opacity:", opacity, opacityValue, 1);
+       createSlider(effectsContainer, "Sepia:", sepia, sepiaValue, 2);
+       createSlider(effectsContainer, "Saturation:", saturation, saturationValue, 3);
+       createSlider(effectsContainer, "Contrast:", contrast, contrastValue, 4);
+       createSlider(effectsContainer, "Brightness:", brightness, brightnessValue, 5);
+       createSlider(effectsContainer, "Blur", blur, blurValue, 6);
+       
+       // Add the buttons on the first row
+       effectsContainer.add(effectButtonsContainer, 0, 0);
+       GridPane.setColumnSpan(effectButtonsContainer, 3);
+       
+       // Create a button to toggle the effect panel
+       Button effectsToggl = createToolButton("Effects", gridFilterTools);
+       setHoverHint(effectsToggl, "Open/Close effects panel.");
+       effectsToggl.setPrefWidth(160);
+       toolButtons.remove(effectsToggl);
+       // Set the toggle action
+       effectsToggl.setOnAction((ActionEvent e) -> {
+          // If the layoutX property >= 0, then we assume the container is visible
+          if (effectsContainer.getLayoutX() >= 0) {
+             //Hide the container
+             effectsToggl.getStyleClass().remove("selected");
+             effectsContainer.setLayoutX(-10000);
+             effectsContainer.setLayoutY(0);
+          } else { // The container is not visible
+             selectButton(effectsToggl);
+
+             // Get height of the window
+             double windowHeight = mainAnchorPane.getBoundsInParent().getHeight();
+
+             // Get the height of the container
+             double containerHeight = effectsContainer.getBoundsInParent().getHeight();
+
+             // Get the ideal position of the panel
+             double posX = effectsToggl.localToScene(effectsToggl.getBoundsInLocal()).getMinX();
+             double posY = effectsToggl.localToScene(effectsToggl.getBoundsInLocal()).getMaxY();
+
+             // If the container would overflow from the window
+             if (posY + containerHeight > windowHeight) {
+                posX = 180;
+                posY = windowHeight - containerHeight;
+             }
+             
+             // Set the container position
+             effectsContainer.setLayoutX(posX);
+             effectsContainer.setLayoutY(posY);
+          }
+       });
 
         mainAnchorPane.setOnKeyPressed(keyEvent -> {
             // ---------- ESC ----------
@@ -621,13 +775,48 @@ public class GEMMSStageFXMLController implements Initializable {
             if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {
                 // Disable current tool
                 getCurrentWorkspace().setCurrentTool(null);
-
-            // ---------- DEL ----------
+                clearSelectedButtons();
 
             } else if (keyEvent.getCode().equals(KeyCode.DELETE)) {
-            // Drop the current selected layers
-                getCurrentWorkspace().getCurrentLayers().forEach(n->getCurrentWorkspace().getLayers().remove(n));
+                // ---------- DEL ----------
+
+                if (getCurrentWorkspace() != null && getCurrentWorkspace().getLayerTool() != null && getCurrentWorkspace().getCurrentTool() instanceof Selection) { 
+                   
+                   
+                    // Get the selection
+                    Selection selection = (Selection)getCurrentWorkspace().getCurrentTool();
+                    Rectangle rec = selection.getRectangle();
+
+                    for (Node n : getCurrentWorkspace().getCurrentLayers()) {
+                       if(n instanceof GEMMSCanvas) {
+
+                          try {
+                             GEMMSCanvas canvas = (GEMMSCanvas)n;
+                             
+                             GraphicsContext gc = canvas.getGraphicsContext2D();
+                             gc.setTransform(new Affine(canvas.localToParentTransformProperty().get().createInverse()));
+                             gc.clearRect(rec.getBoundsInParent().getMinX(), rec.getBoundsInParent().getMinY(), rec.getWidth(), rec.getHeight());
+                          } catch (NonInvertibleTransformException ex) {
+                             
+                             // TODO : Manage exceptions
+                             Logger.getLogger(GEMMSStageFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                          }
+                       }
+                    }
+                }
+                else {
+                  // Drop the current selected layers
+                  getCurrentWorkspace().getCurrentLayers().forEach(n->getCurrentWorkspace().removeLayer(n));
+                }
+
+            } else if (Constants.CTRL_Z.match(keyEvent)) {
+                // ---------- CTRL + Z ----------
+                getCurrentWorkspace().getHistory().undo();
+            } else if (Constants.CTRL_Y.match(keyEvent)) {
+                // ---------- CTRL + Y ----------
+                getCurrentWorkspace().getHistory().redo();
             }
+
             // ---------- CTRL + C ----------
             if (Constants.CTRL_C.match(keyEvent)) {
 
@@ -706,6 +895,8 @@ public class GEMMSStageFXMLController implements Initializable {
                 }
             }
         });
+        
+        //mainAnchorPane.getChildren().add(welcomeTab);
     }
 
     
@@ -721,15 +912,7 @@ public class GEMMSStageFXMLController implements Initializable {
 
         // Serialize each node
         try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(baos);
-
-            List<IGEMMSNode> n = new LinkedList<>();
-            nodes.forEach(node -> n.add((IGEMMSNode)node));
-            out.writeObject(n);
-
-            cc.putString(Base64.getEncoder().encodeToString(baos.toByteArray()));
-            baos.close();
+            cc.putString(Utils.serializeNodeList(nodes));
         } catch (Exception e) {
             // TODO: manage exceptions
             e.printStackTrace();
@@ -748,9 +931,7 @@ public class GEMMSStageFXMLController implements Initializable {
 
         // Deserialize the clipboard's content
         try {
-            ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(serializedObject));
-            ObjectInputStream in = new ObjectInputStream(bais);
-            return (List<Node>)in.readObject();
+            return Utils.deserializeNodeList(serializedObject);
         } catch (Exception e) {
             // TODO: manage exceptions
             e.printStackTrace();
@@ -867,7 +1048,7 @@ public class GEMMSStageFXMLController implements Initializable {
             }
 
             Workspace w = document.workspace();
-
+            
             // Clear
             layerController.getChildren().clear();
             layerController.getChildren().add(w.getWorkspaceController());
@@ -876,7 +1057,7 @@ public class GEMMSStageFXMLController implements Initializable {
             Tab tab = new Tab(document.name(), w);
             workspaces.getTabs().add(tab);
             workspaces.getSelectionModel().select(tab);
-
+            
             documents.add(document);
         }
     }
@@ -954,6 +1135,10 @@ public class GEMMSStageFXMLController implements Initializable {
         this.stage = stage;
     }
     
+    public Dialog getWelcomeTab() {
+       return welcomeTab;
+    }
+    
     /**
      * Get the current workspace displayed
      * 
@@ -961,9 +1146,7 @@ public class GEMMSStageFXMLController implements Initializable {
      */
     private Workspace getCurrentWorkspace() {
         if (workspaces.getTabs().size() > 0) {
-           if (workspaces.getSelectionModel().getSelectedItem() != welcomeTab)  {
-             return (Workspace) workspaces.getSelectionModel().getSelectedItem().getContent();
-           }
+           return (Workspace) workspaces.getSelectionModel().getSelectedItem().getContent();
         }
         
         return null;
@@ -993,7 +1176,8 @@ public class GEMMSStageFXMLController implements Initializable {
      * @param slider
      * @param position
      */
-    private void createSlider(GridPane pane, Label label, Slider slider, Label value, int position) {
+    private void createSlider(GridPane pane, String string, Slider slider, Label value, int position) {
+        Label label = new Label(string);
         label.setMinWidth(50);
         value.setMinWidth(30);
         GridPane.setConstraints(label, 0, position);
@@ -1002,12 +1186,11 @@ public class GEMMSStageFXMLController implements Initializable {
         pane.getChildren().add(slider);
         GridPane.setConstraints(value, 2, position);
         pane.getChildren().add(value);
-
     }
     
     /**
      * Returns node ColorAdjust effect. If it has none, creates one with
-     * SepiaTone as input.
+     * SepiaTone as input, which itself has a GaussianBlur as input.
      * @param n Node
      * @return node's ColorAdjust
      */
@@ -1015,10 +1198,21 @@ public class GEMMSStageFXMLController implements Initializable {
         if(!(n.getEffect() instanceof ColorAdjust)){
             ColorAdjust c = new ColorAdjust();
             SepiaTone s = new SepiaTone(0);
+            GaussianBlur g = new GaussianBlur(0);
+            s.setInput(g);
             c.setInput(s);
             n.setEffect(c);
         }
         return ((ColorAdjust) n.getEffect());
+    }
+
+    /**
+     * Sets GaussianBlur radius to desired amount for a given node.
+     * @param n
+     * @param i 
+     */
+    private void setBlurRadius(Node n, int i) {
+        ((GaussianBlur) (((SepiaTone) getColorAdjust(n).getInput())).getInput()).setRadius(i);
     }
     
     private void setHoverHint(Button button, String text) {
@@ -1041,6 +1235,5 @@ public class GEMMSStageFXMLController implements Initializable {
           }
 
        });
-       
     }
 }

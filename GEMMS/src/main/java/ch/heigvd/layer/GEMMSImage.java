@@ -1,4 +1,3 @@
-
 package ch.heigvd.layer;
 
 import ch.heigvd.gemms.CSSIcons;
@@ -9,6 +8,7 @@ import java.io.ObjectOutputStream;
 import javafx.geometry.Point3D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
@@ -18,20 +18,52 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 
+/**
+ * <h1>GEMMSImage</h1>
+ * 
+ * This class was created to implement Serializable
+ */
 public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSNode, LayerListable {
+   
+   private static int layerCount = 0;
     
+    /**
+     * Constructor
+     * 
+     * Allocates a new ImageView object.
+     */
     public GEMMSImage() {
         super();
     }
     
+    /**
+     * Constructor
+     * 
+     * Allocates a new ImageView object using the given image.
+     * 
+     * @param image load this image
+     */
     public GEMMSImage(Image image) {
         super(image);
     }
     
+    /**
+     * Constructor
+     * 
+     * Allocates a new ImageView object with image loaded from the specified URL.
+     * 
+     * @param url load an image with url
+     */
     public GEMMSImage(String url) {
         super(url);
     }
     
+    /**
+     * Write all informations for serialization
+     * 
+     * @param s output stream
+     * @throws IOException 
+     */
     private void writeObject(ObjectOutputStream s) throws IOException {
         
         // Get image
@@ -91,6 +123,7 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
             s.writeDouble(c.getSaturation());
             s.writeDouble(c.getBrightness());
             s.writeDouble(((SepiaTone) c.getInput()).getLevel());
+            s.writeDouble(((GaussianBlur) ((SepiaTone) c.getInput()).getInput()).getRadius());
         }else{
             s.writeBoolean(false);
         }
@@ -113,6 +146,12 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
         }
     }
     
+    /**
+     * Read all informations for serialization
+     * 
+     * @param s input stream
+     * @throws IOException 
+     */
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
         // Get image size
         int width = s.readInt();
@@ -157,7 +196,9 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
             c.setHue(s.readDouble());
             c.setSaturation(s.readDouble());
             c.setBrightness(s.readDouble());
-            c.setInput(new SepiaTone(s.readDouble()));
+            SepiaTone st = new SepiaTone(s.readDouble());
+            st.setInput(new GaussianBlur(s.readDouble()));
+            c.setInput(st);
             setEffect(c);
         }
 
@@ -183,11 +224,16 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
 
     @Override
     public String getLayerName() {
-        return "Image";
+        return "Image " + ++layerCount;
     }
 
     @Override
     public String getThumbnailClass() {
         return CSSIcons.IMAGE;
+    }
+
+    @Override
+    public IGEMMSNode clone() {
+        return null;
     }
 }

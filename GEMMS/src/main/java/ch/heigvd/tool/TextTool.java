@@ -19,23 +19,19 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 /**
- * The text tool manages GEMMSTexts, allowing to manage their color, size and 
+ * <h1>TextTool</h1>
+ * 
+ * The text tool manages GEMMSTexts, allowing to set their color, size and 
  * font. It also allows to change a GEMMSText content by clicking on it.
- *
- * @author Mathieu Monteverde
  */
-public class TextTool implements Tool, ColorConfigurableTool, FontConfigurableTool {
-
-   // The Workspace to work on
-   private final Workspace workspace;
-
+public class TextTool extends AbstractTool implements ColorConfigurableTool, FontConfigurableTool {
    /**
     * Constructor. Sets the workspace to work on.
     *
     * @param workspace the workspace to work on
     */
    public TextTool(Workspace workspace) {
-      this.workspace = workspace;
+      super(workspace);
       workspace.getLayerTool().setCursor(Cursor.TEXT);
    }
 
@@ -167,8 +163,8 @@ public class TextTool implements Tool, ColorConfigurableTool, FontConfigurableTo
       if (layers.size() == 1 && layers.get(0) instanceof GEMMSText) {
          GEMMSText layer = (GEMMSText) layers.get(0);
          /*
-          * et the layer dimensions and position and check if the click 
-          * happened inside the boundaires
+          * Get the layer dimensions and position and check if the click 
+          * happened inside the boundaries
           */
          // Dimensions
          int layerW = (int) layer.getBoundsInParent().getWidth();
@@ -177,7 +173,7 @@ public class TextTool implements Tool, ColorConfigurableTool, FontConfigurableTo
          int layerX = (int) (layer.getX() + layer.getTranslateX());
          int layerY = (int) (layer.getY() + layer.getTranslateY() - layerH / 2);
          
-         // Check
+         // Check if the click happened inside the Text boundaries
          if (x >= layerX && y >= layerY && x <= layerX + layerW && y <= layerY + layerH) {
             TextTool.dialogTextValue(layer);
          }
@@ -185,6 +181,11 @@ public class TextTool implements Tool, ColorConfigurableTool, FontConfigurableTo
 
    }
    
+   /**
+    * Get the current color of the TextTool. If exactly one GEMMSText layer
+    * is currently selected, the tool will return the color of this Text.
+    * @return the current Color of the tool.
+    */
    @Override
    public Color getColor() {
       List<Node> layers = workspace.getCurrentLayers();
@@ -195,7 +196,12 @@ public class TextTool implements Tool, ColorConfigurableTool, FontConfigurableTo
          return null;
       }
    }
-
+   
+   /**
+    * Set the current Color of the tool. If exactly one GEMMSText layer
+    * is currently selected, the tool will set the color of this Text.
+    * @param color the new color
+    */
    @Override
    public void setColor(Color color) {
       List<Node> layers = workspace.getCurrentLayers();
@@ -204,7 +210,12 @@ public class TextTool implements Tool, ColorConfigurableTool, FontConfigurableTo
          t.setFill(color);
       }
    }
-
+   
+   /**
+    * Set the current Font of the tool. If exactly one GEMMSText layer
+    * is currently selected, the tool will return the Font of this Text.
+    * @param font the new font
+    */
    @Override
    public void setFont(Font font) {
       List<Node> layers = workspace.getCurrentLayers();
@@ -215,7 +226,12 @@ public class TextTool implements Tool, ColorConfigurableTool, FontConfigurableTo
          t.setTranslateX(t.getTranslateX() + (oldWidth - t.getBoundsInParent().getWidth()) / 2);
       }
    }
-
+   
+   /**
+    * Get the current font of the tool. If exactly one GEMMSText layer
+    * is currently selected, the tool will return the Font of this Text.
+    * @return the Font of the tool
+    */
    @Override
    public Font getFont() {
       List<Node> layers = workspace.getCurrentLayers();

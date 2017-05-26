@@ -10,6 +10,9 @@ import java.util.logging.Logger;
 import javafx.geometry.Point3D;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
@@ -18,14 +21,19 @@ import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 
+/**
+ * <h1>GEMMSCanvas</h1>
+ * 
+ * This class was created to implement Serializable
+ */
 public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNode, LayerListable {
+   
+   private static int layerCount = 0;
 
     /**
      * Constructor
      */
-    public GEMMSCanvas() {
-        super();
-    }
+    public GEMMSCanvas() { super(); }
 
     /**
      * Constructor
@@ -37,6 +45,12 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
         super(width, height);
     }
 
+    /**
+     * Write all informations for serialization
+     * 
+     * @param s output stream
+     * @throws IOException 
+     */
     private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
 
@@ -51,12 +65,14 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
         // Get an image 
         SnapshotParameters sp = new SnapshotParameters();
         sp.setFill(Color.TRANSPARENT);
+        
         try {
+            // Cancel all tranformation before taking a snapshot
             sp.setTransform(getLocalToSceneTransform().createInverse());
         } catch (NonInvertibleTransformException ex) {
+            // TODO : Manage exceptions
             Logger.getLogger(GEMMSCanvas.class.getName()).log(Level.SEVERE, null, ex);
         }
-
 
         WritableImage writableImage = new WritableImage((int)width, (int)height);
         snapshot(sp, writableImage);
@@ -91,6 +107,22 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
         s.writeDouble(getRotationAxis().getX());
         s.writeDouble(getRotationAxis().getY());
         s.writeDouble(getRotationAxis().getZ());
+        
+        //Write effect info
+        ColorAdjust c;
+        if(getEffect() instanceof ColorAdjust){
+            s.writeBoolean(true);
+            c = ((ColorAdjust) getEffect());
+            s.writeDouble(c.getContrast());
+            s.writeDouble(c.getHue());
+            s.writeDouble(c.getSaturation());
+            s.writeDouble(c.getBrightness());
+            s.writeDouble(((SepiaTone) c.getInput()).getLevel());
+            s.writeDouble(((GaussianBlur) ((SepiaTone) c.getInput()).getInput()).getRadius());
+        }else{
+            s.writeBoolean(false);
+        }
+
 
         // Write Transformation
         s.writeInt(getTransforms().size());
@@ -110,6 +142,12 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
         }
     }
 
+    /**
+     * Read all informations for serialization
+     * 
+     * @param s input stream
+     * @throws IOException 
+     */
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
 
         // Get the size of the canvas
@@ -147,6 +185,20 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
         setRotate(s.readDouble());
         setRotationAxis(new Point3D(s.readDouble(), s.readDouble(), s.readDouble()));
 
+        //Boolean to notify if effects are on their way, if so read them and apply
+        if(s.readBoolean()){
+            ColorAdjust c = new ColorAdjust();
+            c.setContrast(s.readDouble());
+            c.setHue(s.readDouble());
+            c.setSaturation(s.readDouble());
+            c.setBrightness(s.readDouble());
+            SepiaTone st = new SepiaTone(s.readDouble());
+            st.setInput(new GaussianBlur(s.readDouble()));
+            c.setInput(st);
+            setEffect(c);
+        }
+
+        
         // Set Transformation
         int sizeTransformation = s.readInt();
         for (int i = 0; i < sizeTransformation; i++) {
@@ -169,7 +221,7 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
 
     @Override
     public String getLayerName() {
-        return "Canvas";
+        return "Canvas " + ++layerCount;
     }
 
     @Override

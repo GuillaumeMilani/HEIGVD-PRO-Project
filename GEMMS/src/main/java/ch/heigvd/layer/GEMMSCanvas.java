@@ -27,6 +27,8 @@ import javafx.scene.transform.Transform;
  * This class was created to implement Serializable
  */
 public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNode, LayerListable {
+   
+   private static int layerCount = 0;
 
     /**
      * Constructor
@@ -219,7 +221,7 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
 
     @Override
     public String getLayerName() {
-        return "Canvas";
+        return "Canvas " + ++layerCount;
     }
 
     @Override

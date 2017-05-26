@@ -25,7 +25,8 @@ import javafx.scene.transform.Transform;
  * This class was created to implement Serializable
  */
 public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, LayerListable {
-
+   
+   private static int layerCount = 0;
     public static final int DEFAULT_SIZE = 12;
 
     /**
@@ -208,8 +209,7 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
 
     @Override
     public String getLayerName() {
-        String[] parts = getText().split(System.lineSeparator());
-        return parts.length >= 0 ? parts[0] : "";
+       return "Text " + ++layerCount;
     }
 
     @Override

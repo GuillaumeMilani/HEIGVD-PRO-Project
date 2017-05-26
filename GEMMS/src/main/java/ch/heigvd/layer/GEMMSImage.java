@@ -24,6 +24,8 @@ import javafx.scene.transform.Transform;
  * This class was created to implement Serializable
  */
 public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSNode, LayerListable {
+   
+   private static int layerCount = 0;
     
     /**
      * Constructor
@@ -222,7 +224,7 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
 
     @Override
     public String getLayerName() {
-        return "Image";
+        return "Image " + ++layerCount;
     }
 
     @Override

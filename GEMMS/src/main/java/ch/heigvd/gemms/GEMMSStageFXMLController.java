@@ -35,7 +35,6 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.geometry.Point3D;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.SnapshotParameters;
@@ -46,12 +45,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.effect.GaussianBlur;
@@ -69,6 +70,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
+import javafx.scene.control.Dialog;
 
 
 
@@ -110,11 +112,10 @@ public class GEMMSStageFXMLController implements Initializable {
     // List of documents
     private ArrayList<Document> documents;
     
-    // Tab to wlecom users and invite to click
-    private Tab welcomeTab;
-    
     // List of created tool buttons
-    LinkedList<Button> toolButtons = new LinkedList();
+    private LinkedList<Button> toolButtons = new LinkedList();
+    
+    private Dialog welcomeTab;
     
     
     @Override
@@ -124,7 +125,8 @@ public class GEMMSStageFXMLController implements Initializable {
         documents = new ArrayList<>();
         
         // Add a welcom panel 
-        welcomeTab = new Tab();
+        welcomeTab = new Dialog();
+        welcomeTab.getDialogPane().getStylesheets().add("/styles/CSSIcons.css");
         StackPane welcomeContainer = new StackPane(); // Container to center
         GridPane welcomeGrid = new GridPane(); // Grid for multiple panels
         
@@ -133,16 +135,18 @@ public class GEMMSStageFXMLController implements Initializable {
         newButtonInvite.getStyleClass().add("new-document-button");
         newButtonInvite.setOnAction(e -> {
            newButtonAction(e);
+           welcomeTab.hide();
         });
-        WelcomeInvite newInvite = new WelcomeInvite(new Label("Créer un nouveau document."), newButtonInvite);
+        WelcomeInvite newInvite = new WelcomeInvite(new Label("Create a new document."), newButtonInvite);
         
         // Button for open document invite
         Button openButtonInvite = new Button();
         openButtonInvite.getStyleClass().add("open-document-button");
         openButtonInvite.setOnAction(e -> {
            openButtonAction(e);
+           welcomeTab.hide();
         });
-        WelcomeInvite openInvite = new WelcomeInvite(new Label("Ouvrir un document GEMMS."), openButtonInvite);
+        WelcomeInvite openInvite = new WelcomeInvite(new Label("open a GEMMS document."), openButtonInvite);
         
         // Add invites
         welcomeGrid.add(newInvite, 0, 0);
@@ -158,9 +162,9 @@ public class GEMMSStageFXMLController implements Initializable {
         StackPane.setAlignment(welcomeGrid, Pos.CENTER);
         
         // Welcome tab parameters
-        welcomeTab.setContent(welcomeContainer);
-        welcomeTab.setText("Welcome !");
-        workspaces.getTabs().add(welcomeTab);
+        welcomeTab.getDialogPane().setContent(welcomeContainer);
+        welcomeTab.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        welcomeTab.setTitle("Welcome !");
         
                // Register scroll event for zoom
        workspaces.setOnScroll(new EventHandler<ScrollEvent>() {
@@ -217,7 +221,6 @@ public class GEMMSStageFXMLController implements Initializable {
             }
             // Suppress tab
             else {
-              if (Workspace.class.isInstance(t.getContent())) {
               
                 // Get workspace
                 w = (Workspace)t.getContent();
@@ -234,7 +237,6 @@ public class GEMMSStageFXMLController implements Initializable {
                 // Clear
                 layerController.getChildren().clear();
               }
-            }
         });
         
         
@@ -877,6 +879,8 @@ public class GEMMSStageFXMLController implements Initializable {
                 }
             }
         });
+        
+        //mainAnchorPane.getChildren().add(welcomeTab);
     }
 
     
@@ -1115,6 +1119,10 @@ public class GEMMSStageFXMLController implements Initializable {
         this.stage = stage;
     }
     
+    public Dialog getWelcomeTab() {
+       return welcomeTab;
+    }
+    
     /**
      * Get the current workspace displayed
      * 
@@ -1122,9 +1130,7 @@ public class GEMMSStageFXMLController implements Initializable {
      */
     private Workspace getCurrentWorkspace() {
         if (workspaces.getTabs().size() > 0) {
-           if (workspaces.getSelectionModel().getSelectedItem() != welcomeTab)  {
-             return (Workspace) workspaces.getSelectionModel().getSelectedItem().getContent();
-           }
+           return (Workspace) workspaces.getSelectionModel().getSelectedItem().getContent();
         }
         
         return null;

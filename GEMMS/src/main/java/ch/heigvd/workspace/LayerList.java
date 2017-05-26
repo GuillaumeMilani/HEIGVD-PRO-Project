@@ -304,6 +304,9 @@ public class LayerList<T> extends VBox {
             // Select the cell if not already selected
             if (!cell.isSelected()) {
                addSelectedCellSorted(cell);
+            } else if (t.isControlDown() && cell.isSelected()) {
+               cell.deSelect();
+               selectedCells.remove(cell);
             }
             
             // If we are in the case of a double click, show a dialog to rename

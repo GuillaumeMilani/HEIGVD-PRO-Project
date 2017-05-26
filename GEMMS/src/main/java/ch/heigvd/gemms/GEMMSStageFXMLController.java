@@ -254,7 +254,7 @@ public class GEMMSStageFXMLController implements Initializable {
                Optional<String> result = TextTool.getDialogText(null);
                if (result.isPresent()) {
                   GEMMSText t = new GEMMSText(w.width()/2, w.height()/2, result.get());
-                  t.setFill(ColorSet.getInstance().getColor());
+                  t.setFill(textColor.getColor());
                   t.setFont(textFont.getFont());
                   t.setTranslateX(-t.getBoundsInParent().getWidth() / 2);
                   w.addLayer(t);

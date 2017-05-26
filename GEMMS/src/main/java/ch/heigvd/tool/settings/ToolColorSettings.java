@@ -47,10 +47,10 @@ public class ToolColorSettings extends ToolSettings {
    /**
     * Set the current tool target. It must be a ColorConfigurableTool and the 
     * ToolColorSettings instance checks if the tool already has a color set, 
-    * dans if so, doesn't update its color.
+    * and if so, doesn't update its color.
     * 
-    * On the contrary, if the tool returns a null object, it pick the ColorSet
-    * current color and apllies it to the tool target.
+    * On the contrary, if the tool returns a null object, it pick the
+    * current color and applies it to the tool target.
     * @param target 
     */
    public void setTarget(ColorConfigurableTool target) {
@@ -63,8 +63,15 @@ public class ToolColorSettings extends ToolSettings {
          cp.setValue(color);
       } else {
          // Update the target
-         cp.setValue(ColorSet.getInstance().getColor());
          target.setColor(cp.getValue());
       }
+   }
+   
+   /**
+    * Return the current color.
+    * @return the current color
+    */
+   public Color getColor() {
+      return cp.getValue();
    }
 }

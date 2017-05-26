@@ -92,7 +92,7 @@
                       <MenuItem mnemonicParsing="false" fx:id="openButton" onAction="#openButtonAction" text="Open" />
                       <MenuItem mnemonicParsing="false" fx:id="saveButton"  onAction="#saveButtonAction" text="Save" />
                       <MenuItem mnemonicParsing="false" fx:id="exportButton" onAction="#exportButtonAction" text="Export" />
-                      <MenuItem mnemonicParsing="false" onAction="#resizeButtonAction" text="Resize canvas" />
+                      <MenuItem mnemonicParsing="false" onAction="#resizeButtonAction" text="Resize document" />
                     </items>
                   </MenuButton>
                   <Separator />

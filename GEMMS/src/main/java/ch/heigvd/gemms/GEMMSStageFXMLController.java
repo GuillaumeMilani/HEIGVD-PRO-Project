@@ -35,6 +35,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Point3D;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.SnapshotParameters;
@@ -66,6 +67,8 @@ import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.NonInvertibleTransformException;
 
 
 
@@ -759,8 +762,34 @@ public class GEMMSStageFXMLController implements Initializable {
             } else if (keyEvent.getCode().equals(KeyCode.DELETE)) {
                 // ---------- DEL ----------
 
-                // Drop the current selected layers
-                getCurrentWorkspace().getCurrentLayers().forEach(n->getCurrentWorkspace().removeLayer(n));
+                if (getCurrentWorkspace() != null && getCurrentWorkspace().getLayerTool() != null && getCurrentWorkspace().getCurrentTool() instanceof Selection) { 
+                   
+                   
+                    // Get the selection
+                    Selection selection = (Selection)getCurrentWorkspace().getCurrentTool();
+                    Rectangle rec = selection.getRectangle();
+
+                    for (Node n : getCurrentWorkspace().getCurrentLayers()) {
+                       if(n instanceof GEMMSCanvas) {
+
+                          try {
+                             GEMMSCanvas canvas = (GEMMSCanvas)n;
+                             
+                             GraphicsContext gc = canvas.getGraphicsContext2D();
+                             gc.setTransform(new Affine(canvas.localToParentTransformProperty().get().createInverse()));
+                             gc.clearRect(rec.getBoundsInParent().getMinX(), rec.getBoundsInParent().getMinY(), rec.getWidth(), rec.getHeight());
+                          } catch (NonInvertibleTransformException ex) {
+                             
+                             // TODO : Manage exceptions
+                             Logger.getLogger(GEMMSStageFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                          }
+                       }
+                    }
+                }
+                else {
+                  // Drop the current selected layers
+                  getCurrentWorkspace().getCurrentLayers().forEach(n->getCurrentWorkspace().removeLayer(n));
+                }
 
             } else if (Constants.CTRL_Z.match(keyEvent)) {
                 // ---------- CTRL + Z ----------

@@ -163,7 +163,7 @@ public class GEMMSStageFXMLController implements Initializable {
         
         // Welcome tab parameters
         welcomeTab.getDialogPane().setContent(welcomeContainer);
-        welcomeTab.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        welcomeTab.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
         welcomeTab.setTitle("Welcome !");
         
                // Register scroll event for zoom

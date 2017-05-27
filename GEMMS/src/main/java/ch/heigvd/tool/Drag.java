@@ -48,7 +48,7 @@ public class Drag extends AbstractTool {
     @Override
     public void mouseDragged(double x, double y) {
         if (isAlignementActive && layers.size() == 1) { //automatic alignement only on one Node at the time
-            dragWithAlignement(x,y);
+            dragWithAlignement(x, y);
         } else {
             dragWithoutAlignement(x, y);
         }

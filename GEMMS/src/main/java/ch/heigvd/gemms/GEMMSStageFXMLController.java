@@ -534,8 +534,13 @@ public class GEMMSStageFXMLController implements Initializable {
 
             if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {
                 // Disable current tool
-                getCurrentWorkspace().setCurrentTool(null);
-                clearSelectedButtons();
+                Workspace w = getCurrentWorkspace();
+                if (w != null) {
+                   w.setCurrentTool(null);
+                  clearSelectedButtons();
+                  w.getLayerTool().setCursor(javafx.scene.Cursor.DEFAULT);
+                }
+                
 
             } else if (keyEvent.getCode().equals(KeyCode.DELETE)) {
                 // ---------- DEL ----------

@@ -5,6 +5,7 @@ import ch.heigvd.layer.GEMMSImage;
 import ch.heigvd.layer.GEMMSText;
 import ch.heigvd.workspace.Workspace;
 import java.util.List;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.PixelReader;
@@ -31,6 +32,7 @@ public class EyeDropper extends AbstractTool {
    public EyeDropper(Workspace workspace) {
       super(workspace);
       this.pickedColor = null;
+         workspace.getLayerTool().setCursor(Cursor.CROSSHAIR);
    }
    
    /**

@@ -21,13 +21,14 @@ public class Rotate extends AbstractTool {
      */
     public Rotate(Workspace w){
         super(w);
+         workspace.getLayerTool().setCursor(Cursor.DEFAULT);
     }
 
     @Override
     public void mousePressed(double x, double y) {
         mouseX = x;
-        workspace.setCursor(Cursor.E_RESIZE);
         layers = workspace.getCurrentLayers();
+         workspace.getLayerTool().setCursor(Cursor.E_RESIZE);
 
     }
 
@@ -45,8 +46,8 @@ public class Rotate extends AbstractTool {
 
     @Override
     public void mouseReleased(double x, double y) {
-        workspace.setCursor(Cursor.DEFAULT);
         notifier.notifyHistory();
+         workspace.getLayerTool().setCursor(Cursor.DEFAULT);
     }
 
 }

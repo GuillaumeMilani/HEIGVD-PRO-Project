@@ -30,17 +30,19 @@ public class Drag extends AbstractTool {
         super(w);
         this.isAlignementActive = false;
         this.anchorPane = workspace.getLayerTool();
+        
+         workspace.getLayerTool().setCursor(Cursor.DEFAULT);
     }
 
     @Override
     public void mousePressed(double x, double y) {
-        workspace.setCursor(Cursor.CLOSED_HAND);
 
         lastX = x;
         lastY = y;
         layers = workspace.getCurrentLayers();
         workspaceWidth = workspace.width();
         workspaceHeight = workspace.height();
+         workspace.getLayerTool().setCursor(Cursor.MOVE);
     }
 
     @Override
@@ -108,7 +110,7 @@ public class Drag extends AbstractTool {
 
     @Override
     public void mouseReleased(double x, double y) {
-        workspace.setCursor(Cursor.DEFAULT);
+         workspace.getLayerTool().setCursor(Cursor.DEFAULT);
         notifier.notifyHistory();
     }
 

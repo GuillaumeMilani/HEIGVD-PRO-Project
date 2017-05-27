@@ -12,7 +12,7 @@ public class Resize extends AbstractTool {
     //The factor of resizing
     private final double FACTOR = 0.001;
     //The direction of resizing (left -> right)
-    private final int DIRECTION = -1;
+    private final int DIRECTION = 1;
     //The list of selected Nodes
     private List<Node> layers;
 
@@ -23,13 +23,14 @@ public class Resize extends AbstractTool {
      */
     public Resize(Workspace w){
         super(w);
+         workspace.getLayerTool().setCursor(Cursor.DEFAULT);
     }
 
     @Override
     public void mousePressed(double x, double y) {
         mouseX = x;
-        workspace.setCursor(Cursor.E_RESIZE);
         layers = workspace.getCurrentLayers();
+        workspace.getLayerTool().setCursor(Cursor.NE_RESIZE);
     }
 
     @Override
@@ -53,7 +54,7 @@ public class Resize extends AbstractTool {
 
     @Override
     public void mouseReleased(double x, double y) {
-        workspace.setCursor(Cursor.DEFAULT);
         notifier.notifyHistory();
+         workspace.getLayerTool().setCursor(Cursor.DEFAULT);
     }
 }

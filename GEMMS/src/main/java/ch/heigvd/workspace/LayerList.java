@@ -288,6 +288,7 @@ public class LayerList<T> extends VBox {
 
       // Else create it and return it
       final Cell<T> cell = factory.createCell(element, targetList);
+      cell.deSelect();
       cell.setIndex(targetList.indexOf(element));
       cellList.add(cell);
       // Add an event listner on the mouse pressed to manage selection

@@ -1,9 +1,9 @@
 package ch.heigvd.tool;
 
-import ch.heigvd.gemms.GEMMSCursors;
 import ch.heigvd.workspace.Workspace;
 import java.util.List;
 import javafx.geometry.Point3D;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -37,7 +37,7 @@ public abstract class LineTool extends AbstractTool {
    public LineTool(Workspace workspace, int size) {
       super(workspace);
       this.size = size;
-      workspace.getScene().setCursor(GEMMSCursors.createBrushCursor(size));
+      workspace.getLayerTool().setCursor(Cursor.DEFAULT);
    }
 
    /**

@@ -25,7 +25,7 @@ public class Drag extends AbstractTool {
     //Workspace dimension
     private double workspaceHeight;
     private double workspaceWidth;
-    private final double DELTA = 10;
+    private final double DELTA = 30;
 
     public Drag(Workspace w) {
         super(w);

@@ -88,7 +88,6 @@ public class DefaultCell<T> extends Cell<T> {
    public void setLayerName(String name) {
       t.setText(name);
       if (LayerListable.class.isInstance(getTarget())) {
-         System.out.println("lol");
          ((LayerListable)getTarget()).setLayerName(name);
       }
    }

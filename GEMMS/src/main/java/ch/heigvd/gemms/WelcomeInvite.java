@@ -32,7 +32,6 @@ public class WelcomeInvite extends VBox {
       setBackground(new Background(new BackgroundFill(Color.web("#ededed"), new CornerRadii(5), Insets.EMPTY)));
       setPadding(new Insets(15, 15, 25, 15));
       setAlignment(Pos.CENTER);
-      setStyle("-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.15) , 3 ,0 , 3 , 3 );");
       
       // Style the Label and add it to the chidlren
       label.setFont(Font.font(label.getFont().getFamily(), 18));

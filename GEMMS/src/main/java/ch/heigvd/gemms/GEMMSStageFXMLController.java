@@ -110,7 +110,7 @@ public class GEMMSStageFXMLController implements Initializable {
     // List of created tool buttons
     private LinkedList<Button> toolButtons = new LinkedList();
     
-    private Dialog welcomeTab;
+    private StackPane welcomeTab;
     
     
     
@@ -132,18 +132,26 @@ public class GEMMSStageFXMLController implements Initializable {
         documents = new ArrayList<>();
         
 
-        // Add a welcom panel 
-        welcomeTab = new Dialog();
-        welcomeTab.getDialogPane().getStylesheets().add("/styles/CSSIcons.css");
-        StackPane welcomeContainer = new StackPane(); // Container to center
-        GridPane welcomeGrid = new GridPane(); // Grid for multiple panels
+        // Create a welcome panel
+        welcomeTab = new StackPane();
+        welcomeTab.setAlignment(Pos.CENTER);
+        
+        // Create a VBox to contain elements
+        VBox welcomeContainer = new VBox();
+        welcomeContainer.setPrefWidth(600);
+        welcomeContainer.setBackground(new Background(new BackgroundFill(Color.web("#cdcdcd"), CornerRadii.EMPTY, Insets.EMPTY)));
+        welcomeContainer.setPadding(new Insets(20));
+        welcomeContainer.setAlignment(Pos.CENTER);
+        welcomeContainer.setSpacing(30);
+        
+        // Grid for multiple panels
+        GridPane welcomeGrid = new GridPane();
         
         // Button for new document invite
         Button newButtonInvite = new Button();
         newButtonInvite.getStyleClass().add("new-document-button");
         newButtonInvite.setOnAction(e -> {
            newButtonAction(e);
-           welcomeTab.hide();
         });
         WelcomeInvite newInvite = new WelcomeInvite(new Label("Create a new document."), newButtonInvite);
         
@@ -152,7 +160,6 @@ public class GEMMSStageFXMLController implements Initializable {
         openButtonInvite.getStyleClass().add("open-document-button");
         openButtonInvite.setOnAction(e -> {
            openButtonAction(e);
-           welcomeTab.hide();
         });
         WelcomeInvite openInvite = new WelcomeInvite(new Label("open a GEMMS document."), openButtonInvite);
         
@@ -162,17 +169,22 @@ public class GEMMSStageFXMLController implements Initializable {
         
         // Set visual parameters
         welcomeGrid.setHgap(15); 
-        welcomeGrid.setVgap(15);
+        welcomeGrid.setVgap(30);
         welcomeGrid.setMaxSize(460, 460);
+        Button closeWelcome = new Button("No thanks, I'm a pro.");
+        closeWelcome.setOnAction(new EventHandler<ActionEvent>() {
+           @Override
+           public void handle(ActionEvent t) {
+              hideWelcome();
+           }
+        });
         
         // Add grid to the container
         welcomeContainer.getChildren().add(welcomeGrid);
-        StackPane.setAlignment(welcomeGrid, Pos.CENTER);
+        welcomeContainer.getChildren().add(closeWelcome);
+        welcomeTab.getChildren().add(welcomeContainer);
         
-        // Welcome tab parameters
-        welcomeTab.getDialogPane().setContent(welcomeContainer);
-        welcomeTab.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-        welcomeTab.setTitle("Welcome !");
+        showWelcome();
         
       // Register scroll event for zoom
        workspaces.setOnScroll(new EventHandler<ScrollEvent>() {
@@ -651,8 +663,6 @@ public class GEMMSStageFXMLController implements Initializable {
                 }
             }
         });
-        
-        //mainAnchorPane.getChildren().add(welcomeTab);
     }
 
     
@@ -1067,6 +1077,8 @@ public class GEMMSStageFXMLController implements Initializable {
     
     @FXML
     private void newButtonAction(ActionEvent e) {
+       
+        hideWelcome();
         
         // Create a new dialog
         NewDocumentDialog dialog = new NewDocumentDialog();
@@ -1111,6 +1123,9 @@ public class GEMMSStageFXMLController implements Initializable {
     
     @FXML
     private void openButtonAction(ActionEvent e) {
+       
+       hideWelcome();
+       
         OpenDocumentDialog dialog = new OpenDocumentDialog(stage);
         
         File f = dialog.showAndWait();
@@ -1210,8 +1225,22 @@ public class GEMMSStageFXMLController implements Initializable {
         this.stage = stage;
     }
     
-    public Dialog getWelcomeTab() {
-       return welcomeTab;
+    /**
+     * Show and set anchors for the welcome panel.
+     */
+    private void showWelcome() {
+       mainAnchorPane.getChildren().add(welcomeTab);
+       AnchorPane.setTopAnchor(welcomeTab, 40.0);
+       AnchorPane.setRightAnchor(welcomeTab, 165.0);
+       AnchorPane.setBottomAnchor(welcomeTab, 0.0);
+       AnchorPane.setLeftAnchor(welcomeTab, 177.0);
+    }
+    
+    /**
+     * Hide the welcome panel.
+     */
+    private void hideWelcome() {
+       mainAnchorPane.getChildren().remove(welcomeTab);
     }
     
     /**

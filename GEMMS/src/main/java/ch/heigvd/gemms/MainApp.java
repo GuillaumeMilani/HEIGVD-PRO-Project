@@ -32,8 +32,6 @@ public class MainApp extends Application {
         stage.setScene(scene);
         
         stage.show();
-        
-        controller.getWelcomeTab().show();
     }
 
     /**

@@ -48,7 +48,7 @@ public class Drag extends AbstractTool {
         //offsets to change coordonates
         double offsetX = x - lastX;
         double offsetY = y - lastY;
-
+//init
         for(Node n : layers) {
             n.setTranslateX(n.getTranslateX() + offsetX);
             n.setTranslateY(n.getTranslateY() + offsetY);

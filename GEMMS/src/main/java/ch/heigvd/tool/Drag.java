@@ -83,29 +83,27 @@ public class Drag extends AbstractTool {
         for (Node n : layers) {
             nodeCenterX = n.getBoundsInParent().getWidth() / 2;
             nodeCenterY = n.getBoundsInParent().getHeight() / 2;
-            if(n instanceof GEMMSText){
-                nodeCenterX+=((GEMMSText) n).getX();
-                nodeCenterY=((GEMMSText) n).getY();
-            }
             isAlignOnX = Math.abs(x - workspaceWidth / 2) < DELTA;
             isAlignOnY = Math.abs(y - workspaceHeight / 2) < DELTA;
+            
+            double toMoveX;
+            double toMoveY;
 
-            //if it is not align
-            if (!(isAlignOnX || isAlignOnY)) {
-                n.setTranslateX(n.getTranslateX() + offsetX);
-                n.setTranslateY(n.getTranslateY() + offsetY);
-
+            // FInd by how much we need to move the node
+            if (isAlignOnX) {
+               toMoveX = workspaceWidth/2 - (n.getBoundsInParent().getMinX() + nodeCenterX);
+            } else {
+               toMoveX = offsetX;
             }
-            //axe X
-            else if (isAlignOnX) {
-                n.setTranslateX(workspaceWidth / 2 - nodeCenterX);
-                n.setTranslateY(n.getTranslateY() + offsetY);
+            
+            if (isAlignOnY) {
+               toMoveY = workspaceHeight/2 - (n.getBoundsInParent().getMinY() + nodeCenterY);
+            } else {
+               toMoveY = offsetY;
             }
-            //axe Y
-            else{
-                n.setTranslateX(n.getTranslateX() + offsetX);
-                n.setTranslateY(workspaceHeight / 2 - nodeCenterY);
-            }
+            
+            n.setTranslateX(n.getTranslateX() + toMoveX);
+            n.setTranslateY(n.getTranslateY() + toMoveY);
         }
         lastX = x;
         lastY = y;

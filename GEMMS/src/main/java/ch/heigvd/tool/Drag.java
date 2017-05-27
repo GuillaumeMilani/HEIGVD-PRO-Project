@@ -84,12 +84,11 @@ public class Drag extends AbstractTool {
         double nodeCenterY;
         boolean isAlignOnX;
         boolean isAlignOnY;
-        System.out.println("HELLO");
         for (Node n : layers) {
             nodeCenterX = n.getBoundsInParent().getWidth() / 2;
             nodeCenterY = n.getBoundsInParent().getHeight() / 2;
-            isAlignOnX = Math.abs(nodeCenterX - workspaceWidth / 2) < DELTA;
-            isAlignOnY = Math.abs(nodeCenterY - workspaceHeight / 2) < DELTA;
+            isAlignOnX = Math.abs(x - workspaceWidth / 2) < DELTA;
+            isAlignOnY = Math.abs(y - workspaceHeight / 2) < DELTA;
 
             if (!(isAlignOnX || isAlignOnY)) { //if it is not align
                 n.setTranslateX(n.getTranslateX() + offsetX);
@@ -105,6 +104,7 @@ public class Drag extends AbstractTool {
             }
             //axe Y
             else if (isAlignOnY) {
+                n.setTranslateX(n.getTranslateX() + offsetX);
                 n.setTranslateY(workspaceHeight / 2);
                 System.out.println("Y");
 

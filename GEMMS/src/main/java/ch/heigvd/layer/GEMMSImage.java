@@ -26,6 +26,7 @@ import javafx.scene.transform.Transform;
 public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSNode, LayerListable {
    
    private static int layerCount = 0;
+   private String name = "Image " + ++layerCount;
     
     /**
      * Constructor
@@ -65,6 +66,7 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
      * @throws IOException 
      */
     private void writeObject(ObjectOutputStream s) throws IOException {
+       s.defaultWriteObject();
         
         // Get image
         Image image = getImage();
@@ -153,6 +155,8 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
      * @throws IOException 
      */
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+       s.defaultReadObject();
+       
         // Get image size
         int width = s.readInt();
         int height = s.readInt();
@@ -224,7 +228,7 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
 
     @Override
     public String getLayerName() {
-        return "Image " + ++layerCount;
+        return name;
     }
 
     @Override
@@ -236,4 +240,9 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
     public IGEMMSNode clone() {
         return null;
     }
+
+   @Override
+   public void setLayerName(String name) {
+      this.name = name;
+   }
 }

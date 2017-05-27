@@ -29,6 +29,7 @@ import javafx.scene.transform.Transform;
 public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNode, LayerListable {
    
    private static int layerCount = 0;
+   private String name = "Canvas " + ++layerCount;
 
     /**
      * Constructor
@@ -119,7 +120,7 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
             s.writeDouble(c.getBrightness());
             s.writeDouble(((SepiaTone) c.getInput()).getLevel());
             s.writeDouble(((GaussianBlur) ((SepiaTone) c.getInput()).getInput()).getRadius());
-        }else{
+        } else{
             s.writeBoolean(false);
         }
 
@@ -149,6 +150,7 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
      * @throws IOException 
      */
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+        s.defaultReadObject();
 
         // Get the size of the canvas
         double width = s.readDouble();
@@ -221,11 +223,16 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
 
     @Override
     public String getLayerName() {
-        return "Canvas " + ++layerCount;
+       return name;
     }
 
     @Override
     public String getThumbnailClass() {
         return CSSIcons.CANVAS;
     }
+
+   @Override
+   public void setLayerName(String name) {
+      this.name = name;
+   }
 }

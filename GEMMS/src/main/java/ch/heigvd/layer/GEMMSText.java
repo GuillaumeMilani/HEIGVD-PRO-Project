@@ -27,6 +27,7 @@ import javafx.scene.transform.Transform;
 public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, LayerListable {
    
    private static int layerCount = 0;
+   private String name = "Text " + ++layerCount;
     public static final int DEFAULT_SIZE = 12;
 
     /**
@@ -142,6 +143,8 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
      * @throws IOException 
      */
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+       s.defaultReadObject();
+       
         // Set the test
         setText((String) s.readObject());
 
@@ -209,7 +212,7 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
 
     @Override
     public String getLayerName() {
-       return "Text " + ++layerCount;
+       return name;
     }
 
     @Override
@@ -221,4 +224,9 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
     public IGEMMSNode clone() {
         return null;
     }
+
+   @Override
+   public void setLayerName(String name) {
+      this.name = name;
+   }
 }

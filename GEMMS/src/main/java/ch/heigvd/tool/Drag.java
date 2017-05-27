@@ -84,7 +84,7 @@ public class Drag extends AbstractTool {
             nodeCenterX = n.getBoundsInParent().getWidth() / 2;
             nodeCenterY = n.getBoundsInParent().getHeight() / 2;
             if(n instanceof GEMMSText){
-                nodeCenterX=((GEMMSText) n).getX();
+                nodeCenterX+=((GEMMSText) n).getX();
                 nodeCenterY=((GEMMSText) n).getY();
             }
             isAlignOnX = Math.abs(x - workspaceWidth / 2) < DELTA;

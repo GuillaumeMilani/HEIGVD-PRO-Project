@@ -65,7 +65,6 @@ public class Drag extends AbstractTool {
             n.setTranslateY(n.getTranslateY() + offsetY);
         }
 
-
         lastX = x;
         lastY = y;
     }
@@ -86,7 +85,8 @@ public class Drag extends AbstractTool {
             isAlignOnX = Math.abs(x - workspaceWidth / 2) < DELTA;
             isAlignOnY = Math.abs(y - workspaceHeight / 2) < DELTA;
 
-            if (!(isAlignOnX || isAlignOnY)) { //if it is not align
+            //if it is not align
+            if (!(isAlignOnX || isAlignOnY)) {
                 n.setTranslateX(n.getTranslateX() + offsetX);
                 n.setTranslateY(n.getTranslateY() + offsetY);
 
@@ -97,7 +97,7 @@ public class Drag extends AbstractTool {
                 n.setTranslateY(n.getTranslateY() + offsetY);
             }
             //axe Y
-            else if (isAlignOnY) {
+            else{
                 n.setTranslateX(n.getTranslateX() + offsetX);
                 n.setTranslateY(workspaceHeight / 2 - nodeCenterY);
             }

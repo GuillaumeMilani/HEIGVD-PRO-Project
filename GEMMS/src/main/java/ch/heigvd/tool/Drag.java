@@ -1,5 +1,6 @@
 package ch.heigvd.tool;
 
+import ch.heigvd.layer.GEMMSText;
 import ch.heigvd.workspace.Workspace;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -82,6 +83,10 @@ public class Drag extends AbstractTool {
         for (Node n : layers) {
             nodeCenterX = n.getBoundsInParent().getWidth() / 2;
             nodeCenterY = n.getBoundsInParent().getHeight() / 2;
+            if(n instanceof GEMMSText){
+                nodeCenterX=((GEMMSText) n).getX();
+                nodeCenterY=((GEMMSText) n).getY();
+            }
             isAlignOnX = Math.abs(x - workspaceWidth / 2) < DELTA;
             isAlignOnY = Math.abs(y - workspaceHeight / 2) < DELTA;
 

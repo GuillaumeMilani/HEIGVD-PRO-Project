@@ -1,6 +1,5 @@
 package ch.heigvd.tool;
 
-import ch.heigvd.layer.GEMMSText;
 import ch.heigvd.workspace.Workspace;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -8,8 +7,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-
-import java.awt.geom.Point2D;
 import java.util.List;
 
 public class Drag extends AbstractTool {
@@ -89,7 +86,7 @@ public class Drag extends AbstractTool {
             double toMoveX;
             double toMoveY;
 
-            // FInd by how much we need to move the node
+            // Find by how much we need to move the node
             if (isAlignOnX) {
                toMoveX = workspaceWidth/2 - (n.getBoundsInParent().getMinX() + nodeCenterX);
             } else {
@@ -128,7 +125,7 @@ public class Drag extends AbstractTool {
         Canvas alignement = new Canvas(workspace.width(), workspace.height());
         GraphicsContext gc = alignement.getGraphicsContext2D();
         gc.setStroke(Color.GREEN);
-        //Lignes principales
+        //Lignes principales (Axes)
         gc.setLineWidth(2);
         gc.strokeLine(workspace.width() / 2, 0, workspace.width() / 2, workspace.height());
         gc.strokeLine(0, workspace.height() / 2, workspace.height(), workspace.height() / 2);

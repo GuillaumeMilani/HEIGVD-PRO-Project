@@ -171,17 +171,9 @@ public class GEMMSStageFXMLController implements Initializable {
         welcomeGrid.setHgap(15); 
         welcomeGrid.setVgap(30);
         welcomeGrid.setMaxSize(460, 460);
-        Button closeWelcome = new Button("No thanks, I'm a pro.");
-        closeWelcome.setOnAction(new EventHandler<ActionEvent>() {
-           @Override
-           public void handle(ActionEvent t) {
-              hideWelcome();
-           }
-        });
         
         // Add grid to the container
         welcomeContainer.getChildren().add(welcomeGrid);
-        welcomeContainer.getChildren().add(closeWelcome);
         welcomeTab.getChildren().add(welcomeContainer);
         
         showWelcome();

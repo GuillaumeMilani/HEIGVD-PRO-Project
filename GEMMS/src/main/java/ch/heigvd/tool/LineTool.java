@@ -1,5 +1,6 @@
 package ch.heigvd.tool;
 
+import ch.heigvd.gemms.GEMMSCursors;
 import ch.heigvd.workspace.Workspace;
 import java.util.List;
 import javafx.geometry.Point3D;
@@ -36,6 +37,7 @@ public abstract class LineTool extends AbstractTool {
    public LineTool(Workspace workspace, int size) {
       super(workspace);
       this.size = size;
+      workspace.getScene().setCursor(GEMMSCursors.createBrushCursor(size));
    }
 
    /**

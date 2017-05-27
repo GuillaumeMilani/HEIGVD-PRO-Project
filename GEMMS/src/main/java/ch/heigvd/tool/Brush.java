@@ -1,5 +1,6 @@
 package ch.heigvd.tool;
 
+import ch.heigvd.gemms.GEMMSCursors;
 import ch.heigvd.tool.settings.SizeConfigurableTool;
 import ch.heigvd.workspace.Workspace;
 import javafx.scene.canvas.GraphicsContext;
@@ -24,7 +25,7 @@ public class Brush extends LineTool implements SizeConfigurableTool {
     * @param workspace the Workspace to work on
     */
    public Brush(Workspace workspace) {
-      this(workspace, ColorSet.getInstance().getColor(), 5);
+      this(workspace, ColorSet.getInstance().getColor(), 50);
    }
 
    /**
@@ -80,6 +81,7 @@ public class Brush extends LineTool implements SizeConfigurableTool {
    @Override
    public void setSize(int size) {
       this.size = size;
+      workspace.getScene().setCursor(GEMMSCursors.createBrushCursor(size));
    }
 
    /**

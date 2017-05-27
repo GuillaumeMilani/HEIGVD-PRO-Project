@@ -27,7 +27,7 @@ public class Drag extends AbstractTool {
     private double workspaceWidth;
     private final double DELTA = 10;
 
-    public Drag(Workspace w){
+    public Drag(Workspace w) {
         super(w);
         this.isAlignementActive = false;
         this.anchorPane = workspace.getLayerTool();
@@ -44,60 +44,75 @@ public class Drag extends AbstractTool {
         workspaceHeight = workspace.height();
     }
 
-    private void setPosition(double x, double y, Node n){
+    private void setPosition(double x, double y, Node n) {
         n.setTranslateX(x);
         n.setTranslateY(y);
     }
 
     @Override
     public void mouseDragged(double x, double y) {
+        if (isAlignementActive && layers.size() == 1) { // alignement automatic
+            dragWithAlignement(x,y);
+        } else {
+            dragWithoutAlignement(x, y);
+        }
+    }
+
+    private void dragWithoutAlignement(double x, double y) {
 
         //offsets to change coordonates
         double offsetX = x - lastX;
         double offsetY = y - lastY;
 
-
-        if(layers.size() == 1){ //1 node selectionné
-            double nodeCenterX;
-            double nodeCenterY;
-            boolean isAlignOnX;
-            boolean isAlignOnY;
-            System.out.println("HELLO");
-            for (Node n : layers) {
-                nodeCenterX = n.getBoundsInParent().getWidth()/2;
-                nodeCenterY = n.getBoundsInParent().getHeight()/2;
-                isAlignOnX = Math.abs(nodeCenterX - workspaceWidth / 2) < DELTA;
-                isAlignOnY = Math.abs(nodeCenterY - workspaceHeight / 2) < DELTA;
-
-                if(! (isAlignOnX || isAlignOnY) ){ //if it is not align
-                    n.setTranslateX(n.getTranslateX() + offsetX);
-                    n.setTranslateY(n.getTranslateY() + offsetY);
-
-                }
-                //axe X
-                else if(isAlignOnX){
-                    n.setTranslateX(workspaceWidth/2);
-                    n.setTranslateY(n.getTranslateY() + offsetY);
-                    System.out.println("X");
-
-                }
-                //axe Y
-                else if(isAlignOnY){
-                    n.setTranslateY(workspaceHeight/2);
-                    System.out.println("Y");
-
-                }
+        for (Node n : layers) {
+            n.setTranslateX(n.getTranslateX() + offsetX);
+            n.setTranslateY(n.getTranslateY() + offsetY);
+        }
 
 
-            }
+        lastX = x;
+        lastY = y;
+    }
 
-            }else {
+    private void dragWithAlignement(double x, double y) {
 
-            for (Node n : layers) {
+        //offsets to change coordonates
+        double offsetX = x - lastX;
+        double offsetY = y - lastY;
+
+        double nodeCenterX;
+        double nodeCenterY;
+        boolean isAlignOnX;
+        boolean isAlignOnY;
+        System.out.println("HELLO");
+        for (Node n : layers) {
+            nodeCenterX = n.getBoundsInParent().getWidth() / 2;
+            nodeCenterY = n.getBoundsInParent().getHeight() / 2;
+            isAlignOnX = Math.abs(nodeCenterX - workspaceWidth / 2) < DELTA;
+            isAlignOnY = Math.abs(nodeCenterY - workspaceHeight / 2) < DELTA;
+
+            if (!(isAlignOnX || isAlignOnY)) { //if it is not align
                 n.setTranslateX(n.getTranslateX() + offsetX);
                 n.setTranslateY(n.getTranslateY() + offsetY);
+
             }
+            //axe X
+            else if (isAlignOnX) {
+                n.setTranslateX(workspaceWidth / 2);
+                n.setTranslateY(n.getTranslateY() + offsetY);
+                System.out.println("X");
+
+            }
+            //axe Y
+            else if (isAlignOnY) {
+                n.setTranslateY(workspaceHeight / 2);
+                System.out.println("Y");
+
+            }
+
+
         }
+
 
         lastX = x;
         lastY = y;
@@ -109,35 +124,35 @@ public class Drag extends AbstractTool {
         notifier.notifyHistory();
     }
 
-    public void turnAlignementOnOff(){
+    public void turnAlignementOnOff() {
         isAlignementActive = !isAlignementActive;
-        if(isAlignementActive){
+        if (isAlignementActive) {
             printAlignement();
-        }else{
+        } else {
             anchorPane.getChildren().clear();
         }
     }
 
-    private void printAlignement(){
-        Canvas alignement = new Canvas(workspace.width(),workspace.height());
+    private void printAlignement() {
+        Canvas alignement = new Canvas(workspace.width(), workspace.height());
         GraphicsContext gc = alignement.getGraphicsContext2D();
         gc.setStroke(Color.GREEN);
         //Lignes principales
         gc.setLineWidth(2);
-        gc.strokeLine(workspace.width()/2, 0, workspace.width()/2, workspace.height());
-        gc.strokeLine(0, workspace.height()/2, workspace.height(), workspace.height()/2);
+        gc.strokeLine(workspace.width() / 2, 0, workspace.width() / 2, workspace.height());
+        gc.strokeLine(0, workspace.height() / 2, workspace.height(), workspace.height() / 2);
 
-        //Lignes secondaires
-        gc.setLineWidth(1);
-        gc.strokeLine(workspace.width()/4, 0, workspace.width()/4, workspace.height());
-        gc.strokeLine(workspace.width()*3/4, 0, workspace.width()*3/4, workspace.height());
-        gc.strokeLine(0, workspace.height()/4, workspace.height(), workspace.height()/4);
-        gc.strokeLine(0, workspace.height()/4*3, workspace.height(), workspace.height()*3/4);
+//        //Lignes secondaires
+//        gc.setLineWidth(1);
+//        gc.strokeLine(workspace.width()/4, 0, workspace.width()/4, workspace.height());
+//        gc.strokeLine(workspace.width()*3/4, 0, workspace.width()*3/4, workspace.height());
+//        gc.strokeLine(0, workspace.height()/4, workspace.height(), workspace.height()/4);
+//        gc.strokeLine(0, workspace.height()/4*3, workspace.height(), workspace.height()*3/4);
 
         anchorPane.getChildren().add(alignement);
     }
 
-    public boolean isAlignementActive(){
+    public boolean isAlignementActive() {
         return isAlignementActive;
     }
 }

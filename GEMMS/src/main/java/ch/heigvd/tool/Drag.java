@@ -25,6 +25,7 @@ public class Drag extends AbstractTool {
     //Workspace dimension
     private double workspaceHeight;
     private double workspaceWidth;
+    //Delta for automatic alignement
     private final double DELTA = 30;
 
     public Drag(Workspace w) {
@@ -44,14 +45,9 @@ public class Drag extends AbstractTool {
         workspaceHeight = workspace.height();
     }
 
-    private void setPosition(double x, double y, Node n) {
-        n.setTranslateX(x);
-        n.setTranslateY(y);
-    }
-
     @Override
     public void mouseDragged(double x, double y) {
-        if (isAlignementActive && layers.size() == 1) { // alignement automatic
+        if (isAlignementActive && layers.size() == 1) { //automatic alignement only on one Node at the time
             dragWithAlignement(x,y);
         } else {
             dragWithoutAlignement(x, y);
@@ -133,13 +129,6 @@ public class Drag extends AbstractTool {
         gc.setLineWidth(2);
         gc.strokeLine(workspace.width() / 2, 0, workspace.width() / 2, workspace.height());
         gc.strokeLine(0, workspace.height() / 2, workspace.height(), workspace.height() / 2);
-
-//        //Lignes secondaires
-//        gc.setLineWidth(1);
-//        gc.strokeLine(workspace.width()/4, 0, workspace.width()/4, workspace.height());
-//        gc.strokeLine(workspace.width()*3/4, 0, workspace.width()*3/4, workspace.height());
-//        gc.strokeLine(0, workspace.height()/4, workspace.height(), workspace.height()/4);
-//        gc.strokeLine(0, workspace.height()/4*3, workspace.height(), workspace.height()*3/4);
 
         anchorPane.getChildren().add(alignement);
     }

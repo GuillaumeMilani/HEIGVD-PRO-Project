@@ -7,7 +7,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-
 import java.util.List;
 
 public class Drag extends AbstractTool {
@@ -21,8 +20,13 @@ public class Drag extends AbstractTool {
     private boolean isAlignementActive;
     //An AnchorPane to draw line on top of workspace's layers
     private AnchorPane anchorPane;
+    //Workspace dimension
+    private double workspaceHeight;
+    private double workspaceWidth;
+    //Delta for automatic alignement
+    private final double DELTA = 30;
 
-    public Drag(Workspace w){
+    public Drag(Workspace w) {
         super(w);
         this.isAlignementActive = false;
         this.anchorPane = workspace.getLayerTool();
@@ -35,25 +39,69 @@ public class Drag extends AbstractTool {
         lastX = x;
         lastY = y;
         layers = workspace.getCurrentLayers();
-    }
-
-    private void setPosition(double x, double y, Node n){
-        n.setTranslateX(x);
-        n.setTranslateY(y);
+        workspaceWidth = workspace.width();
+        workspaceHeight = workspace.height();
     }
 
     @Override
     public void mouseDragged(double x, double y) {
+        if (isAlignementActive && layers.size() == 1) { //automatic alignement only on one Node at the time
+            dragWithAlignement(x, y);
+        } else {
+            dragWithoutAlignement(x, y);
+        }
+    }
+
+    private void dragWithoutAlignement(double x, double y) {
 
         //offsets to change coordonates
         double offsetX = x - lastX;
         double offsetY = y - lastY;
 
-        for(Node n : layers) {
+        for (Node n : layers) {
             n.setTranslateX(n.getTranslateX() + offsetX);
             n.setTranslateY(n.getTranslateY() + offsetY);
         }
 
+        lastX = x;
+        lastY = y;
+    }
+
+    private void dragWithAlignement(double x, double y) {
+
+        //offsets to change coordonates
+        double offsetX = x - lastX;
+        double offsetY = y - lastY;
+
+        double nodeCenterX;
+        double nodeCenterY;
+        boolean isAlignOnX;
+        boolean isAlignOnY;
+        for (Node n : layers) {
+            nodeCenterX = n.getBoundsInParent().getWidth() / 2;
+            nodeCenterY = n.getBoundsInParent().getHeight() / 2;
+            isAlignOnX = Math.abs(x - workspaceWidth / 2) < DELTA;
+            isAlignOnY = Math.abs(y - workspaceHeight / 2) < DELTA;
+            
+            double toMoveX;
+            double toMoveY;
+
+            // Find by how much we need to move the node
+            if (isAlignOnX) {
+               toMoveX = workspaceWidth/2 - (n.getBoundsInParent().getMinX() + nodeCenterX);
+            } else {
+               toMoveX = offsetX;
+            }
+            
+            if (isAlignOnY) {
+               toMoveY = workspaceHeight/2 - (n.getBoundsInParent().getMinY() + nodeCenterY);
+            } else {
+               toMoveY = offsetY;
+            }
+            
+            n.setTranslateX(n.getTranslateX() + toMoveX);
+            n.setTranslateY(n.getTranslateY() + toMoveY);
+        }
         lastX = x;
         lastY = y;
     }
@@ -64,35 +112,28 @@ public class Drag extends AbstractTool {
         notifier.notifyHistory();
     }
 
-    public void turnAlignementOnOff(){
+    public void turnAlignementOnOff() {
         isAlignementActive = !isAlignementActive;
-        if(isAlignementActive){
+        if (isAlignementActive) {
             printAlignement();
-        }else{
+        } else {
             anchorPane.getChildren().clear();
         }
     }
 
-    private void printAlignement(){
-        Canvas alignement = new Canvas(workspace.width(),workspace.height());
+    private void printAlignement() {
+        Canvas alignement = new Canvas(workspace.width(), workspace.height());
         GraphicsContext gc = alignement.getGraphicsContext2D();
         gc.setStroke(Color.GREEN);
-        //Lignes principales
+        //Lignes principales (Axes)
         gc.setLineWidth(2);
-        gc.strokeLine(workspace.width()/2, 0, workspace.width()/2, workspace.height());
-        gc.strokeLine(0, workspace.height()/2, workspace.height(), workspace.height()/2);
-
-        //Lignes secondaires
-        gc.setLineWidth(1);
-        gc.strokeLine(workspace.width()/4, 0, workspace.width()/4, workspace.height());
-        gc.strokeLine(workspace.width()*3/4, 0, workspace.width()*3/4, workspace.height());
-        gc.strokeLine(0, workspace.height()/4, workspace.height(), workspace.height()/4);
-        gc.strokeLine(0, workspace.height()/4*3, workspace.height(), workspace.height()*3/4);
+        gc.strokeLine(workspace.width() / 2, 0, workspace.width() / 2, workspace.height());
+        gc.strokeLine(0, workspace.height() / 2, workspace.height(), workspace.height() / 2);
 
         anchorPane.getChildren().add(alignement);
     }
 
-    public boolean isAlignementActive(){
+    public boolean isAlignementActive() {
         return isAlignementActive;
     }
 }

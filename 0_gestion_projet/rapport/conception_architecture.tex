@@ -1,10 +1,20 @@
 \section{Conception \& Architecture}
 \subsection{Technologies utilisées}
 \subsubsection{Java 8}
-L'application a été réalisée dans le langage de programmation Java de Oracle. Parmi les deux langages de haut niveau proposés pour l'élaboration de ce projet (Java ou C++), nous avons choisi Java pour sa librairie graphique mais aussi à cause de la meilleure habileté du groupe à coder dans ce langage. La version 8 de Java introduit une mise à jour de la librairie JavaFX utilisée pour ce projet.
+Parmi les deux langages de haut niveau proposés pour l'élaboration de ce projet (Java ou C++), nous avons choisi Java pour sa portabilité, sa sécurité et ses performances. De plus, la dernière version de Java propose la librairie graphique JavaFX qui correspond en tout point à notre projet. Enfin, notre équipe est également plus habile à programmer à l'aide du langage Java.
 
 \subsubsection{JavaFX 8}
-La librairie JavaFX, successeur de Swing, est la librairie de création d'interface graphiques officielle de Java. La version 8, utilisée pour ce projet, ajoute de nouvelles fonctionnalités et est la plus récente version utilisable avec Scene Builder. 
+JavaFX, successeur de Swing, est la librairie de création d'interface graphiques officielle de Java. La version 8, utilisée pour ce projet, ajoute de nouvelles fonctionnalités et est la plus récente version utilisable avec Scene Builder.
+
+\begin{figure}[h]
+    \caption{Architecture de JavaFX}
+    \centering
+    \includegraphics[width=\textwidth]{arch_javafx.png}
+    \label{fig:arch_javafx}
+\end{figure}
+
+Comme vous pouvez le voir sur la figure \ref{fig:arch_javafx}, BLA BLA BLA A COMPLETER, A PARLER DE CSS ETC
+
 
 \subsubsection{Scene Builder 8.3.0}
 Scene Builder de Gluon permet de manipuler des objets JavaFX graphiquement et exporter ceux-ci dans un fichier .fxml interprétable par la librairie graphique. L'interface de base à été conçue lors de l'élaboration du cahier des charges pour présenter un exemple de l'interface de l'application finale. Plusieurs mock-ups ont été présentés et c'est sur ceux-cis que nous nous sommes basés pour construire, grâce à Scene Builder, une base d'interface sur la laquelle nous avons rajouté des composants et fonctionnalités tout au long de l'élaboration de l'application. La flexibilité de JavaFX permet d'ajouter des éléments via un fichier externe fxml mais aussi directement dans le code, ce que nous avons aussi utilisé.

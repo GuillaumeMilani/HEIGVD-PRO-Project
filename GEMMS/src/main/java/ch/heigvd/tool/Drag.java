@@ -8,6 +8,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
+import java.awt.geom.Point2D;
 import java.util.List;
 
 public class Drag extends AbstractTool {
@@ -21,6 +22,10 @@ public class Drag extends AbstractTool {
     private boolean isAlignementActive;
     //An AnchorPane to draw line on top of workspace's layers
     private AnchorPane anchorPane;
+    //Workspace dimension
+    private double workspaceHeight;
+    private double workspaceWidth;
+    private final double DELTA = 10;
 
     public Drag(Workspace w){
         super(w);
@@ -35,6 +40,8 @@ public class Drag extends AbstractTool {
         lastX = x;
         lastY = y;
         layers = workspace.getCurrentLayers();
+        workspaceWidth = workspace.width();
+        workspaceHeight = workspace.height();
     }
 
     private void setPosition(double x, double y, Node n){
@@ -48,10 +55,48 @@ public class Drag extends AbstractTool {
         //offsets to change coordonates
         double offsetX = x - lastX;
         double offsetY = y - lastY;
-//init
-        for(Node n : layers) {
-            n.setTranslateX(n.getTranslateX() + offsetX);
-            n.setTranslateY(n.getTranslateY() + offsetY);
+
+
+        if(layers.size() == 1){ //1 node selectionné
+            double nodeCenterX;
+            double nodeCenterY;
+            boolean isAlignOnX;
+            boolean isAlignOnY;
+            System.out.println("HELLO");
+            for (Node n : layers) {
+                nodeCenterX = n.getBoundsInParent().getWidth()/2;
+                nodeCenterY = n.getBoundsInParent().getHeight()/2;
+                isAlignOnX = Math.abs(nodeCenterX - workspaceWidth / 2) < DELTA;
+                isAlignOnY = Math.abs(nodeCenterY - workspaceHeight / 2) < DELTA;
+
+                if(! (isAlignOnX || isAlignOnY) ){ //if it is not align
+                    n.setTranslateX(n.getTranslateX() + offsetX);
+                    n.setTranslateY(n.getTranslateY() + offsetY);
+
+                }
+                //axe X
+                else if(isAlignOnX){
+                    n.setTranslateX(workspaceWidth/2);
+                    n.setTranslateY(n.getTranslateY() + offsetY);
+                    System.out.println("X");
+
+                }
+                //axe Y
+                else if(isAlignOnY){
+                    n.setTranslateY(workspaceHeight/2);
+                    System.out.println("Y");
+
+                }
+
+
+            }
+
+            }else {
+
+            for (Node n : layers) {
+                n.setTranslateX(n.getTranslateX() + offsetX);
+                n.setTranslateY(n.getTranslateY() + offsetY);
+            }
         }
 
         lastX = x;

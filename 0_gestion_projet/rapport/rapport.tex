@@ -16,7 +16,13 @@
 \usepackage[T1]{fontenc}
 
 % Marge du document
-\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+\usepackage[top=3.5cm, 
+            bottom=3cm, 
+            left=2cm, 
+            right=2cm, 
+            footskip=1.5cm, 
+            headheight=1.5cm, 
+            headsep=0.9cm]{geometry}
 
 % Gérer les positionnement d'images
 \usepackage{float}
@@ -40,14 +46,21 @@
 % Modifier la mise en page de l'abstract
 \usepackage{abstract}
 
+\usepackage{titlesec}
+
+\usepackage{fancyhdr}
+
 %pour utiliser \floatbarrier
 %\usepackage{placeins}
 %\usepackage{floatrow}
 
+% Pour voir les mages
+%\usepackage{layout}
+%\layout
 
 
 % -----------------------------------------------------------------------
-% --- INFORMATION ET REGLES ---
+% --- INFORMATION SUR LE DOCUMENT
 % -----------------------------------------------------------------------
 
 % Information sur le document
@@ -68,10 +81,27 @@
 
 
 % -----------------------------------------------------------------------
+% --- EN-TETE ET PIED DE PAGE ---
+% -----------------------------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{} % Supprime les entetes et pieds de page existants
+
+\fancyhead[L]{Projet de semestre\\}
+\fancyhead[R]{IL - TIC - HEIG-VD \\ Printemps 2017}
+\fancyfoot[L]{E. Ransome, G. Milani, S. Kirushnapillai, M. Spierer, M. Monteverde}
+\fancyfoot[R]{\thepage{}}
+
+
+\title{Éditeur d'images GEMMS \\ Cahier des charges}
+\author{E. Ransome, G. Milani, S. Kirushnapillai, M. Spierer, M. Monteverde}
+\date{Mars 2017}
+
+
+
+% -----------------------------------------------------------------------
 % --- DEBUT DU DOCUMENT ---
 % -----------------------------------------------------------------------
 \begin{document}
-    
 \selectlanguage{french} 
 
 % Espacement entre les lignes
@@ -79,48 +109,43 @@
 
 % Page de garde
 \input{./title.tex}
+\newpage~
 
-\newpage
-~
 
 \thispagestyle{empty}
 \newpage
 
-% \input{./abstract.tex}
 
+% Table des matières
 \tableofcontents
 \thispagestyle{empty}
-\setcounter{page}{0}
-%ne pas numéroter le sommaire
-
 \newpage
 
-%espacement entre les lignes d'un tableau
-\renewcommand{\arraystretch}{1.5}
-\setlength{\parskip}{1em}
-\setlength{\parindent}{0pt}.
 
-%====================== INCLUSION DES PARTIES ======================
+% Espacement entre les lignes d'un tableau
+\renewcommand{\arraystretch}{1.5}
+
+% Config des pages
+\setlength{\parskip}{1em}
+\setlength{\parindent}{0pt}
+
+\titlespacing\section{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+\titlespacing\subsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+\titlespacing\subsubsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+
 
 ~
 \thispagestyle{empty}
-%recommencer la numérotation des pages à "1"
+% Recommencer la numérotation des pages à "1"
 \setcounter{page}{0}
 \newpage
+
+%====================== INCLUSION DES PARTIES ======================
 
 \input{./intro_objectifs.tex}
 
 \input{./conception_architecture.tex}
-%
-% \input{./besoins.tex}
-%
-% \input{./autre_partie.tex}
-%
-% \input{./resultats.tex}
-%
-% \input{./bilan.tex}
-%
-% \input{./annexes.tex}
+
 
 \newpage
 

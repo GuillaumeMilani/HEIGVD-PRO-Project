@@ -161,7 +161,7 @@ public class GEMMSStageFXMLController implements Initializable {
         openButtonInvite.setOnAction(e -> {
            openButtonAction(e);
         });
-        WelcomeInvite openInvite = new WelcomeInvite(new Label("open a GEMMS document."), openButtonInvite);
+        WelcomeInvite openInvite = new WelcomeInvite(new Label("Open a GEMMS document."), openButtonInvite);
         
         // Add invites
         welcomeGrid.add(newInvite, 0, 0);

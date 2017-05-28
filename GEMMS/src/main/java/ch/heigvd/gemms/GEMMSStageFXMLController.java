@@ -970,18 +970,16 @@ public class GEMMSStageFXMLController implements Initializable {
           w.setCurrentTool(dragTool);
 
           //add setting alignement lines for drag
-          String padding = new String(new char[5]).replace('\0', ' ');
           HBox hBox = new HBox();
-          Label label = new Label(padding+"Alignement Off");
-          Button activeAlignement = new Button("Alignement");
+          Button activeAlignement = new Button("Alignement: Off");
           activeAlignement.setOnAction(new EventHandler<ActionEvent>() {
               @Override
               public void handle(ActionEvent event) {
                   dragTool.turnAlignementOnOff();
-                  label.setText(padding+"Alignement "+ (dragTool.isAlignementActive() ? "On" : "Off"));
+                  activeAlignement.setText("Alignement: "+ (dragTool.isAlignementActive() ? "On" : "Off"));
               }
           });
-          hBox.getChildren().addAll(activeAlignement,label);
+          hBox.getChildren().addAll(activeAlignement);
 
         displayToolSetting(hBox);
       }

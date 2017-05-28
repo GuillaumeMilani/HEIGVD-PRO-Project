@@ -48,7 +48,14 @@
 
 \usepackage{titlesec}
 
+% Pour les entêtes
 \usepackage{fancyhdr}
+
+% Pour l'import de code
+\usepackage{listings}
+
+% Utilisation de couleur
+\usepackage{color}
 
 %pour utiliser \floatbarrier
 %\usepackage{placeins}
@@ -57,6 +64,42 @@
 % Pour voir les mages
 %\usepackage{layout}
 %\layout
+
+
+
+% -----------------------------------------------------------------------
+% --- Couleurs définies
+% -----------------------------------------------------------------------
+\definecolor{pblue}{rgb}{0.13,0.13,1}
+\definecolor{pgreen}{rgb}{0,0.5,0}
+\definecolor{pred}{rgb}{0.9,0,0}
+\definecolor{pgrey}{rgb}{0.46,0.45,0.48}
+\definecolor{backcolour}{gray}{0.95}
+
+
+% -----------------------------------------------------------------------
+% --- Listing de code
+% -----------------------------------------------------------------------
+\lstset{language=Java,
+    backgroundcolor=\color{backcolour},
+    showspaces=false,
+    showtabs=false,
+    breaklines=true,
+    xleftmargin=0.5cm,
+    framexleftmargin=0.5cm,
+    framextopmargin=6pt,
+    framexbottommargin=6pt, 
+    frame=tb, 
+    framerule=0pt,
+    showstringspaces=false,
+    breakatwhitespace=true,
+    commentstyle=\color{pgreen},
+    keywordstyle=\color{pblue},
+    stringstyle=\color{pred},
+    basicstyle=\ttfamily,
+    moredelim=[is][\textcolor{pgrey}]{\%\%}{\%\%}
+}
+
 
 
 % -----------------------------------------------------------------------

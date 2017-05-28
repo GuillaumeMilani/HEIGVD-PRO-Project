@@ -69,7 +69,7 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
         
         try {
             // Cancel all tranformation before taking a snapshot
-            sp.setTransform(getLocalToSceneTransform().createInverse());
+            sp.setTransform(getLocalToParentTransform().createInverse());
         } catch (NonInvertibleTransformException ex) {
             // TODO : Manage exceptions
             Logger.getLogger(GEMMSCanvas.class.getName()).log(Level.SEVERE, null, ex);

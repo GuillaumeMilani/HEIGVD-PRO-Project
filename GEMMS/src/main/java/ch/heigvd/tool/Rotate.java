@@ -50,4 +50,8 @@ public class Rotate extends AbstractTool {
          workspace.getLayerTool().setCursor(Cursor.DEFAULT);
     }
 
+   @Override
+   public void mouseMoved(double x, double y) {
+   }
+
 }

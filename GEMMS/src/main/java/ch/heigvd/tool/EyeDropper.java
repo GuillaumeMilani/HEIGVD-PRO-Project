@@ -118,4 +118,8 @@ public class EyeDropper extends AbstractTool {
       }
    }
 
+   @Override
+   public void mouseMoved(double x, double y) {
+   }
+
 }

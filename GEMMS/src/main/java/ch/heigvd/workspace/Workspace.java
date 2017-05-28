@@ -105,6 +105,8 @@ public class Workspace extends StackPane implements Serializable {
                   currentTool.mouseDragged(p.getX(), p.getY());
                } else if (event.getEventType() == MouseEvent.MOUSE_RELEASED) {
                   currentTool.mouseReleased(p.getX(), p.getY());
+               } else if (event.getEventType() == MouseEvent.MOUSE_MOVED) {
+                  currentTool.mouseMoved(p.getX(), p.getY());
                }
             }
          }

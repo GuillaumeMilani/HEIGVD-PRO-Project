@@ -57,4 +57,8 @@ public class Resize extends AbstractTool {
         notifier.notifyHistory();
          workspace.getLayerTool().setCursor(Cursor.DEFAULT);
     }
+
+   @Override
+   public void mouseMoved(double x, double y) {
+   }
 }

@@ -1,5 +1,6 @@
 package ch.heigvd.tool;
 
+import ch.heigvd.tool.settings.SizeConfigurableTool;
 import ch.heigvd.workspace.Workspace;
 import java.util.List;
 import javafx.geometry.Point3D;
@@ -7,6 +8,8 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
 /**
  * <h1>LineTool</h1>
@@ -16,7 +19,7 @@ import javafx.scene.canvas.GraphicsContext;
  * "drawing" lines (using the Bresenham algorithm), calling the
  * drawPixel method each time it should construct a part of the line.
  */
-public abstract class LineTool extends AbstractTool {
+public abstract class LineTool extends AbstractTool implements SizeConfigurableTool {
 
    // The size of the tool [px]
    protected int size;
@@ -27,6 +30,12 @@ public abstract class LineTool extends AbstractTool {
    
    // Fix to draw even if the pressed event wasn't registered
    protected boolean started = false;
+   
+   // Context to draw on
+   Circle blackCircleCursor;
+   Circle whiteCircleCursor;
+   
+   boolean hasCursor = false;
 
    /**
     * Constructor.
@@ -37,7 +46,24 @@ public abstract class LineTool extends AbstractTool {
    public LineTool(Workspace workspace, int size) {
       super(workspace);
       this.size = size;
-      workspace.getLayerTool().setCursor(Cursor.DEFAULT);
+      workspace.getLayerTool().setCursor(Cursor.NONE);
+      
+      // Create fake cursors
+      blackCircleCursor = createCursor(Color.web("#333"));
+      whiteCircleCursor = createCursor(Color.web("#ccc"));
+   }
+   
+   /**
+    * Create a Circle to represent a cursor
+    * @param color the color of the cursor
+    * @return a new Circle
+    */
+   private Circle createCursor(Color color) {
+      Circle c = new Circle(size/2);
+      c.setStroke(color);
+      c.setStrokeWidth(2);
+      c.setFill(Color.TRANSPARENT);
+      return c;
    }
 
    /**
@@ -107,6 +133,8 @@ public abstract class LineTool extends AbstractTool {
     */
    @Override
    public void mouseDragged(double x, double y) {
+      
+      mouseMoved(x, y);
 
       if (started) {
          // Get the selected layers of the workspace
@@ -157,6 +185,46 @@ public abstract class LineTool extends AbstractTool {
          }
       }
       notifier.notifyHistory();
+   }
+   
+   /**
+    * Draw the fake cursors on mose moved
+    * @param x the x coordinate
+    * @param y the y coordinate
+    */
+   @Override
+   public void mouseMoved(double x, double y) {
+      
+      whiteCircleCursor.setTranslateX(x - 1);
+      whiteCircleCursor.setTranslateY(y - 1);
+      blackCircleCursor.setTranslateX(x);
+      blackCircleCursor.setTranslateY(y);
+      
+      if (!hasCursor) {
+         workspace.getLayerTool().getChildren().add(whiteCircleCursor);
+         workspace.getLayerTool().getChildren().add(blackCircleCursor);
+         hasCursor = true;
+      }
+   }
+   
+   /**
+    * Set the new size of the tool
+    * @param size the new size
+    */
+   @Override
+   public void setSize(int size) {
+      this.size = size;
+      blackCircleCursor.setRadius(size/2);
+      whiteCircleCursor.setRadius(size/2);
+   }
+   
+   /**
+    * Get the size of the tool in pixels
+    * @return the size of the tool
+    */
+   @Override
+   public int getSize() {
+      return size;
    }
 
    /**

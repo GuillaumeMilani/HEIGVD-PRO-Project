@@ -138,4 +138,8 @@ public class Drag extends AbstractTool {
     public boolean isAlignementActive() {
         return isAlignementActive;
     }
+
+   @Override
+   public void mouseMoved(double x, double y) {
+   }
 }

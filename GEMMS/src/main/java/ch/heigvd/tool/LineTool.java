@@ -1,5 +1,6 @@
 package ch.heigvd.tool;
 
+import ch.heigvd.tool.settings.SizeConfigurableTool;
 import ch.heigvd.workspace.Workspace;
 import java.util.List;
 import javafx.geometry.Point3D;
@@ -7,6 +8,8 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
 /**
  * <h1>LineTool</h1>
@@ -16,7 +19,7 @@ import javafx.scene.canvas.GraphicsContext;
  * "drawing" lines (using the Bresenham algorithm), calling the
  * drawPixel method each time it should construct a part of the line.
  */
-public abstract class LineTool extends AbstractTool {
+public abstract class LineTool extends AbstractTool implements SizeConfigurableTool {
 
    // The size of the tool [px]
    protected int size;
@@ -27,6 +30,10 @@ public abstract class LineTool extends AbstractTool {
    
    // Fix to draw even if the pressed event wasn't registered
    protected boolean started = false;
+   
+   // Context to draw on
+   Circle blackCircleCursor;
+   Circle whiteCircleCursor;
 
    /**
     * Constructor.
@@ -37,7 +44,17 @@ public abstract class LineTool extends AbstractTool {
    public LineTool(Workspace workspace, int size) {
       super(workspace);
       this.size = size;
-      workspace.getLayerTool().setCursor(Cursor.DEFAULT);
+      workspace.getLayerTool().setCursor(Cursor.NONE);
+      blackCircleCursor = createCursor(Color.BLACK);
+      whiteCircleCursor = createCursor(Color.WHITE);
+   }
+   
+   private Circle createCursor(Color color) {
+      Circle c = new Circle(size/2);
+      c.setStroke(color);
+      c.setStrokeWidth(1);
+      c.setFill(Color.TRANSPARENT);
+      return c;
    }
 
    /**
@@ -107,6 +124,8 @@ public abstract class LineTool extends AbstractTool {
     */
    @Override
    public void mouseDragged(double x, double y) {
+      
+      mouseMoved(x, y);
 
       if (started) {
          // Get the selected layers of the workspace
@@ -157,6 +176,38 @@ public abstract class LineTool extends AbstractTool {
          }
       }
       notifier.notifyHistory();
+   }
+   
+   @Override
+   public void mouseMoved(double x, double y) {
+      blackCircleCursor.setTranslateX(x);
+      blackCircleCursor.setTranslateY(y);
+      workspace.getLayerTool().getChildren().remove(blackCircleCursor);
+      workspace.getLayerTool().getChildren().add(blackCircleCursor);
+      whiteCircleCursor.setTranslateX(x - 1);
+      whiteCircleCursor.setTranslateY(y - 1);
+      workspace.getLayerTool().getChildren().remove(whiteCircleCursor);
+      workspace.getLayerTool().getChildren().add(whiteCircleCursor);
+   }
+   
+   /**
+    * Set the new size of the eraser
+    * @param size the new size
+    */
+   @Override
+   public void setSize(int size) {
+      this.size = size;
+      blackCircleCursor.setRadius(size/2);
+      whiteCircleCursor.setRadius(size/2);
+   }
+   
+   /**
+    * Get the size of the eraser in pixels
+    * @return the size of the brush
+    */
+   @Override
+   public int getSize() {
+      return size;
    }
 
    /**

@@ -243,4 +243,8 @@ public class TextTool extends AbstractTool implements ColorConfigurableTool, Fon
       }
    }
 
+   @Override
+   public void mouseMoved(double x, double y) {
+   }
+
 }

@@ -71,26 +71,6 @@ public class Brush extends LineTool implements SizeConfigurableTool {
    public Color getColor() {
       return color;
    }
-
-   /**
-    * Set the new size of the brush
-    *
-    * @param size the new size
-    */
-   @Override
-   public void setSize(int size) {
-      this.size = size;
-   }
-
-   /**
-    * Get the size of the brush in pixels
-    *
-    * @return the size of the brush
-    */
-   @Override
-   public int getSize() {
-      return size;
-   }
    
    /**
     * Update the color to use

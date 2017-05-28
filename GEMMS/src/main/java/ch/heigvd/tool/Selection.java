@@ -166,4 +166,8 @@ public class Selection extends AbstractTool {
     public Rectangle getRectangle() {
         return rectangle;
     }
+
+   @Override
+   public void mouseMoved(double x, double y) {
+   }
 }

@@ -147,4 +147,8 @@ public class Crop extends AbstractTool {
         isMoving = false;
         isMoved = false;
     }
+
+   @Override
+   public void mouseMoved(double x, double y) {
+   }
 }

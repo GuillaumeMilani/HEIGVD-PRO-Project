@@ -87,7 +87,7 @@ public class LayerList<T> extends VBox {
       panel = new VBox();
       // The ScrollPane to contain the layer list wrapper
       layerContainer = new ScrollPane();
-      layerContainer.setPrefHeight(200);
+      layerContainer.setPrefHeight(400);
       layerContainer.setPrefWidth(200);
       layerContainer.setContent(wrapper);
       layerContainer.setFitToWidth(true);

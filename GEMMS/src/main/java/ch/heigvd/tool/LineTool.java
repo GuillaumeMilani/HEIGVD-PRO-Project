@@ -34,6 +34,8 @@ public abstract class LineTool extends AbstractTool implements SizeConfigurableT
    // Context to draw on
    Circle blackCircleCursor;
    Circle whiteCircleCursor;
+   
+   boolean hasCursor = false;
 
    /**
     * Constructor.
@@ -45,14 +47,21 @@ public abstract class LineTool extends AbstractTool implements SizeConfigurableT
       super(workspace);
       this.size = size;
       workspace.getLayerTool().setCursor(Cursor.NONE);
-      blackCircleCursor = createCursor(Color.BLACK);
-      whiteCircleCursor = createCursor(Color.WHITE);
+      
+      // Create fake cursors
+      blackCircleCursor = createCursor(Color.web("#333"));
+      whiteCircleCursor = createCursor(Color.web("#ccc"));
    }
    
+   /**
+    * Create a Circle to represent a cursor
+    * @param color the color of the cursor
+    * @return a new Circle
+    */
    private Circle createCursor(Color color) {
       Circle c = new Circle(size/2);
       c.setStroke(color);
-      c.setStrokeWidth(1);
+      c.setStrokeWidth(2);
       c.setFill(Color.TRANSPARENT);
       return c;
    }
@@ -178,20 +187,28 @@ public abstract class LineTool extends AbstractTool implements SizeConfigurableT
       notifier.notifyHistory();
    }
    
+   /**
+    * Draw the fake cursors on mose moved
+    * @param x the x coordinate
+    * @param y the y coordinate
+    */
    @Override
    public void mouseMoved(double x, double y) {
-      blackCircleCursor.setTranslateX(x);
-      blackCircleCursor.setTranslateY(y);
-      workspace.getLayerTool().getChildren().remove(blackCircleCursor);
-      workspace.getLayerTool().getChildren().add(blackCircleCursor);
+      
       whiteCircleCursor.setTranslateX(x - 1);
       whiteCircleCursor.setTranslateY(y - 1);
-      workspace.getLayerTool().getChildren().remove(whiteCircleCursor);
-      workspace.getLayerTool().getChildren().add(whiteCircleCursor);
+      blackCircleCursor.setTranslateX(x);
+      blackCircleCursor.setTranslateY(y);
+      
+      if (!hasCursor) {
+         workspace.getLayerTool().getChildren().add(whiteCircleCursor);
+         workspace.getLayerTool().getChildren().add(blackCircleCursor);
+         hasCursor = true;
+      }
    }
    
    /**
-    * Set the new size of the eraser
+    * Set the new size of the tool
     * @param size the new size
     */
    @Override
@@ -202,8 +219,8 @@ public abstract class LineTool extends AbstractTool implements SizeConfigurableT
    }
    
    /**
-    * Get the size of the eraser in pixels
-    * @return the size of the brush
+    * Get the size of the tool in pixels
+    * @return the size of the tool
     */
    @Override
    public int getSize() {

@@ -530,11 +530,10 @@ public class GEMMSStageFXMLController implements Initializable {
        });
 
         mainAnchorPane.setOnKeyPressed(keyEvent -> {
+            Workspace w = getCurrentWorkspace();
             // ---------- ESC ----------
-
             if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {
                 // Disable current tool
-                Workspace w = getCurrentWorkspace();
                 if (w != null) {
                    w.setCurrentTool(null);
                   clearSelectedButtons();
@@ -545,14 +544,14 @@ public class GEMMSStageFXMLController implements Initializable {
             } else if (keyEvent.getCode().equals(KeyCode.DELETE)) {
                 // ---------- DEL ----------
 
-                if (getCurrentWorkspace() != null && getCurrentWorkspace().getLayerTool() != null && getCurrentWorkspace().getCurrentTool() instanceof Selection) { 
+                if (w != null && w.getLayerTool() != null && w.getCurrentTool() instanceof Selection) { 
                    
                    
                     // Get the selection
                     Selection selection = (Selection)getCurrentWorkspace().getCurrentTool();
                     Rectangle rec = selection.getRectangle();
 
-                    for (Node n : getCurrentWorkspace().getCurrentLayers()) {
+                    for (Node n : w.getCurrentLayers()) {
                        if(n instanceof GEMMSCanvas) {
 
                           try {
@@ -571,22 +570,23 @@ public class GEMMSStageFXMLController implements Initializable {
                 }
                 else {
                   // Drop the current selected layers
-                  getCurrentWorkspace().getCurrentLayers().forEach(n->getCurrentWorkspace().removeLayer(n));
+                  w.getCurrentLayers().forEach(n->w.removeLayer(n));
                 }
 
-            } else if (Constants.CTRL_Z.match(keyEvent)) {
+            } else if (w != null && Constants.CTRL_Z.match(keyEvent)) {
                 // ---------- CTRL + Z ----------
+                
                 getCurrentWorkspace().getHistory().undo();
-            } else if (Constants.CTRL_Y.match(keyEvent)) {
+            } else if (w != null && Constants.CTRL_Y.match(keyEvent)) {
                 // ---------- CTRL + Y ----------
-                getCurrentWorkspace().getHistory().redo();
+                w.getHistory().redo();
             }
 
             // ---------- CTRL + C ----------
             if (Constants.CTRL_C.match(keyEvent)) {
 
                 // In case there is a selection
-                if (getCurrentWorkspace() != null && getCurrentWorkspace().getLayerTool() != null && getCurrentWorkspace().getCurrentTool() instanceof Selection) {
+                if (w != null && w.getLayerTool() != null && w.getCurrentTool() instanceof Selection) {
 
                     // Get the selection
                     Selection selection = (Selection)getCurrentWorkspace().getCurrentTool();
@@ -603,7 +603,7 @@ public class GEMMSStageFXMLController implements Initializable {
                     BufferedImage image = new BufferedImage(selectionWidth, selectionHeight, BufferedImage.TYPE_INT_ARGB);
 
                     // Snapshot each node selected
-                    for (Node n : getCurrentWorkspace().getCurrentLayers()) {
+                    for (Node n : w.getCurrentLayers()) {
                         /**
                          * The viewport (part of node that will be snapshoted) must be in the
                          * node that will be snapshoted parent's coordinate system.
@@ -649,14 +649,13 @@ public class GEMMSStageFXMLController implements Initializable {
                     saveNodesToClipboard(Arrays.asList(canvas));
 
                 // No selection then copy the current layers
-                } else if (getCurrentWorkspace() != null && getCurrentWorkspace().getCurrentLayers() != null) {
-
-                    saveNodesToClipboard(getCurrentWorkspace().getCurrentLayers());
+                } else if (w!= null && w.getCurrentLayers() != null) {
+                    saveNodesToClipboard(w.getCurrentLayers());
                 }
 
             } else if (Constants.CTRL_V.match(keyEvent)) {
                 for (Node n : getNodesFromClipboard()) {
-                    getCurrentWorkspace().addLayer(n);
+                    w.addLayer(n);
                 }
             }
         });

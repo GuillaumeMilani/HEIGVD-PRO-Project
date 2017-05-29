@@ -1,7 +1,7 @@
-\section{Journal de travail - Mathieu Monteverde}
+\section{Journal de travail - Michael Spierer}
 
 \subsection{Semaine 1 20 février - 24 février}
-Constitution des groupes et choix du sujet. De nombreux sujets ont été proposés, la plupart ne faisant pas l'unanimité. Finalement, deux idées ont fait été retenues par le groupe: un programme de manipulation de graphes, et en premier lieu, un programme d'édition d'images.
+Constitution des groupes et choix du sujet. De nombreux sujets ont été proposés, la plupart ne faisant pas l'unanimité. Finalement, deux idées ont été retenues par le groupe: un programme de manipulation de graphes, et en premier lieu, un programme d'édition d'images.
 \subsection{Semaine 2 27 février - 3 mars}
 Attribution des sujets de projet. Le projet de programme d'édition d'images a été accepté. Nous avons donc pu commencer la réflexion autour des fonctionnalités et la planification du projet.
 \subsection{Semaine 3 6 mars - 10 mars}
@@ -19,14 +19,13 @@ Implémentation de la gestion du Workspace pour le déplacement et le zoom de l'
 \subsection{Semaine 9 24 avril - 28 avril}
 Ajout des prototypes recherchés en semaine 9 au reste du projet. Le Workspace permet maintenant d'ajouter des calques, de les supprimer, et de se déplacer dans l'interface. 
 \subsection{Semaine 10 1 mai - 5 mai}
-Des changements ont eu lieu pour le Workspace. De mon côté, il faut encore améliorer la gestion des calques.
-On se rend compte que l'élément ListView de JavaFX, qui pourrait pourtant de fonctionner parfaitement pour l'affichage des calques, ne permet de pas de changer l'ordre d'affichage.
+Implémentation des claques de texte
 \subsection{Semaine 11 8 mai - 12 mai} 
-Il va falloir trouver une solution pour la gestion des calques. Le module étant cependant fonctionnel, on se charge des autres fonctionnalités. Début de la réalisation du pinceau et de la gomme.
+Redimensionnement des calques, pivotement, deplacement d'un ou plusieurs calques. Il y a plusieurs manières d'aboutir aux effets escomptés, plusieurs chosent rentrent en compte : vu que quasiment rien n'est sérialisable, il faut trouver comment (en plus de sérialiser les calques qui sont de base, non-sérialisable) sérialiser les transformations.
 \subsection{Semaine 12 15 mai - 19 mai}
-Remplacement de la ListView de gestion des calques JavaFX par un composant fait main pour pouvoir répondre aux besoins de l'application. Les outils pinceaux, gommes et pipette sont fonctionnels. Beaucoup d'élément ont pu être ajoutés cette semaine. La gestion de la couleur, le paramétrage des outils (taille du pinceau et de la gomme, édition de textes et autres).
+Toujours sur les redimensionnement de calques. Il y a de nouveau soucis : le mappage de coordonnées des tools (pas juste les transformations que j'implémente mais aussi brush etc) . De plus, les symetries m'ont donné du fil à retordre.
 \subsection{Semaine 13 22 mai - 26 mai}
-Il y a eu beaucoup de problèmes avec les transformations de calques (rotation, taille, symétrie, etc.) Mais après beaucoup d'efforts, les problèmes ont pu être résolu. Maintenant, il s'agit de peaufiner l'interface (espacement, ergonomie, retour visuels pour l'utilisateur, etc.),
+Essaie de faire un bonus (pas dans le cahier des charges) pour la réalisation d'un bucket (pour remplir une zoned'une couleur en un clique), le prototype marche bien sauf a partir du moment ou il y a une transformation sur le calque. Je reevalue la situation, pas de temps a perdre sur cette fonctionnalitée non demandée, je passe à la suite. Implémentation de l'alignement automatique d'un calque lors du drag.
 \subsection{Semaine 14 29 mai - 2 juin}
 Finition du rapport et du manuel utilisateur.
 

@@ -1,10 +1,14 @@
-package ch.heigvd.gemms;
+package ch.heigvd.controller;
 
 import ch.heigvd.dialog.ImportImageDialog;
 import ch.heigvd.dialog.NewDocument;
 import ch.heigvd.dialog.NewDocumentDialog;
 import ch.heigvd.dialog.OpenDocumentDialog;
 import ch.heigvd.dialog.ResizeDialog;
+import ch.heigvd.gemms.Constants;
+import ch.heigvd.gemms.Document;
+import ch.heigvd.gemms.Utils;
+import ch.heigvd.gemms.WelcomeInvite;
 
 import ch.heigvd.layer.GEMMSText;
 import ch.heigvd.layer.GEMMSCanvas;
@@ -72,7 +76,7 @@ import javafx.scene.layout.StackPane;
 
 
 
-public class GEMMSStageFXMLController implements Initializable {
+public class MainController implements Initializable {
 
     // Stage from main
     private Stage stage;
@@ -567,7 +571,7 @@ public class GEMMSStageFXMLController implements Initializable {
                           } catch (NonInvertibleTransformException ex) {
                              
                              // TODO : Manage exceptions
-                             Logger.getLogger(GEMMSStageFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                             Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
                           }
                        }
                     }
@@ -1136,7 +1140,7 @@ public class GEMMSStageFXMLController implements Initializable {
             try {
                 document = new Document(stage, f);
             } catch (IOException | ClassNotFoundException ex) {
-                Logger.getLogger(GEMMSStageFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             updateRightPanelAndCreateTab(document);
@@ -1161,7 +1165,7 @@ public class GEMMSStageFXMLController implements Initializable {
                 try {
                     d.save();
                 } catch (IOException ex) {
-                    Logger.getLogger(GEMMSStageFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -1183,7 +1187,7 @@ public class GEMMSStageFXMLController implements Initializable {
                 try {
                     d.export();
                 } catch (IOException ex) {
-                    Logger.getLogger(GEMMSStageFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }

@@ -103,7 +103,7 @@ public class Document {
      * @throws IOException
      * @throws FileNotFoundException
      */
-    void save() throws FileNotFoundException, IOException {
+    public void save() throws FileNotFoundException, IOException {
 
         // Check if there is already a loaded file
         if (currentFile != null) {
@@ -125,7 +125,7 @@ public class Document {
      * @throws IOException
      * @throws FileNotFoundException
      */
-    void saveAs() throws FileNotFoundException, IOException {
+    public void saveAs() throws FileNotFoundException, IOException {
         
         // Set FileChooser
         FileChooser fileChooser;
@@ -160,7 +160,7 @@ public class Document {
      *
      * @throws IOException
      */
-    void export() throws IOException {
+    public void export() throws IOException {
         
         // Set fileChooser
         FileChooser fileChooser;

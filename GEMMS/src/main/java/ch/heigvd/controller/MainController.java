@@ -77,6 +77,10 @@ import javafx.scene.layout.StackPane;
 
 
 public class MainController implements Initializable {
+   
+   
+   @FXML
+   private ToolbarController toolbarController;
 
     // Stage from main
     private Stage stage;
@@ -106,8 +110,7 @@ public class MainController implements Initializable {
     @FXML
     private AnchorPane colorController;
     
-    @FXML
-    private HBox toolSettingsContainer;
+
 
     // List of documents
     private ArrayList<Document> documents;
@@ -132,6 +135,8 @@ public class MainController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+       
+       toolbarController.init(this);
 
         // Document list
         documents = new ArrayList<>();
@@ -156,7 +161,7 @@ public class MainController implements Initializable {
         Button newButtonInvite = new Button();
         newButtonInvite.getStyleClass().add("new-document-button");
         newButtonInvite.setOnAction(e -> {
-           newButtonAction(e);
+           toolbarController.newButtonAction(e);
         });
         WelcomeInvite newInvite = new WelcomeInvite(new Label("Create a new document."), newButtonInvite);
         
@@ -164,7 +169,7 @@ public class MainController implements Initializable {
         Button openButtonInvite = new Button();
         openButtonInvite.getStyleClass().add("open-document-button");
         openButtonInvite.setOnAction(e -> {
-           openButtonAction(e);
+           toolbarController.openButtonAction(e);
         });
         WelcomeInvite openInvite = new WelcomeInvite(new Label("Open a GEMMS document."), openButtonInvite);
         
@@ -709,9 +714,9 @@ public class MainController implements Initializable {
     }
     
     private void displayToolSetting(HBox toolBox) {
-       toolSettingsContainer.getChildren().clear();
+       toolbarController.clearToolSettings();
        if (toolBox != null)
-         toolSettingsContainer.getChildren().add(toolBox);
+          toolbarController.addToolSettings(toolBox);
     }
     
     /**
@@ -751,7 +756,7 @@ public class MainController implements Initializable {
              b.getStyleClass().remove("selected");
           }
        }
-       toolSettingsContainer.getChildren().clear();
+       toolbarController.clearToolSettings();
     }
     
     private void selectButton(Button b) {
@@ -1073,7 +1078,7 @@ public class MainController implements Initializable {
       }
    }
 
-   private void updateRightPanelAndCreateTab(Document document) {
+   public void updateRightPanelAndCreateTab(Document document) {
        Workspace w = document.workspace();
 
        // Clear
@@ -1088,139 +1093,9 @@ public class MainController implements Initializable {
        workspaces.getSelectionModel().select(tab);
    }
     
-    @FXML
-    private void newButtonAction(ActionEvent e) {
-       
-        hideWelcome();
-        
-        // Create a new dialog
-        NewDocumentDialog dialog = new NewDocumentDialog();
-        
-        // Display dialog
-        Optional<NewDocument> result = dialog.showAndWait();
-
-        // Dialog OK
-        if(result.isPresent()) {
-
-            int width = result.get().getWidth();
-            int height = result.get().getHeiht();
-            Color color = result.get().getColor();
-            
-            // Create a new document
-            Document document = new Document(stage, width, height);
-
-            // Get workspace
-            Workspace w = document.workspace();
-            
-            GEMMSCanvas canvas = new GEMMSCanvas(width, height);
-            GraphicsContext gc = canvas.getGraphicsContext2D();
-            gc.setFill(color);
-            gc.fillRect(0, 0, width, height);
-
-            updateRightPanelAndCreateTab(document);
-            
-            // Set background
-            w.addLayer(canvas);
-
-            documents.add(document);
-        }
-    }
     
     
-    @FXML
-    private void openButtonAction(ActionEvent e) {
-       
-       hideWelcome();
-       
-        OpenDocumentDialog dialog = new OpenDocumentDialog(stage);
-        
-        File f = dialog.showAndWait();
-        if(f != null) {
-            Document document = null;
-            try {
-                document = new Document(stage, f);
-            } catch (IOException | ClassNotFoundException ex) {
-                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-            }
 
-            updateRightPanelAndCreateTab(document);
-
-            documents.add(document);
-        }
-    }
-    
-    
-    @FXML
-    private void saveButtonAction(ActionEvent e) {
-        Workspace w = getCurrentWorkspace();
-        if(w != null) {
-            // Get current tab
-            Tab tab = workspaces.getSelectionModel().getSelectedItem();
-
-            // Research document with workspace
-            Document d = getDocument(w);
-
-            // Save document
-            if(d != null) {
-                try {
-                    d.save();
-                } catch (IOException ex) {
-                    Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            // Set tab title
-            tab.setText(d.name());
-        }
-    }
-    
-    
-    @FXML
-    private void exportButtonAction(ActionEvent e) {
-        Workspace w = getCurrentWorkspace();
-        if(w != null) {
-            // Research document with workspace
-            Document d = getDocument(w);
-
-            // export document as image
-            if(d != null) {
-                try {
-                    d.export();
-                } catch (IOException ex) {
-                    Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-    }
-    
-    
-    @FXML
-    private void resizeButtonAction(ActionEvent e) {
-        Workspace w = getCurrentWorkspace();
-        if(w != null) {
-            
-            ResizeDialog dialog = new ResizeDialog(w);
-            
-            Optional<Rectangle> result = dialog.showAndWait();
-
-            if(result.isPresent()) {
-                
-                w.resizeCanvas((int)result.get().getWidth(),
-                               (int)result.get().getHeight(),
-                               (int)result.get().getX(), 
-                               (int)result.get().getY());
-            }
-        }
-    }
-    
-    /**
-     * Set the main stage
-     * 
-     * @param stage stage to set
-     */
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
     
     /**
      * Show and set anchors for the welcome panel.
@@ -1236,7 +1111,7 @@ public class MainController implements Initializable {
     /**
      * Hide the welcome panel.
      */
-    private void hideWelcome() {
+    public void hideWelcome() {
        mainAnchorPane.getChildren().remove(welcomeTab);
     }
     
@@ -1245,7 +1120,7 @@ public class MainController implements Initializable {
      * 
      * @return current workspace
      */
-    private Workspace getCurrentWorkspace() {
+    public Workspace getCurrentWorkspace() {
         if (workspaces.getTabs().size() > 0) {
            return (Workspace) workspaces.getSelectionModel().getSelectedItem().getContent();
         }
@@ -1259,7 +1134,7 @@ public class MainController implements Initializable {
      * @param w workspace to find
      * @return Document that contain the workspace
      */
-    private Document getDocument(Workspace w) {
+    public Document getDocument(Workspace w) {
         for(Document d : documents) {
             if(d.workspace() == w) {
                return d;
@@ -1315,4 +1190,30 @@ public class MainController implements Initializable {
     private void setBlurRadius(Node n, int i) {
         ((GaussianBlur) (((SepiaTone) getColorAdjust(n).getInput())).getInput()).setRadius(i);
     }
+    
+   public Tab getCurrentTab() {
+      return workspaces.getSelectionModel().getSelectedItem();
+   }
+   
+   public void addDocument(Document document) {
+      documents.add(document);
+   }
+   
+   /**
+    * Set main stage
+    * 
+    * @param s stage to set
+    */
+   public void setStage(Stage s) {
+      this.stage = s;
+   }
+   
+   /**
+    * Get main stage
+    * 
+    * @return stage
+    */
+   public Stage getStage() {
+      return stage;
+   }
 }

@@ -8,7 +8,6 @@ import ch.heigvd.dialog.ResizeDialog;
 
 import ch.heigvd.layer.GEMMSText;
 import ch.heigvd.layer.GEMMSCanvas;
-import ch.heigvd.layer.IGEMMSNode;
 import ch.heigvd.layer.GEMMSImage;
 
 import ch.heigvd.tool.*;
@@ -17,7 +16,6 @@ import ch.heigvd.tool.settings.ToolFontSettings;
 import ch.heigvd.tool.settings.ToolSettingsContainer;
 import ch.heigvd.tool.settings.ToolSizeSettings;
 
-import ch.heigvd.workspace.History;
 import ch.heigvd.workspace.Workspace;
 
 import java.awt.*;
@@ -29,7 +27,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
@@ -54,15 +51,25 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.effect.GaussianBlur;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.NonInvertibleTransformException;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.StackPane;
 
 
@@ -78,17 +85,10 @@ public class GEMMSStageFXMLController implements Initializable {
     /**
      * GridPanes containing the tools buttons
      */
-    @FXML
-    private GridPane gridCreationTools;
-    @FXML
-    private GridPane gridDrawingTools;
+
     @FXML
     private GridPane gridFilterTools;
-    @FXML
-    private GridPane gridSliders;
-    @FXML
-    private GridPane gridModificationTools;
-    
+
     
     // Contains all workspace (tab)
     @FXML
@@ -110,12 +110,23 @@ public class GEMMSStageFXMLController implements Initializable {
     // List of documents
     private ArrayList<Document> documents;
     
-    // Tab to wlecom users and invite to click
-    private Tab welcomeTab;
-    
     // List of created tool buttons
-    LinkedList<Button> toolButtons = new LinkedList();
+    private LinkedList<Button> toolButtons = new LinkedList();
     
+    private StackPane welcomeTab;
+    
+    
+    
+   final ToolColorSettings textColor = new ToolColorSettings(ColorSet.getInstance().getColor());
+   final ToolFontSettings textFont = new ToolFontSettings(6, 300, GEMMSText.DEFAULT_SIZE);
+    
+   final ToolSizeSettings brushSizer = new ToolSizeSettings(1, 150, 5);
+   final ToolSettingsContainer brushSettings = new ToolSettingsContainer(brushSizer);
+   
+   final ToolSizeSettings eraserSizer = new ToolSizeSettings(1, 150, 5);
+   final ToolSettingsContainer eraserSettings = new ToolSettingsContainer(eraserSizer);
+   
+   final ToolSettingsContainer textSettings = new ToolSettingsContainer(textColor, textFont);
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -123,10 +134,21 @@ public class GEMMSStageFXMLController implements Initializable {
         // Document list
         documents = new ArrayList<>();
         
-        // Add a welcom panel 
-        welcomeTab = new Tab();
-        StackPane welcomeContainer = new StackPane(); // Container to center
-        GridPane welcomeGrid = new GridPane(); // Grid for multiple panels
+
+        // Create a welcome panel
+        welcomeTab = new StackPane();
+        welcomeTab.setAlignment(Pos.CENTER);
+        
+        // Create a VBox to contain elements
+        VBox welcomeContainer = new VBox();
+        welcomeContainer.setPrefWidth(600);
+        welcomeContainer.setBackground(new Background(new BackgroundFill(Color.web("#cdcdcd"), CornerRadii.EMPTY, Insets.EMPTY)));
+        welcomeContainer.setPadding(new Insets(20));
+        welcomeContainer.setAlignment(Pos.CENTER);
+        welcomeContainer.setSpacing(30);
+        
+        // Grid for multiple panels
+        GridPane welcomeGrid = new GridPane();
         
         // Button for new document invite
         Button newButtonInvite = new Button();
@@ -134,7 +156,7 @@ public class GEMMSStageFXMLController implements Initializable {
         newButtonInvite.setOnAction(e -> {
            newButtonAction(e);
         });
-        WelcomeInvite newInvite = new WelcomeInvite(new Label("Créer un nouveau document."), newButtonInvite);
+        WelcomeInvite newInvite = new WelcomeInvite(new Label("Create a new document."), newButtonInvite);
         
         // Button for open document invite
         Button openButtonInvite = new Button();
@@ -142,7 +164,7 @@ public class GEMMSStageFXMLController implements Initializable {
         openButtonInvite.setOnAction(e -> {
            openButtonAction(e);
         });
-        WelcomeInvite openInvite = new WelcomeInvite(new Label("Ouvrir un document GEMMS."), openButtonInvite);
+        WelcomeInvite openInvite = new WelcomeInvite(new Label("Open a GEMMS document."), openButtonInvite);
         
         // Add invites
         welcomeGrid.add(newInvite, 0, 0);
@@ -150,19 +172,16 @@ public class GEMMSStageFXMLController implements Initializable {
         
         // Set visual parameters
         welcomeGrid.setHgap(15); 
-        welcomeGrid.setVgap(15);
+        welcomeGrid.setVgap(30);
         welcomeGrid.setMaxSize(460, 460);
         
         // Add grid to the container
         welcomeContainer.getChildren().add(welcomeGrid);
-        StackPane.setAlignment(welcomeGrid, Pos.CENTER);
+        welcomeTab.getChildren().add(welcomeContainer);
         
-        // Welcome tab parameters
-        welcomeTab.setContent(welcomeContainer);
-        welcomeTab.setText("Welcome !");
-        workspaces.getTabs().add(welcomeTab);
+        showWelcome();
         
-               // Register scroll event for zoom
+      // Register scroll event for zoom
        workspaces.setOnScroll(new EventHandler<ScrollEvent>() {
           @Override
           public void handle(ScrollEvent event) {
@@ -217,6 +236,7 @@ public class GEMMSStageFXMLController implements Initializable {
             }
             // Suppress tab
             else {
+              
                 // Get workspace
                 w = (Workspace)t.getContent();
                 
@@ -231,266 +251,14 @@ public class GEMMSStageFXMLController implements Initializable {
                 
                 // Clear
                 layerController.getChildren().clear();
-            }
+              }
         });
         
         
         
         colorController.getChildren().add(ColorSet.getInstance().getColorController());
         
-        // Create text button action
-        final ToolColorSettings textColor = new ToolColorSettings(ColorSet.getInstance().getColor());
-        final ToolFontSettings textFont = new ToolFontSettings(6, 300, GEMMSText.DEFAULT_SIZE);
-        Button textCreation = createToolButton("", gridCreationTools);
-        textCreation.getStyleClass().add(CSSIcons.TEXT_CREATION);
-        setHoverHint(textCreation, "Create a new Text.");
-        textCreation.setOnAction(e -> {
-           clearSelectedButtons();
-           Workspace w = getCurrentWorkspace();
-            if(w != null) {
-               Optional<String> result = TextTool.getDialogText(null);
-               if (result.isPresent()) {
-                  GEMMSText t = new GEMMSText(w.width()/2, w.height()/2, result.get());
-                  t.setFill(ColorSet.getInstance().getColor());
-                  t.setFont(textFont.getFont());
-                  t.setTranslateX(-t.getBoundsInParent().getWidth() / 2);
-                  w.addLayer(t);
-                  displayToolSetting(textCreation, null);
-               }
-               clearSelectedButtons();
-            }
-        });
-        
-        // Create text button action
-        Button text = createToolButton("", gridModificationTools);
-        final ToolSettingsContainer textSettings = new ToolSettingsContainer(textColor, textFont);
-        text.getStyleClass().add(CSSIcons.TEXT_TOOL);
-        setHoverHint(text, "Edit a text properties.");
-        text.setOnAction((ActionEvent e) -> {
-           clearSelectedButtons();
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-               selectButton(text);
-               TextTool t = new TextTool(w);
-               w.setCurrentTool(t); 
-               textColor.setTarget(t);
-               textFont.setTarget(t);
-               displayToolSetting(text, textSettings);
-            }
-        });
 
-        // Create canvas button action
-        Button canvasCreation = createToolButton("", gridCreationTools);
-        canvasCreation.getStyleClass().add(CSSIcons.CANVAS_CREATION);
-        setHoverHint(canvasCreation, "Create a new painting canvas.");
-        canvasCreation.setOnAction(e -> {
-           clearSelectedButtons();
-           Workspace w = getCurrentWorkspace();
-            if(w != null) {
-                w.addLayer(new GEMMSCanvas(w.width(), w.height()));
-                displayToolSetting(canvasCreation, null);
-            }
-        });
-
-        // Create image button action
-        Button imageCreation = createToolButton("", gridCreationTools);
-        imageCreation.getStyleClass().add(CSSIcons.IMAGE_CREATION);
-        setHoverHint(imageCreation, "Import an image.");
-        imageCreation.setOnAction(e -> {
-           Workspace w = getCurrentWorkspace();
-            if(w != null) {
-                ImportImageDialog dialog = new ImportImageDialog(stage);
-                Image image = dialog.showAndWait();
-                if(image != null) {
-                    GEMMSImage i = new GEMMSImage(image);
-                    i.setViewport(new Rectangle2D(0, 0, image.getWidth(), image.getHeight()));
-                    w.addLayer(i);
-                    displayToolSetting(imageCreation, null);
-                }
-            }
-        });
-
-        // Create symetrie horizontal button action
-        Button hSym = createToolButton("", gridModificationTools);
-        hSym.getStyleClass().add(CSSIcons.H_SYMMETRY);
-        setHoverHint(hSym, "Apply a horizontal symetry");
-        hSym.setOnAction((ActionEvent e) -> {
-            Workspace w = getCurrentWorkspace();
-           if (w != null) {
-              clearSelectedButtons();
-              for (Node node : w.getCurrentLayers()) {
-                 // If the node is a text, use the special formula for GEMMSTexts
-                 if (node instanceof GEMMSText) {
-                    GEMMSText t = (GEMMSText) node;
-                    t.getTransforms().add(new Rotate(180, t.getX() + t.getBoundsInLocal().getWidth() / 2, t.getY() + t.getBoundsInLocal().getHeight() / 2, 0, Rotate.Y_AXIS));
-                 } else {
-
-                      node.getTransforms().add(new Rotate(180, node.getBoundsInLocal().getWidth() / 2, node.getBoundsInLocal().getHeight() / 2, 0, Rotate.Y_AXIS));
-                 }
-              }
-              displayToolSetting(hSym, null);
-           }
-        });
-
-        // Create symetrie vertical button action
-        Button vSym = createToolButton("", gridModificationTools);
-        vSym.getStyleClass().add(CSSIcons.V_SYMMETRY);
-        setHoverHint(vSym, "Apply a vertical symetry");
-        vSym.setOnAction((ActionEvent e) -> {
-           Workspace w = getCurrentWorkspace();
-           if (w != null) {
-              clearSelectedButtons();
-              // If the node is a text, use the special formula for GEMMSTexts
-             for (Node node : w.getCurrentLayers()) {
-
-                 if (node instanceof GEMMSText) {
-                    GEMMSText t = (GEMMSText) node;
-                    t.getTransforms().add(new Rotate(180, t.getX() + t.getBoundsInLocal().getWidth() / 2, t.getY() + t.getBoundsInLocal().getHeight() / 2, 0, Rotate.X_AXIS));
-
-                 } else {
-                    node.getTransforms().add(new Rotate(180, node.getBoundsInLocal().getWidth() / 2, node.getBoundsInLocal().getHeight() / 2, 0, Rotate.X_AXIS));
-                 }
-              }
-              displayToolSetting(vSym, null);
-           }
-        });
-        
-        // Create brush tool
-        Button brush = createToolButton("", gridDrawingTools);
-        brush.getStyleClass().add(CSSIcons.BRUSH);
-        setHoverHint(brush, "Paint on a canvas.");
-        ToolSizeSettings brushSizer = new ToolSizeSettings(1, 150, 5);
-        final ToolSettingsContainer brushSettings = new ToolSettingsContainer(brushSizer);
-        brush.setOnAction(e -> {
-           Workspace w = getCurrentWorkspace();
-            if(w != null) {
-               clearSelectedButtons();
-               selectButton(brush);
-               Brush b = new Brush(w);
-               w.setCurrentTool(b);
-               brushSizer.setTarget(b);
-               displayToolSetting(brush, brushSettings);
-            }
-        });
-
-        // Create bucket tool
-        Button bucket = createToolButton("", gridDrawingTools);
-        bucket.getStyleClass().add(CSSIcons.BUCKET);
-        setHoverHint(bucket, "Fill with color.");
-        bucket.setOnAction(e -> {
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-               clearSelectedButtons();
-               selectButton(bucket);
-                BucketFill b = new BucketFill(w);
-                w.setCurrentTool(b);
-                displayToolSetting(bucket, null);
-            }
-        });
-
-        // Create eraser tool
-        Button eraser = createToolButton("", gridDrawingTools);
-        eraser.getStyleClass().add(CSSIcons.ERASER);
-        setHoverHint(eraser, "Erase color from a canvas.");
-        ToolSizeSettings eraserSizer = new ToolSizeSettings(1, 150, 5);
-        final ToolSettingsContainer eraserSettings = new ToolSettingsContainer(eraserSizer);
-        eraser.setOnAction(e -> {
-           Workspace w = getCurrentWorkspace();
-            if(w != null) {
-               clearSelectedButtons();
-               selectButton(eraser);
-               Eraser er = new Eraser(w);
-               w.setCurrentTool(er);
-               eraserSizer.setTarget(er);
-               displayToolSetting(eraser, eraserSettings);
-            }
-        });
-        
-        // Create EyeDropper tool
-        Button eyeDropper = createToolButton("", gridDrawingTools);
-        eyeDropper.getStyleClass().add(CSSIcons.EYE_DROPPER);
-        setHoverHint(eyeDropper, "Pick a color on a layer.");
-        eyeDropper.setOnAction(e -> {
-           Workspace w = getCurrentWorkspace();
-            if(w != null) {
-               clearSelectedButtons();
-               selectButton(eyeDropper);
-                w.setCurrentTool(new EyeDropper(w));
-              displayToolSetting(eyeDropper, null);
-            }
-        });
-
-        // Create drag button action
-        Button drag = createToolButton("", gridModificationTools);
-        drag.getStyleClass().add(CSSIcons.TRANSLATE);
-        setHoverHint(drag, "Move a layer around.");
-        drag.setOnAction((ActionEvent e) -> {
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-               clearSelectedButtons();
-               selectButton(drag);
-                w.setCurrentTool(new Drag(w));
-              displayToolSetting(drag, null);
-            }
-        });
-
-
-        // Create rotate button action
-        Button rotate = createToolButton("", gridModificationTools);
-        rotate.getStyleClass().add(CSSIcons.ROTATE);
-        setHoverHint(rotate, "Rotate a layer.");
-        rotate.setOnAction((ActionEvent e) -> {
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-               clearSelectedButtons();
-               selectButton(rotate);
-                w.setCurrentTool(new ch.heigvd.tool.RotateTool(w));
-              displayToolSetting(rotate, null);
-            }
-        });
-
-        // Create resize button action
-        Button resize = createToolButton("", gridModificationTools);
-        resize.getStyleClass().add(CSSIcons.SCALE);
-        setHoverHint(resize, "Resize a layer.");
-        resize.setOnAction((ActionEvent e) -> {
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-               clearSelectedButtons();
-               selectButton(resize);
-                w.setCurrentTool(new ch.heigvd.tool.Resize(w));
-              displayToolSetting(resize, null);
-            }
-        });
-
-        // Create selection button action
-        Button selectionButton = createToolButton("", gridModificationTools);
-        setHoverHint(selectionButton, "Select an area on the document.");
-        selectionButton.getStyleClass().add(CSSIcons.SELECTION);
-        selectionButton.setOnAction((ActionEvent e) -> {
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-               clearSelectedButtons();
-               selectButton(selectionButton);
-                w.setCurrentTool(new Selection(w));
-              displayToolSetting(selectionButton, null);
-            }
-        });
-
-        // Create crop button action
-        Button crop = createToolButton("", gridModificationTools);
-        setHoverHint(crop, "Crop the document.");
-        crop.getStyleClass().add(CSSIcons.CROP);
-        crop.setOnAction((ActionEvent e) -> {
-            Workspace w = getCurrentWorkspace();
-            if(w != null) {
-               clearSelectedButtons();
-               selectButton(crop);
-                w.setCurrentTool(new Crop(w));
-              displayToolSetting(crop, null);
-            }
-        });
-        
         
         //Create various sliders
         final Slider opacity = new Slider(0, 1, 1);
@@ -499,14 +267,8 @@ public class GEMMSStageFXMLController implements Initializable {
         final Slider contrast = new Slider(-1, 1, 0);
         final Slider brightness = new Slider(-1, 1, 0);
         final Slider blur = new Slider (0, 100, 0);
-        
-        final Label opacityLabel = new Label("Opacity:");
-        final Label sepiaLabel = new Label("Sepia:");
-        final Label saturationLabel = new Label("Saturation:");
-        final Label contrastLabel = new Label("Contrast:");
-        final Label brightnessLabel = new Label("Brightness:");
-        final Label blurLabel = new Label("Blur:");
-        
+  
+        //Create labels to show current slider value
         final Label opacityValue = new Label(
                 Double.toString(opacity.getValue()));
         final Label sepiaValue = new Label(
@@ -520,7 +282,9 @@ public class GEMMSStageFXMLController implements Initializable {
         final Label blurValue = new Label(
                 Double.toString(blur.getValue()));
 
+        //Add a ChangeListener to each slider so that they may modify current layers
         opacity.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
             public void changed(ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) {
 
@@ -536,6 +300,7 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         sepia.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
             public void changed(ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) {
                 Workspace w = getCurrentWorkspace();
@@ -549,6 +314,7 @@ public class GEMMSStageFXMLController implements Initializable {
         });
 
         saturation.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
             public void changed(ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) {
                 Workspace w = getCurrentWorkspace();
@@ -556,13 +322,13 @@ public class GEMMSStageFXMLController implements Initializable {
                     for (Node n : w.getCurrentLayers()) {
                         getColorAdjust(n).setSaturation(new_val.doubleValue());
                     }
-                    w.notifyHistory();
                 }
                 saturationValue.setText(String.format("%.2f", new_val));
             }
         });
         
         contrast.valueProperty().addListener(new ChangeListener<Number>() {
+                @Override
                 public void changed(ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) {
                 Workspace w = getCurrentWorkspace();
@@ -576,6 +342,7 @@ public class GEMMSStageFXMLController implements Initializable {
         });
         
         brightness.valueProperty().addListener(new ChangeListener<Number>() {
+                @Override
                 public void changed(ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) {
                 Workspace w = getCurrentWorkspace();
@@ -589,6 +356,7 @@ public class GEMMSStageFXMLController implements Initializable {
         });
         
         blur.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
             public void changed(ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) {
                 Workspace w = getCurrentWorkspace();
@@ -601,10 +369,14 @@ public class GEMMSStageFXMLController implements Initializable {
             }
         });
 
+        //
         EventHandler eh = new EventHandler() {
             @Override
             public void handle(Event event) {
-                getCurrentWorkspace().notifyHistory();
+                Workspace w = getCurrentWorkspace();
+                if(w != null){
+                    getCurrentWorkspace().notifyHistory();
+                }
             }
         };
 
@@ -613,19 +385,38 @@ public class GEMMSStageFXMLController implements Initializable {
         saturation.setOnMouseReleased(eh);
         contrast.setOnMouseReleased(eh);
         brightness.setOnMouseReleased(eh);
-
-
-        gridSliders.setPadding(new Insets(10, 10, 10, 10));
-        createSlider(gridSliders, opacityLabel, opacity, opacityValue, 1);
-        createSlider(gridSliders, sepiaLabel, sepia, sepiaValue, 2);
-        createSlider(gridSliders, saturationLabel, saturation, saturationValue, 3);
-        createSlider(gridSliders, contrastLabel, contrast, contrastValue, 4);
-        createSlider(gridSliders, brightnessLabel, brightness, brightnessValue, 5);
-        createSlider(gridSliders, blurLabel, blur, blurValue, 6);
+        blur.setOnMouseReleased(eh);
+        
+        // Container for effect buttons and sliders
+        GridPane effectsContainer = new GridPane();
+        effectsContainer.setPadding(new Insets(15));
+        effectsContainer.setBackground(new Background(new BackgroundFill(Color.web("#ededed"), CornerRadii.EMPTY, Insets.EMPTY)));
+        effectsContainer.setStyle("-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.15) , 3 ,0 , 3 , 3 );");
+        effectsContainer.setHgap(5);
+        effectsContainer.setVgap(10);
+        effectsContainer.setLayoutX(-10000);
+        effectsContainer.setLayoutY(0);
+        // Add it to the mainAnchorPane
+        mainAnchorPane.getChildren().add(effectsContainer);
+        
+        // GridPane to contain the effects buttons, not the sliders
+        GridPane effectButtonsContainer = new GridPane();
+        effectButtonsContainer.setPrefWidth(153);
+        effectButtonsContainer.setMaxWidth(153);
+        effectButtonsContainer.setHgap(10);
+        // Add column constraints
+        for (int i = 0; i < 3; ++i) {
+            ColumnConstraints c = new ColumnConstraints();
+            c.setPercentWidth(100/3.0);
+            c.setHgrow(Priority.SOMETIMES);
+            c.setMinWidth(10);
+            c.setMaxWidth(100);
+            effectButtonsContainer.getColumnConstraints().add(c);
+        }
 
         // Create filter button
-        Button BW = createToolButton("B&W", gridFilterTools);
-        setHoverHint(BW, "Apply a Black and White filter.");
+        Button BW = createToolButton("B&W", effectButtonsContainer);
+        BW.setTooltip(new Tooltip("Apply a black & white filter"));
         BW.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if (w != null) {
@@ -636,18 +427,20 @@ public class GEMMSStageFXMLController implements Initializable {
                 }
                 w.notifyHistory();
 
-                displayToolSetting(BW, null);
+                displayToolSetting(null);
             }
         });
         
         // Create filter button
-        Button tint = createToolButton("Tint", gridFilterTools);
-        setHoverHint(tint, "Apply a Tint filter.");
+        Button tint = createToolButton("Tint", effectButtonsContainer);
+        tint.setTooltip(new Tooltip("Apply a color filter of the current color"));
         tint.setOnAction((ActionEvent e) -> {
             Workspace w = getCurrentWorkspace();
             if (w != null) {
                clearSelectedButtons();
                 for (Node n : w.getCurrentLayers()) {
+                    //Algorithm to convert color to hue:
+                    //https://stackoverflow.com/questions/31587092
                     //Get hue between 0-360
                     double hue = ColorSet.getInstance().getColor().getHue();
                     //Add 180 and modulo 360 to get target colour
@@ -660,14 +453,14 @@ public class GEMMSStageFXMLController implements Initializable {
                 }
                 w.notifyHistory();
 
-                displayToolSetting(tint, null);
+                displayToolSetting(null);
             }
         });
 
         
         // Create filter button
-        Button reset = createToolButton("Reset", gridFilterTools);
-        setHoverHint(reset, "Reset all color effects.");
+        Button reset = createToolButton("Reset", effectButtonsContainer);
+        reset.setTooltip(new Tooltip("Reset all color effects"));
         reset.setOnAction((ActionEvent e) -> {
            clearSelectedButtons();
             Workspace w = getCurrentWorkspace();
@@ -685,24 +478,105 @@ public class GEMMSStageFXMLController implements Initializable {
                 contrast.setValue(0);
                 brightness.setValue(0);
                 
-                displayToolSetting(reset, null);
+                displayToolSetting(null);
             }
         });
+        
+        // Add the sliders to the effects container
+       createSlider(effectsContainer, "Opacity:", opacity, opacityValue, 1);
+       createSlider(effectsContainer, "Sepia:", sepia, sepiaValue, 2);
+       createSlider(effectsContainer, "Saturation:", saturation, saturationValue, 3);
+       createSlider(effectsContainer, "Contrast:", contrast, contrastValue, 4);
+       createSlider(effectsContainer, "Brightness:", brightness, brightnessValue, 5);
+       createSlider(effectsContainer, "Blur", blur, blurValue, 6);
+       
+       // Add the buttons on the first row
+       effectsContainer.add(effectButtonsContainer, 0, 0);
+       GridPane.setColumnSpan(effectButtonsContainer, 3);
+       
+       // Create a button to toggle the effect panel
+       Button effectsToggl = createToolButton("Effects", gridFilterTools);
+       effectsToggl.setTooltip(new Tooltip("Open/Close effects panel"));
+       effectsToggl.setPrefWidth(160);
+       toolButtons.remove(effectsToggl);
+       // Set the toggle action
+       effectsToggl.setOnAction((ActionEvent e) -> {
+          // If the layoutX property >= 0, then we assume the container is visible
+          if (effectsContainer.getLayoutX() >= 0) {
+             //Hide the container
+             effectsToggl.getStyleClass().remove("selected");
+             effectsContainer.setLayoutX(-10000);
+             effectsContainer.setLayoutY(0);
+          } else { // The container is not visible
+             selectButton(effectsToggl);
+
+             // Get height of the window
+             double windowHeight = mainAnchorPane.getBoundsInParent().getHeight();
+
+             // Get the height of the container
+             double containerHeight = effectsContainer.getBoundsInParent().getHeight();
+
+             // Get the ideal position of the panel
+             double posX = effectsToggl.localToScene(effectsToggl.getBoundsInLocal()).getMinX();
+             double posY = effectsToggl.localToScene(effectsToggl.getBoundsInLocal()).getMaxY();
+
+             // If the container would overflow from the window
+             if (posY + containerHeight > windowHeight) {
+                posX = 180;
+                posY = windowHeight - containerHeight;
+             }
+             
+             // Set the container position
+             effectsContainer.setLayoutX(posX);
+             effectsContainer.setLayoutY(posY);
+          }
+       });
 
         mainAnchorPane.setOnKeyPressed(keyEvent -> {
+            Workspace w = getCurrentWorkspace();
             // ---------- ESC ----------
-
             if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {
                 // Disable current tool
-                getCurrentWorkspace().setCurrentTool(null);
+                if (w != null) {
+                   w.setCurrentTool(null);
+                  clearSelectedButtons();
+                  w.getLayerTool().setCursor(javafx.scene.Cursor.DEFAULT);
+                }
+                
 
             } else if (keyEvent.getCode().equals(KeyCode.DELETE)) {
                 // ---------- DEL ----------
 
-                // Drop the current selected layers
-                getCurrentWorkspace().getCurrentLayers().forEach(n->getCurrentWorkspace().removeLayer(n));
+                if (w != null && w.getLayerTool() != null && w.getCurrentTool() instanceof Selection) { 
+                   
+                   
+                    // Get the selection
+                    Selection selection = (Selection)getCurrentWorkspace().getCurrentTool();
+                    Rectangle rec = selection.getRectangle();
 
-            } else if (Constants.CTRL_Z.match(keyEvent)) {
+                    for (Node n : w.getCurrentLayers()) {
+                       if(n instanceof GEMMSCanvas) {
+
+                          try {
+                             GEMMSCanvas canvas = (GEMMSCanvas)n;
+                             
+                             GraphicsContext gc = canvas.getGraphicsContext2D();
+                             gc.setTransform(new Affine(canvas.localToParentTransformProperty().get().createInverse()));
+                             gc.clearRect(rec.getBoundsInParent().getMinX(), rec.getBoundsInParent().getMinY(), rec.getWidth(), rec.getHeight());
+                          } catch (NonInvertibleTransformException ex) {
+                             
+                             // TODO : Manage exceptions
+                             Logger.getLogger(GEMMSStageFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                          }
+                       }
+                    }
+                }
+                else {
+                  // Drop the current selected layers
+                  w.getCurrentLayers().forEach(n->w.removeLayer(n));
+                }
+
+            } else if (w != null && Constants.CTRL_Z.match(keyEvent)) {
                 // ---------- CTRL + Z ----------
                 getCurrentWorkspace().getHistory().undo(1);
             } else if (Constants.CTRL_Y.match(keyEvent)) {
@@ -714,7 +588,7 @@ public class GEMMSStageFXMLController implements Initializable {
             if (Constants.CTRL_C.match(keyEvent)) {
 
                 // In case there is a selection
-                if (getCurrentWorkspace() != null && getCurrentWorkspace().getLayerTool() != null && getCurrentWorkspace().getCurrentTool() instanceof Selection) {
+                if (w != null && w.getLayerTool() != null && w.getCurrentTool() instanceof Selection) {
 
                     // Get the selection
                     Selection selection = (Selection)getCurrentWorkspace().getCurrentTool();
@@ -731,7 +605,7 @@ public class GEMMSStageFXMLController implements Initializable {
                     BufferedImage image = new BufferedImage(selectionWidth, selectionHeight, BufferedImage.TYPE_INT_ARGB);
 
                     // Snapshot each node selected
-                    for (Node n : getCurrentWorkspace().getCurrentLayers()) {
+                    for (Node n : w.getCurrentLayers()) {
                         /**
                          * The viewport (part of node that will be snapshoted) must be in the
                          * node that will be snapshoted parent's coordinate system.
@@ -777,14 +651,13 @@ public class GEMMSStageFXMLController implements Initializable {
                     saveNodesToClipboard(Arrays.asList(canvas));
 
                 // No selection then copy the current layers
-                } else if (getCurrentWorkspace() != null && getCurrentWorkspace().getCurrentLayers() != null) {
-
-                    saveNodesToClipboard(getCurrentWorkspace().getCurrentLayers());
+                } else if (w!= null && w.getCurrentLayers() != null) {
+                    saveNodesToClipboard(w.getCurrentLayers());
                 }
 
             } else if (Constants.CTRL_V.match(keyEvent)) {
                 for (Node n : getNodesFromClipboard()) {
-                    getCurrentWorkspace().addLayer(n);
+                    w.addLayer(n);
                 }
             }
         });
@@ -830,7 +703,7 @@ public class GEMMSStageFXMLController implements Initializable {
         }
     }
     
-    private void displayToolSetting(Button button, HBox toolBox) {
+    private void displayToolSetting(HBox toolBox) {
        toolSettingsContainer.getChildren().clear();
        if (toolBox != null)
          toolSettingsContainer.getChildren().add(toolBox);
@@ -881,8 +754,327 @@ public class GEMMSStageFXMLController implements Initializable {
     }
     
     
+
+   /**
+    * Action when clicked on new canvas button.
+    * Create a canvas and add it to the current workspace's layer list
+    * 
+    * @param e 
+    */
+   @FXML private void newCanvasButtonAction(ActionEvent e) {
+      clearSelectedButtons();
+      Workspace w = getCurrentWorkspace();
+       if(w != null) {
+           w.addLayer(new GEMMSCanvas(w.width(), w.height()));
+           displayToolSetting(null);
+       }
+   }
+   
+   
+   /**
+    * Action when clicked on new image button.
+    * Import an image and add it to the current workspace's layer list
+    * 
+    * @param e 
+    */
+   @FXML private void newImageButtonAction(ActionEvent e) {
+      Workspace w = getCurrentWorkspace();
+       if(w != null) {
+           ImportImageDialog dialog = new ImportImageDialog(stage);
+           Image image = dialog.showAndWait();
+           if(image != null) {
+               GEMMSImage i = new GEMMSImage(image);
+               i.setViewport(new Rectangle2D(0, 0, image.getWidth(), image.getHeight()));
+               w.addLayer(i);
+               displayToolSetting(null);
+           }
+       }
+   }
+
+   
+   /**
+    * Action when clicked on new text button.
+    * Create a text and add it to the current workspace's layer list
+    * 
+    * @param e 
+    */
+   @FXML private void newTextButtonAction(ActionEvent e) {
+     clearSelectedButtons();
+     Workspace w = getCurrentWorkspace();
+     if(w != null) {
+        Optional<String> result = TextTool.getDialogText(null);
+        if (result.isPresent()) {
+           GEMMSText t = new GEMMSText(w.width()/2, w.height()/2, result.get());
+           t.setFill(textColor.getColor());
+           t.setFont(textFont.getFont());
+           t.setTranslateX(-t.getBoundsInParent().getWidth() / 2);
+           w.addLayer(t);
+           displayToolSetting(null);
+        }
+        clearSelectedButtons();
+     }
+   }
+   
+   
+   /**
+    * Action when clicked on brush button.
+    * Set the current tool with a brush tool
+    * 
+    * @param e 
+    */
+   @FXML private void brushButtonAction(ActionEvent e) {
+      Button source = (Button)e.getSource();
+      toolButtons.add(source);
+      
+      Workspace w = getCurrentWorkspace();
+      if(w != null) {
+         clearSelectedButtons();
+         selectButton(source);
+         Brush b = new Brush(w);
+         w.setCurrentTool(b);
+         brushSizer.setTarget(b);
+         displayToolSetting(brushSettings);
+      }
+   }
+
+   
+   /**
+    * Action when clicked on eraser button.
+    * Set the current tool with an eraser tool
+    * 
+    * @param e 
+    */
+   @FXML private void eraserButtonAction(ActionEvent e) {
+      Button source = (Button)e.getSource();
+      toolButtons.add(source);
+      
+      Workspace w = getCurrentWorkspace();
+      if(w != null) {
+         clearSelectedButtons();
+         selectButton(source);
+         Eraser er = new Eraser(w);
+         w.setCurrentTool(er);
+         eraserSizer.setTarget(er);
+         displayToolSetting(eraserSettings);
+      }
+   }
+   
+   
+   /**
+    * Action when clicked on eye dropper button.
+    * Set the current tool with an eye dropper tool
+    * 
+    * @param e 
+    */
+   @FXML private void eyeDropperButtonAction(ActionEvent e) {
+      Button source = (Button)e.getSource();
+      toolButtons.add(source);
+      
+      Workspace w = getCurrentWorkspace();
+      if(w != null) {
+         clearSelectedButtons();
+         selectButton(source);
+         w.setCurrentTool(new EyeDropper(w));
+        displayToolSetting(null);
+      }
+   }
+   
+   
+   /**
+    * Action when clicked on text button.
+    * Set the current tool with an edit text tool
+    * 
+    * @param e 
+    */
+   @FXML private void textButtonAction(ActionEvent e) {
+      Button source = (Button)e.getSource();
+      toolButtons.add(source);
+      
+      clearSelectedButtons();
+       Workspace w = getCurrentWorkspace();
+       if(w != null) {
+          selectButton(source);
+          TextTool t = new TextTool(w);
+          w.setCurrentTool(t); 
+          textColor.setTarget(t);
+          textFont.setTarget(t);
+          displayToolSetting(textSettings);
+       }
+   }
+   
+   
+   /**
+    * Action when clicked on horizontal symmetry button.
+    * Tranform all selected layers with horizontal symmetry
+    * 
+    * @param e 
+    */
+   @FXML private void hSymmetryButtonAction(ActionEvent e) {
+      Workspace w = getCurrentWorkspace();
+      if (w != null) {
+        clearSelectedButtons();
+        for (Node node : w.getCurrentLayers()) {
+           // If the node is a text, use the special formula for GEMMSTexts
+           if (node instanceof GEMMSText) {
+              GEMMSText t = (GEMMSText) node;
+              t.getTransforms().add(new Rotate(180, t.getX() + t.getBoundsInLocal().getWidth() / 2, t.getY() + t.getBoundsInLocal().getHeight() / 2, 0, Rotate.Y_AXIS));
+           } else {
+                node.getTransforms().add(new Rotate(180, node.getBoundsInLocal().getWidth() / 2, node.getBoundsInLocal().getHeight() / 2, 0, Rotate.Y_AXIS));
+           }
+        }
+        displayToolSetting(null);
+      }
+   }
+   
+   
+   /**
+    * Action when clicked on vertical symmetry button.
+    * Tranform all selected layers with vertical symmetry
+    * 
+    * @param e 
+    */
+   @FXML private void vSymmetryButtonAction(ActionEvent e) {
+      Workspace w = getCurrentWorkspace();
+      if (w != null) {
+         clearSelectedButtons();
+         // If the node is a text, use the special formula for GEMMSTexts
+        for (Node node : w.getCurrentLayers()) {
+
+            if (node instanceof GEMMSText) {
+               GEMMSText t = (GEMMSText) node;
+               t.getTransforms().add(new Rotate(180, t.getX() + t.getBoundsInLocal().getWidth() / 2, t.getY() + t.getBoundsInLocal().getHeight() / 2, 0, Rotate.X_AXIS));
+
+            } else {
+               node.getTransforms().add(new Rotate(180, node.getBoundsInLocal().getWidth() / 2, node.getBoundsInLocal().getHeight() / 2, 0, Rotate.X_AXIS));
+            }
+         }
+         displayToolSetting(null);
+      }
+   }
+   
+   
+   /**
+    * Action when clicked on drag button.
+    * Set the current tool with a drag tool
+    * 
+    * @param e 
+    */
+   @FXML private void dragButtonAction(ActionEvent e) {
+      Button source = (Button)e.getSource();
+      toolButtons.add(source);
+      
+      Workspace w = getCurrentWorkspace();
+      if(w != null) {
+         clearSelectedButtons();
+         selectButton(source);
+         Drag dragTool = new Drag(w);
+          w.setCurrentTool(dragTool);
+
+          //add setting alignement lines for drag
+          HBox hBox = new HBox();
+          Button activeAlignement = new Button("Alignement: Off");
+          activeAlignement.setOnAction(new EventHandler<ActionEvent>() {
+              @Override
+              public void handle(ActionEvent event) {
+                  dragTool.turnAlignementOnOff();
+                  activeAlignement.setText("Alignement: "+ (dragTool.isAlignementActive() ? "On" : "Off"));
+              }
+          });
+          hBox.getChildren().addAll(activeAlignement);
+
+        displayToolSetting(hBox);
+      }
+   }
+   
+   
+   /**
+    * Action when clicked on rotate button.
+    * Set the current tool with a rotate tool
+    * 
+    * @param e 
+    */
+   @FXML private void rotateButtonAction(ActionEvent e) {
+      Button source = (Button)e.getSource();
+      toolButtons.add(source);
+      
+      Workspace w = getCurrentWorkspace();
+      if(w != null) {
+         clearSelectedButtons();
+         selectButton(source);
+         w.setCurrentTool(new ch.heigvd.tool.Rotate(w));
+         displayToolSetting(null);
+      }
+   }
+   
+   
+   /**
+    * Action when clicked on scale button.
+    * Set the current tool with a scale tool
+    * 
+    * @param e 
+    */
+   @FXML private void scaleButtonAction(ActionEvent e) {
+      Button source = (Button)e.getSource();
+      toolButtons.add(source);
+      
+      Workspace w = getCurrentWorkspace();
+      if(w != null) {
+         clearSelectedButtons();
+         selectButton(source);
+          w.setCurrentTool(new ch.heigvd.tool.Resize(w));
+        displayToolSetting(null);
+      }
+   }
+   
+   
+   /**
+    * Action when clicked on selection button.
+    * Set the current tool with a selection tool
+    * 
+    * @param e 
+    */
+   @FXML private void selectionButtonAction(ActionEvent e) {
+      Button source = (Button)e.getSource();
+      toolButtons.add(source);
+      
+      Workspace w = getCurrentWorkspace();
+      if(w != null) {
+         clearSelectedButtons();
+         selectButton(source);
+          w.setCurrentTool(new Selection(w));
+        displayToolSetting(null);
+      }
+   }
+   
+   
+   /**
+    * Action when clicked on crop button.
+    * Set the current tool with a crop tool
+    * 
+    * @param e 
+    */
+   @FXML private void cropButtonAction(ActionEvent e) {
+      Button source = (Button)e.getSource();
+      toolButtons.add(source);
+      
+      Workspace w = getCurrentWorkspace();
+      if(w != null) {
+         clearSelectedButtons();
+         selectButton(source);
+          w.setCurrentTool(new Crop(w));
+        displayToolSetting(null);
+      }
+   }
+   
+   
+
+
+   
+    
     @FXML
     private void newButtonAction(ActionEvent e) {
+       
+        hideWelcome();
         
         // Create a new dialog
         NewDocumentDialog dialog = new NewDocumentDialog();
@@ -929,6 +1121,9 @@ public class GEMMSStageFXMLController implements Initializable {
     
     @FXML
     private void openButtonAction(ActionEvent e) {
+       
+       hideWelcome();
+       
         OpenDocumentDialog dialog = new OpenDocumentDialog(stage);
         
         File f = dialog.showAndWait();
@@ -1029,15 +1224,31 @@ public class GEMMSStageFXMLController implements Initializable {
     }
     
     /**
+     * Show and set anchors for the welcome panel.
+     */
+    private void showWelcome() {
+       mainAnchorPane.getChildren().add(welcomeTab);
+       AnchorPane.setTopAnchor(welcomeTab, 40.0);
+       AnchorPane.setRightAnchor(welcomeTab, 165.0);
+       AnchorPane.setBottomAnchor(welcomeTab, 0.0);
+       AnchorPane.setLeftAnchor(welcomeTab, 177.0);
+    }
+    
+    /**
+     * Hide the welcome panel.
+     */
+    private void hideWelcome() {
+       mainAnchorPane.getChildren().remove(welcomeTab);
+    }
+    
+    /**
      * Get the current workspace displayed
      * 
      * @return current workspace
      */
     private Workspace getCurrentWorkspace() {
         if (workspaces.getTabs().size() > 0) {
-           if (workspaces.getSelectionModel().getSelectedItem() != welcomeTab)  {
-             return (Workspace) workspaces.getSelectionModel().getSelectedItem().getContent();
-           }
+           return (Workspace) workspaces.getSelectionModel().getSelectedItem().getContent();
         }
         
         return null;
@@ -1067,7 +1278,8 @@ public class GEMMSStageFXMLController implements Initializable {
      * @param slider
      * @param position
      */
-    private void createSlider(GridPane pane, Label label, Slider slider, Label value, int position) {
+    private void createSlider(GridPane pane, String string, Slider slider, Label value, int position) {
+        Label label = new Label(string);
         label.setMinWidth(50);
         value.setMinWidth(30);
         GridPane.setConstraints(label, 0, position);
@@ -1076,12 +1288,11 @@ public class GEMMSStageFXMLController implements Initializable {
         pane.getChildren().add(slider);
         GridPane.setConstraints(value, 2, position);
         pane.getChildren().add(value);
-
     }
     
     /**
      * Returns node ColorAdjust effect. If it has none, creates one with
-     * SepiaTone as input.
+     * SepiaTone as input, which itself has a GaussianBlur as input.
      * @param n Node
      * @return node's ColorAdjust
      */
@@ -1104,27 +1315,5 @@ public class GEMMSStageFXMLController implements Initializable {
      */
     private void setBlurRadius(Node n, int i) {
         ((GaussianBlur) (((SepiaTone) getColorAdjust(n).getInput())).getInput()).setRadius(i);
-    }
-    
-    private void setHoverHint(Button button, String text) {
-        final ButtonPopupLabel popup = new ButtonPopupLabel(text);
-        button.setOnMouseEntered(new EventHandler<MouseEvent>() {
-          @Override
-          public void handle(MouseEvent t) {
-             mainAnchorPane.getChildren().add(popup);
-             
-             popup.setLayoutX(button.localToScene(button.getBoundsInLocal()).getMinX());
-             popup.setLayoutY(button.localToScene(button.getBoundsInLocal()).getMaxY());
-          }
-
-       });
-        
-         button.setOnMouseExited(new EventHandler<MouseEvent>() {
-          @Override
-          public void handle(MouseEvent t) {
-             mainAnchorPane.getChildren().remove(popup);
-          }
-
-       });
     }
 }

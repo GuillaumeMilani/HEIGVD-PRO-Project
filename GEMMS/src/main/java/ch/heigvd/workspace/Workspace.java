@@ -1,19 +1,18 @@
 package ch.heigvd.workspace;
 
-import ch.heigvd.gemms.Constants;
-import ch.heigvd.layer.IGEMMSNode;
 import ch.heigvd.tool.Tool;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javafx.event.ActionEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
 import javafx.geometry.Rectangle2D;
@@ -21,6 +20,7 @@ import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
@@ -32,10 +32,9 @@ import javafx.scene.transform.Transform;
 
 import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Transform;
+import javafx.scene.transform.NonInvertibleTransformException;
 
-/**
- * @author mathieu
- */
+
 public class Workspace extends StackPane implements Serializable {
 
    // Workspace that displays layers
@@ -62,7 +61,7 @@ public class Workspace extends StackPane implements Serializable {
 
    private History history;
 
-   private HistoryNotifier historyNotifier = new HistoryNotifier();
+   private HistoryNotifier historyNotifier;
 
    private ListView historyListView;
 
@@ -86,6 +85,8 @@ public class Workspace extends StackPane implements Serializable {
       
       layerTools = new AnchorPane();
       getChildren().add(layerTools);
+      
+      historyNotifier = new HistoryNotifier();
       
       clip = new Rectangle(width, height);
       
@@ -119,51 +120,13 @@ public class Workspace extends StackPane implements Serializable {
                   currentTool.mouseDragged(p.getX(), p.getY());
                } else if (event.getEventType() == MouseEvent.MOUSE_RELEASED) {
                   currentTool.mouseReleased(p.getX(), p.getY());
+               } else if (event.getEventType() == MouseEvent.MOUSE_MOVED) {
+                  currentTool.mouseMoved(p.getX(), p.getY());
                }
             }
          }
       });
 
-      // Register scroll event for zoom
-      setOnScroll(new EventHandler<ScrollEvent>() {
-         @Override
-         public void handle(ScrollEvent event) {
-            if (event.isControlDown()) {
-               if (event.getDeltaY() > 0) {
-                  zoom(1.05);
-               } else {
-                  zoom(0.95);
-               }
-            }
-         }
-      });
-
-      EventHandler dragEventHandler = new EventHandler<MouseEvent>() {
-         private double x;
-         private double y;
-
-         @Override
-         public void handle(MouseEvent event) {
-            if (event.isShiftDown()) {
-               if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
-                  x = event.getX();
-                  y = event.getY();
-               } else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
-                  move(event.getX() - x, event.getY() - y);
-                  x = event.getX();
-                  y = event.getY();
-               }
-               event.consume();
-            } else {
-               x = event.getX();
-               y = event.getY();
-            }
-         }
-      };
-
-      addEventFilter(MouseEvent.ANY, dragEventHandler);
-
-      addEventHandler(MouseEvent.ANY, dragEventHandler);
 
       // History
       this.historyListView = new ListView<WritableImage>();
@@ -189,7 +152,6 @@ public class Workspace extends StackPane implements Serializable {
           params = new SnapshotParameters();
       } 
       
-      params.setTransform(Transform.scale(1 / getWorkspaceScaleX(), 1 / getWorkspaceScaleX()));
       params.setFill(Color.TRANSPARENT);
       params.setViewport(new Rectangle2D(clip.getLayoutX(), clip.getLayoutY(), clip.getWidth(), clip.getHeight()));
       try {
@@ -270,15 +232,6 @@ public class Workspace extends StackPane implements Serializable {
       clip.setTranslateX(clip.getTranslateX() + x);
       clip.setTranslateY(clip.getTranslateY() + y);
    }
-
-   
-   /**
-    *
-    */
-   public void crop() {
-
-   }
-   
    
    public void resizeCanvas(int width, int height, int offsetX, int offsetY) {
       this.width = width;

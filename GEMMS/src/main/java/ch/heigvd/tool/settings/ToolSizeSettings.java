@@ -6,10 +6,10 @@ import javafx.scene.control.Slider;
 import javafx.scene.text.Text;
 
 /**
+ * <h1>ToolSizeSettings</h1>
+ * 
  * ToolSizeSettings are object that manage the size of a targeted tool. 
  * They use a Slider for the user to choose a size, and update the tool accordingly.
- * 
- * @author Mathieu Monteverde
  */
 public class ToolSizeSettings extends ToolSettings {
    // The target to configure
@@ -47,6 +47,7 @@ public class ToolSizeSettings extends ToolSettings {
       getChildren().add(slider);
       getChildren().add(textValue);
    }
+   
    /**
     * Set the target of the ToolSettings. It updates the target size accordingly
     * to the Slider current value.

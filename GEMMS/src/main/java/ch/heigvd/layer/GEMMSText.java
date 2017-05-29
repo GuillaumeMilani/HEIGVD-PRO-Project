@@ -19,9 +19,15 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 
-
+/**
+ * <h1>GEMMSText</h1>
+ * 
+ * This class was created to implement Serializable
+ */
 public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, LayerListable {
-
+   
+   private static int layerCount = 0;
+   private String name = "Text " + ++layerCount;
     public static final int DEFAULT_SIZE = 12;
 
     /**
@@ -53,6 +59,12 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
         setTextAlignment(TextAlignment.CENTER);
     }
 
+    /**
+     * Write all informations for serialization
+     * 
+     * @param s output stream
+     * @throws IOException 
+     */
     private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
 
@@ -124,7 +136,15 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
         }
     }
 
+    /**
+     * Read all informations for serialization
+     * 
+     * @param s input stream
+     * @throws IOException 
+     */
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+       s.defaultReadObject();
+       
         // Set the test
         setText((String) s.readObject());
 
@@ -192,8 +212,7 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
 
     @Override
     public String getLayerName() {
-        String[] parts = getText().split(System.lineSeparator());
-        return parts.length >= 0 ? parts[0] : "";
+       return name;
     }
 
     @Override
@@ -205,4 +224,9 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
     public IGEMMSNode clone() {
         return null;
     }
+
+   @Override
+   public void setLayerName(String name) {
+      this.name = name;
+   }
 }

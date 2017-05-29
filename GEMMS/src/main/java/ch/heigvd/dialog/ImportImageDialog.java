@@ -13,7 +13,10 @@ import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 
 /**
- * Display a dialog that allow the user to open an image. (*.png or .jpg)
+ * <h1>ImportImageDialog</h1>
+ * 
+ * Display a new file open dialog that allow users to open an image. 
+ * Only png and jpg format are allowed (*.png or .jpg)
  */
 public class ImportImageDialog {
     
@@ -39,7 +42,7 @@ public class ImportImageDialog {
     }
     
     /**
-     * Display dialog
+     * Shows a new file open dialog
      * 
      * @return Image
      */
@@ -48,12 +51,13 @@ public class ImportImageDialog {
         
         Image image = null;
         
-        // Convert file to image
+        // Convert loaded file to image
         if(file != null) {
             try {
                 BufferedImage bufferedImage = ImageIO.read(file);
                 image = SwingFXUtils.toFXImage(bufferedImage, null);
             } catch (IOException ex) {
+                // TODO : manage exceptions
                 Logger.getLogger(GEMMSStageFXMLController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

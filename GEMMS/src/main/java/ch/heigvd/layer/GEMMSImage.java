@@ -1,4 +1,3 @@
-
 package ch.heigvd.layer;
 
 import ch.heigvd.gemms.CSSIcons;
@@ -19,21 +18,55 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 
+/**
+ * <h1>GEMMSImage</h1>
+ * 
+ * This class was created to implement Serializable
+ */
 public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSNode, LayerListable {
+   
+   private static int layerCount = 0;
+   private String name = "Image " + ++layerCount;
     
+    /**
+     * Constructor
+     * 
+     * Allocates a new ImageView object.
+     */
     public GEMMSImage() {
         super();
     }
     
+    /**
+     * Constructor
+     * 
+     * Allocates a new ImageView object using the given image.
+     * 
+     * @param image load this image
+     */
     public GEMMSImage(Image image) {
         super(image);
     }
     
+    /**
+     * Constructor
+     * 
+     * Allocates a new ImageView object with image loaded from the specified URL.
+     * 
+     * @param url load an image with url
+     */
     public GEMMSImage(String url) {
         super(url);
     }
     
+    /**
+     * Write all informations for serialization
+     * 
+     * @param s output stream
+     * @throws IOException 
+     */
     private void writeObject(ObjectOutputStream s) throws IOException {
+       s.defaultWriteObject();
         
         // Get image
         Image image = getImage();
@@ -115,7 +148,15 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
         }
     }
     
+    /**
+     * Read all informations for serialization
+     * 
+     * @param s input stream
+     * @throws IOException 
+     */
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+       s.defaultReadObject();
+       
         // Get image size
         int width = s.readInt();
         int height = s.readInt();
@@ -187,7 +228,7 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
 
     @Override
     public String getLayerName() {
-        return "Image";
+        return name;
     }
 
     @Override
@@ -199,4 +240,9 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
     public IGEMMSNode clone() {
         return null;
     }
+
+   @Override
+   public void setLayerName(String name) {
+      this.name = name;
+   }
 }

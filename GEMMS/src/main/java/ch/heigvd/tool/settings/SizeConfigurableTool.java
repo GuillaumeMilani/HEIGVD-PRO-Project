@@ -1,8 +1,9 @@
 package ch.heigvd.tool.settings;
 
 /**
+ * <h1>SizeConfigurableTool</h1>
+ * 
  * SizeConfigurableTools represent tools that can be resized. 
- * @author mathieu
  */
 public interface SizeConfigurableTool {
    /**

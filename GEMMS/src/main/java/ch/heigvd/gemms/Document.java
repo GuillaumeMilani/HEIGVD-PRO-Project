@@ -13,7 +13,6 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import javax.imageio.ImageIO;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -22,18 +21,26 @@ import javafx.stage.Stage;
 /**
  * <h1>Document</h1>
  *
- * This class create or load a from file a workspace. And allow to save in file
- * and export as an image.
+ * This class creates or loads from a file a workspace. And allows to save 
+ * in file project (*.gemms). The save file is compressed with GZIP.
+ * 
+ * And this class allows also to export the workspace as an image.
  */
 public class Document {
 
+    // Workspace
     private Workspace workspace;
 
+    // Stage for fileChooser
     private Stage stage;
+    
+    // File that contains the workspace
     private File currentFile;
 
+    // Contains document's name
     private String name;
 
+    
     /**
      * Constructor
      *
@@ -46,17 +53,18 @@ public class Document {
     public Document(Stage s, int width, int height) {
         init(s);
 
-        name = "untiled";
+        name = "untitled";
         workspace = new Workspace(width, height);
     }
 
     /**
      * Constructor
      *
-     * Open a new document with a file
+     * Load a workspace from a file
      *
      * @param s stage for the file chooser
      * @param f file to open
+     * 
      * @throws FileNotFoundException
      * @throws IOException
      * @throws ClassNotFoundException
@@ -97,6 +105,7 @@ public class Document {
      */
     void save() throws FileNotFoundException, IOException {
 
+        // Check if there is already a loaded file
         if (currentFile != null) {
             try (ObjectOutputStream out = new ObjectOutputStream(
                     new GZIPOutputStream(
@@ -117,6 +126,8 @@ public class Document {
      * @throws FileNotFoundException
      */
     void saveAs() throws FileNotFoundException, IOException {
+        
+        // Set FileChooser
         FileChooser fileChooser;
         fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
@@ -125,6 +136,7 @@ public class Document {
                 new ExtensionFilter("GEMMS", "*.gemms"));
         fileChooser.setInitialFileName("*.gemms");
 
+        // Shows the dialog and waits for the user response
         currentFile = fileChooser.showSaveDialog(stage);
         if (currentFile != null) {
             if (currentFile.getName().endsWith(".gemms")) {
@@ -138,7 +150,7 @@ public class Document {
 
                 name = currentFile.getName();
             } else {
-                // throw new Exception(currentFile.getName() + " has no valid file-extension.");
+                // TODO : throw new Exception(currentFile.getName() + " has no valid file-extension.");
             }
         }
     }
@@ -149,6 +161,8 @@ public class Document {
      * @throws IOException
      */
     void export() throws IOException {
+        
+        // Set fileChooser
         FileChooser fileChooser;
         fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
@@ -157,15 +171,13 @@ public class Document {
                 new ExtensionFilter("png files (*.png)", "*.png"));
         fileChooser.setInitialFileName("*.png");
 
-        // TODO : Add other extensions and check file name
-        // new ExtensionFilter("All Files", "*.*")
+        // TODO : Add other image extensions and check file name
+
+        // Shows the dialog and waits for the user response
         File file = fileChooser.showSaveDialog(stage);
         if (file != null) {
-
-            SnapshotParameters sp = new SnapshotParameters();
-
             WritableImage writableImage = new WritableImage((int) workspace.width(), (int) workspace.height());
-            workspace.snapshot(sp, writableImage);
+            workspace.snapshot(null, writableImage);
             RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
             ImageIO.write(renderedImage, "png", file);
         }

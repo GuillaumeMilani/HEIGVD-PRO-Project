@@ -21,7 +21,15 @@ import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 
+/**
+ * <h1>GEMMSCanvas</h1>
+ * 
+ * This class was created to implement Serializable
+ */
 public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNode, LayerListable {
+   
+   private static int layerCount = 0;
+   private String name = "Canvas " + ++layerCount;
 
     /**
      * Constructor
@@ -38,6 +46,12 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
         super(width, height);
     }
 
+    /**
+     * Write all informations for serialization
+     * 
+     * @param s output stream
+     * @throws IOException 
+     */
     private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
 
@@ -52,12 +66,14 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
         // Get an image 
         SnapshotParameters sp = new SnapshotParameters();
         sp.setFill(Color.TRANSPARENT);
+        
         try {
-            sp.setTransform(getLocalToSceneTransform().createInverse());
+            // Cancel all tranformation before taking a snapshot
+            sp.setTransform(getLocalToParentTransform().createInverse());
         } catch (NonInvertibleTransformException ex) {
+            // TODO : Manage exceptions
             Logger.getLogger(GEMMSCanvas.class.getName()).log(Level.SEVERE, null, ex);
         }
-
 
         WritableImage writableImage = new WritableImage((int)width, (int)height);
         snapshot(sp, writableImage);
@@ -104,7 +120,7 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
             s.writeDouble(c.getBrightness());
             s.writeDouble(((SepiaTone) c.getInput()).getLevel());
             s.writeDouble(((GaussianBlur) ((SepiaTone) c.getInput()).getInput()).getRadius());
-        }else{
+        } else{
             s.writeBoolean(false);
         }
 
@@ -127,7 +143,14 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
         }
     }
 
+    /**
+     * Read all informations for serialization
+     * 
+     * @param s input stream
+     * @throws IOException 
+     */
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+        s.defaultReadObject();
 
         // Get the size of the canvas
         double width = s.readDouble();
@@ -200,11 +223,16 @@ public class GEMMSCanvas extends javafx.scene.canvas.Canvas implements IGEMMSNod
 
     @Override
     public String getLayerName() {
-        return "Canvas";
+       return name;
     }
 
     @Override
     public String getThumbnailClass() {
         return CSSIcons.CANVAS;
     }
+
+   @Override
+   public void setLayerName(String name) {
+      this.name = name;
+   }
 }

@@ -14,7 +14,7 @@
 \usepackage{enumitem}
 \usepackage{multirow}
 \usepackage{graphicx}
-
+\usepackage{textcomp}
 
 % -----------------------------------------------------------------------
 % --- MARGES ---
@@ -35,8 +35,8 @@
 \fancyfoot[R]{\thepage{}}
 
 
-\title{Editeur d'images GEMMS \\ Cahier des charges}
-\author{E. Ransome, G. Milani, S. Kirushnapillai, M. Spierer, M. Monteverdei}
+\title{Éditeur d'images GEMMS \\ Cahier des charges}
+\author{E. Ransome, G. Milani, S. Kirushnapillai, M. Spierer, M. Monteverde}
 \date{Mars 2017}
 
 % ***********************************************************************
@@ -53,9 +53,9 @@
 
 		Pour ce faire, il sera possible de créer, d'ouvrir et de sauvegarder un document. Les documents utiliseront la notion de calque afin de gérer l'ensemble des objets tel que les textes, images, etc. \\
 
-		L’interface permettra de redimensionner l’espace de travail à la taille voulue et de se déplacer de manière aisée à l’intérieur de celui-ci. \\
+		L'interface permettra de redimensionner l'espace de travail à la taille voulue et de se déplacer de manière aisée à l'intérieur de celui-ci. \\
 
-		Pour finir l’application sera développée à l’aide de JavaFX et supportera les format jpg, png, bmp et gif.
+		Pour finir l'application sera développée à l'aide de JavaFX et supportera les format jpg, png, bmp et gif.
 
 	\section{Objectifs et Fonctionnalités}
 
@@ -69,14 +69,14 @@
 			\begin{itemize}[label=\textbullet]
 				\item Créer un document vide.
 				\item Gestion des calques.
-				\item Sauvegarde du documenette section pésentet.
+				\item Sauvegarde du document.
 				\item Exporter aux formats png, jpg, bmp et gif.
 				\item Insérer une image dans un document. \\
 			\end{itemize}
 
 			\textbf{Transformations d'objets}
 			\begin{itemize}[label=\textbullet]
-				\item Redimensionner, Pivoter, Déplacer un élément du dessin.
+				\item Redimensionner, pivoter et déplacer un élément du dessin.
 				\item Symétrie horizontale / verticale des éléments du dessin.
 				\item Affichage de repères d'alignement automatiques simples.\\
 			\end{itemize}
@@ -114,13 +114,13 @@
 
 			\textbf{Fonctionnalités de sélection}
 			\begin{itemize}[label=\textbullet]
-				\item Sélection manuelle d’une zone de pixels.
+				\item Sélection manuelle d'une zone de pixels.
 				\item Copier, coller, modifier, supprimer une sélection. \\
 			\end{itemize}
 
 			\textbf{Fonctionnalités texte}
 			\begin{itemize}[label=\textbullet]
-				\item Ajout d’éléments textes.
+				\item Ajout d'éléments textes.
 				\item Choix de couleur.
 				\item Choix de police.
 				\item Choix de taille. \\
@@ -128,24 +128,24 @@
 
 			\textbf{Cadre de travail}
 			\begin{itemize}[label=\textbullet]
-				\item Interface de l’application.
-				\item Navigation dans l’espace de travail.
+				\item Interface de l'application.
+				\item Navigation dans l'espace de travail.
 				\begin{itemize}[label=\textbullet]
 					\item Déplacement.
 					\item Zoom.
 				\end{itemize}
 				\item Gestion des couleurs.
 				\item Raccourcis claviers.
-				\item Modifier la taille de l’espace de travail et du document.
+				\item Modifier la taille de l'espace de travail et du document.
 				\item Rogner le document.
-				\item Copier-Coller d’éléments de dessin. \\
+				\item Copier-Coller d'éléments de dessin. \\
 			\end{itemize}
 
 			\textbf{Fonctionnalités diverses}
 			\begin{itemize}[label=\textbullet]
-				\item Modifier la taille de l’espace de travail et du document.
+				\item Modifier la taille de l'espace de travail et du document.
 				\item Rogner le document.
-				\item Copier-Coller d’éléments de dessin. \\
+				\item Copier-Coller des éléments de dessin. \\
 			\end{itemize}
 
 
@@ -155,16 +155,16 @@
 
 			\textbf{Fonctionnalités diverses}
 			\begin{itemize}[label=\textbullet]
-				\item Bibliothèque personnelle d’image.
-				\item Différents catalogues d’images.
-				\item Possibilité de lister ces catalogues dans l’application.
-				\item Possibilité d’importer ces images dans des documents. \\
+				\item Bibliothèque personnelle d'image.
+				\item Différents catalogues d'images.
+				\item Possibilité de lister ces catalogues dans l'application.
+				\item Possibilité d'importer ces images dans des documents. \\
 			\end{itemize}
 
-			\textbf{Paramétrage de l’application}
+			\textbf{Paramétrage de l\textquotesingle application}
 			\begin{itemize}[label=\textbullet]
 				\item Raccourcis claviers.
-				\item Position du menu d’outils.
+				\item Position du menu d'outils.
 				\item Options de nouveau document.
 				\item Taille prédéfinie du document.
 				\item Configuration des raccourcis. \\
@@ -194,7 +194,7 @@
 			\centering
 			\graphicspath{{Mockups/}}
 			\includegraphics[scale=0.3]{mockups/tools_settings.png}
-			\caption{\label{étiquette} Paramètrage des outils}
+			\caption{\label{étiquette} Paramétrage des outils}
 		\end{figure}
 
 
@@ -212,6 +212,6 @@
 		\end{tabular}
 
 	\section{Planning et charge de travail}
-	Ci-joint le planning Gantt ainsi qu'un schéma de la charge de travail de chacun des membres de l'équipe. On remaque que chacun d'eux travaille de façon homogène sur l'ensemble de la durée du projet.
+	Ci-joint le planning Gantt ainsi qu'un schéma de la charge de travail de chacun des membres de l'équipe. On remarque que chacun d'eux travaille de façon homogène sur l'ensemble de la durée du projet.
 
 \end{document}

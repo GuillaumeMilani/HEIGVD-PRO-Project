@@ -25,6 +25,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
+ * <h1>LayerList</h1>
+ * 
  * A LayerList object is a UI component that displays the content of a targeted
  * ObservableList as a list of layers, each element of the list acting as a
  * layer.
@@ -39,8 +41,7 @@ import javafx.scene.layout.VBox;
  * cell factory for the LayerList to used. It is done by implementing the
  * ICellFactory interface and by passing it in the constructor, or using the
  * appropriate method.
- *
- * @author Mathieu Monteverde
+ * @param <T> the type of elements represented
  */
 public class LayerList<T> extends VBox {
 
@@ -86,7 +87,7 @@ public class LayerList<T> extends VBox {
       panel = new VBox();
       // The ScrollPane to contain the layer list wrapper
       layerContainer = new ScrollPane();
-      layerContainer.setPrefHeight(200);
+      layerContainer.setPrefHeight(400);
       layerContainer.setPrefWidth(200);
       layerContainer.setContent(wrapper);
       layerContainer.setFitToWidth(true);
@@ -287,6 +288,7 @@ public class LayerList<T> extends VBox {
 
       // Else create it and return it
       final Cell<T> cell = factory.createCell(element, targetList);
+      cell.deSelect();
       cell.setIndex(targetList.indexOf(element));
       cellList.add(cell);
       // Add an event listner on the mouse pressed to manage selection
@@ -303,6 +305,9 @@ public class LayerList<T> extends VBox {
             // Select the cell if not already selected
             if (!cell.isSelected()) {
                addSelectedCellSorted(cell);
+            } else if (t.isControlDown() && cell.isSelected()) {
+               cell.deSelect();
+               selectedCells.remove(cell);
             }
             
             // If we are in the case of a double click, show a dialog to rename

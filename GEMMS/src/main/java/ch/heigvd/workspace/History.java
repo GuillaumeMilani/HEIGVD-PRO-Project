@@ -10,6 +10,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelReader;
+import java.io.IOException;
 import javafx.scene.image.WritableImage;
 import javafx.scene.transform.Transform;
 
@@ -156,7 +157,6 @@ public class History implements Observer {
     private void historyAction(Stack<String> layersTakeFrom, Stack<String> layersPutIn,
                                Stack<List<Integer>> indexesTakeFrom, Stack<List<Integer>> indexesPutIn) {
         if (!layersTakeFrom.isEmpty()) {
-            System.out.println("Action");
 
             // Save current state
             layersPutIn.push(currentState);
@@ -177,12 +177,10 @@ public class History implements Observer {
                 workspace.getLayers().addAll(Utils.deserializeNodeList(currentState));
                 currentIndexes.forEach(i -> workspace.selectLayerByIndex(i));
 
-            } catch (Exception e) {
+            } catch (IOException | ClassNotFoundException e) {
                 // TODO: Manage exceptions
                 e.printStackTrace();
             }
-
-
         }
     }
 }

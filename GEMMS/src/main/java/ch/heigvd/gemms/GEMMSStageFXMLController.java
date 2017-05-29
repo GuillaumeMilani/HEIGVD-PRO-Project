@@ -924,6 +924,7 @@ public class GEMMSStageFXMLController implements Initializable {
            }
         }
         displayToolSetting(null);
+        w.notifyHistory();
       }
    }
    
@@ -950,6 +951,7 @@ public class GEMMSStageFXMLController implements Initializable {
             }
          }
          displayToolSetting(null);
+         w.notifyHistory();
       }
    }
    

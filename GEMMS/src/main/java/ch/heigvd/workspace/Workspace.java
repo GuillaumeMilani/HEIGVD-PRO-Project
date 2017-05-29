@@ -6,6 +6,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Observable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.EventHandler;
@@ -13,6 +20,12 @@ import javafx.geometry.Point3D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
@@ -20,7 +33,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Transform;
+
 import javafx.scene.transform.NonInvertibleTransformException;
+import javafx.scene.transform.Transform;
+import javafx.scene.transform.NonInvertibleTransformException;
+
 
 public class Workspace extends StackPane implements Serializable {
 
@@ -49,6 +67,8 @@ public class Workspace extends StackPane implements Serializable {
    private History history;
 
    private HistoryNotifier historyNotifier;
+
+   private ListView historyListView;
 
 
    /**
@@ -116,6 +136,33 @@ public class Workspace extends StackPane implements Serializable {
       // History
       this.history = new History(this);
       historyNotifier.addObserver(history);
+
+      this.historyListView = new ListView<WritableImage>();
+
+      // Load the ListView with the thumbnails from history
+      historyListView.setItems(history.getImagesHistory());
+
+      // When selecting an element in the ListView, go to the corresponding state in history
+      historyListView.setOnMouseClicked(e -> {
+         getHistory().restoreToIndex(historyListView.getSelectionModel().getSelectedIndex());
+      });
+
+      // Display an ImageView in the ListView
+      historyListView.setCellFactory(listView -> new ListCell<Image>() {
+         private ImageView imageView = new ImageView();
+         @Override
+         public void updateItem(Image image, boolean empty) {
+            super.updateItem(image, empty);
+            if (empty) {
+               setGraphic(null);
+            } else {
+               imageView.setFitHeight(image.getHeight());
+               imageView.setFitWidth(image.getWidth());
+               imageView.setImage(image);
+               setGraphic(imageView);
+            }
+         }
+      });
    }
    
    
@@ -137,13 +184,17 @@ public class Workspace extends StackPane implements Serializable {
       } 
       
       params.setFill(Color.TRANSPARENT);
+      params.setViewport(new Rectangle2D(clip.getLayoutX(), clip.getLayoutY(), clip.getWidth(), clip.getHeight()));
       try {
-          params.setTransform(clip.getLocalToParentTransform().createInverse());
+         Transform transform = params.getTransform();
+         Transform newTransform = clip.getLocalToParentTransform().createInverse();
+         newTransform = transform.createConcatenation(newTransform);
+         params.setTransform(newTransform);
       } catch (NonInvertibleTransformException ex) {
           Logger.getLogger(Workspace.class.getName()).log(Level.SEVERE, null, ex);
       }
       params.setViewport(new Rectangle2D(clip.getBoundsInLocal().getMinX(), clip.getBoundsInLocal().getMinY(), clip.getWidth(), clip.getHeight()));
-      
+
       return workspace.snapshot(params, image);
    }
 
@@ -350,5 +401,8 @@ public class Workspace extends StackPane implements Serializable {
    }
    public void notifyHistory() {
       historyNotifier.notifyHistory();
+   }
+   public ListView getHistoryList() {
+      return historyListView;
    }
 }

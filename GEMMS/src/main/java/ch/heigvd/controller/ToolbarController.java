@@ -25,11 +25,9 @@ public class ToolbarController {
 
    // Main controller
    private MainController mainController;
-   
-   
+
    @FXML
    private HBox toolSettingsContainer;
-   
 
    // Init this controller
    public void init(MainController c) {
@@ -39,9 +37,16 @@ public class ToolbarController {
    public void addToolSettings(HBox toolBox) {
       toolSettingsContainer.getChildren().add(toolBox);
    }
-   
+
    public void clearToolSettings() {
       toolSettingsContainer.getChildren().clear();
+   }
+
+   public void displayToolSetting(HBox toolBox) {
+      clearToolSettings();
+      if (toolBox != null) {
+         addToolSettings(toolBox);
+      }
    }
 
    @FXML

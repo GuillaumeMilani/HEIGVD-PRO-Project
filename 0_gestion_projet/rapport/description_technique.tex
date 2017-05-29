@@ -42,5 +42,25 @@ Pour garder un historique de chaque action effectuée, on utilise la sérialisat
 \subsection{Positionnement}
 TODO TODO TODO
 
+\subsection{Outils}
+\subsubsection{Pinceau et gomme}
+Le pinceau et la gomme ont un comportement et une implémentation quasiment identiques. Dans le programme GEMMS, ce sont les classes Brush et Eraser qui se chargent d'implémenter ces fonctionnalités. Toutes deux héritent d'une classe commune: LineTool. 
+\\
+Pour ces deux outils, la problématique était la suivante: JavaFX offre (entre autres) les événements MousePressed, MouseDragged et MouseReleased. Ils correspondent respectivement à l'action de presser la souris, de la déplacer en gardant le clic gauche enfoncé ou de relâcher le clic gauche de la souris. 
+\\ 
+L'événement MouseDragged est déclenché à intervalles réguliers, tant que l'utilisateur effectue cette action. Pour chaque répétition, il est facile de garder trace de la position de la souris au dernier événement et à l'événement actuel. Connaissant ces deux points, il est possible de dessiner une droite.
+\\
+Pour ce faire, nous avons utilisé l'algorithme de tracé de segment de Bresenham. Mis au point en 1962, cet algorithme permet de déterminer quels pixels colorer pour relier harmonieusement deux points par une ligne droite.
+\\ 
+Il existe de nombreuses implémentations de cet algorithme, et nous avons choisi l'implémentation compacte, que l'on peut trouvé sur la page allemande de l'article Wikipédia dédié à ce sujet \cite{Bresenham}.
+\subsubsection{Pipette}
+\subsubsection{Modification de texte}
+\subsubsection{Symétries}
+\subsubsection{Déplacement}
+\subsubsection{Rotation}
+\subsubsection{Redimensionnement}
+\subsubsection{Sélection}
+\subsubsection{Rognage}
+
 
 

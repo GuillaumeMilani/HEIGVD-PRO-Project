@@ -187,9 +187,10 @@ public class Workspace extends StackPane implements Serializable {
       params.setViewport(new Rectangle2D(clip.getLayoutX(), clip.getLayoutY(), clip.getWidth(), clip.getHeight()));
       try {
          Transform transform = params.getTransform();
-         Transform newTransform = clip.getLocalToParentTransform().createInverse();
-         newTransform = transform.createConcatenation(newTransform);
-         params.setTransform(newTransform);
+            Transform newTransform = clip.getLocalToParentTransform().createInverse();
+            newTransform = transform.createConcatenation(newTransform);
+            params.setTransform(newTransform);
+
       } catch (NonInvertibleTransformException ex) {
           Logger.getLogger(Workspace.class.getName()).log(Level.SEVERE, null, ex);
       }

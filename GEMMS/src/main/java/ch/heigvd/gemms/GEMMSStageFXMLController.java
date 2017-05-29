@@ -97,6 +97,9 @@ public class GEMMSStageFXMLController implements Initializable {
     
     @FXML
     private VBox layerController;
+
+    @FXML
+    private VBox history;
     
     @FXML
     private AnchorPane colorController;
@@ -701,10 +704,10 @@ public class GEMMSStageFXMLController implements Initializable {
 
             } else if (Constants.CTRL_Z.match(keyEvent)) {
                 // ---------- CTRL + Z ----------
-                getCurrentWorkspace().getHistory().undo();
+                getCurrentWorkspace().getHistory().undo(1);
             } else if (Constants.CTRL_Y.match(keyEvent)) {
                 // ---------- CTRL + Y ----------
-                getCurrentWorkspace().getHistory().redo();
+                getCurrentWorkspace().getHistory().redo(1);
             }
 
             // ---------- CTRL + C ----------
@@ -908,6 +911,8 @@ public class GEMMSStageFXMLController implements Initializable {
             // Clear
             layerController.getChildren().clear();
             layerController.getChildren().add(w.getWorkspaceController());
+            history.getChildren().clear();
+            history.getChildren().add(w.getHistoryList());
 
             // Create tab
             Tab tab = new Tab("untitled", w);
@@ -1058,7 +1063,7 @@ public class GEMMSStageFXMLController implements Initializable {
      * Creates a slider in a pane at a certain position. Used to create opacity,
      * sepia, saturation and contrast sliders.
      * @param pane
-     * @param label
+     * @param value
      * @param slider
      * @param position
      */

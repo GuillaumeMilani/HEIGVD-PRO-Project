@@ -10,6 +10,8 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,6 +20,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
@@ -27,6 +30,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Transform;
 
+import javafx.scene.transform.NonInvertibleTransformException;
+import javafx.scene.transform.Transform;
 
 /**
  * @author mathieu
@@ -58,6 +63,8 @@ public class Workspace extends StackPane implements Serializable {
    private History history;
 
    private HistoryNotifier historyNotifier = new HistoryNotifier();
+
+   private ListView historyListView;
 
 
    /**
@@ -159,6 +166,7 @@ public class Workspace extends StackPane implements Serializable {
       addEventHandler(MouseEvent.ANY, dragEventHandler);
 
       // History
+      this.historyListView = new ListView<WritableImage>();
       this.history = new History(this);
       historyNotifier.addObserver(history);
    }
@@ -184,7 +192,16 @@ public class Workspace extends StackPane implements Serializable {
       params.setTransform(Transform.scale(1 / getWorkspaceScaleX(), 1 / getWorkspaceScaleX()));
       params.setFill(Color.TRANSPARENT);
       params.setViewport(new Rectangle2D(clip.getLayoutX(), clip.getLayoutY(), clip.getWidth(), clip.getHeight()));
-      
+      try {
+         Transform transform = params.getTransform();
+         Transform newTransform = clip.getLocalToParentTransform().createInverse();
+         newTransform = transform.createConcatenation(newTransform);
+         params.setTransform(newTransform);
+      } catch (NonInvertibleTransformException ex) {
+          Logger.getLogger(Workspace.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      params.setViewport(new Rectangle2D(clip.getBoundsInLocal().getMinX(), clip.getBoundsInLocal().getMinY(), clip.getWidth(), clip.getHeight()));
+
       return workspace.snapshot(params, image);
    }
 
@@ -400,5 +417,8 @@ public class Workspace extends StackPane implements Serializable {
    }
    public void notifyHistory() {
       historyNotifier.notifyHistory();
+   }
+   public ListView getHistoryList() {
+      return historyListView;
    }
 }

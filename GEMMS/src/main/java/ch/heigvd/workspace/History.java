@@ -3,7 +3,15 @@ package ch.heigvd.workspace;
 import ch.heigvd.gemms.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import javafx.application.Platform;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.control.ListCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
+import javafx.scene.transform.Transform;
 
 import java.util.*;
 
@@ -31,12 +39,15 @@ public class History implements Observer {
     private ObservableList undoImages;
     private Stack<WritableImage> redoImages;
 
+
     /**
      * Contains the data to save the current states
      */
     private String currentState;
     private List<Integer> currentIndexes;
-    private WritableImage currentImage;
+    private Image currentImage;
+
+    ObservableList<Image> imagesHistory;
 
     private Workspace workspace;
 
@@ -47,8 +58,28 @@ public class History implements Observer {
         this.redoSelectedLayers = new Stack();
         this.undoHistory = new Stack();
         this.redoHistory = new Stack();
-        this.undoImages = FXCollections.observableList();
+        // this.undoImages =
+
         this.workspace = workspace;
+        this.imagesHistory = workspace.getHistoryList().getItems();
+
+        workspace.getHistoryList().setCellFactory(listView -> new ListCell<Image>() {
+            private ImageView imageView = new ImageView();
+            @Override
+            public void updateItem(Image image, boolean empty) {
+                super.updateItem(image, empty);
+                if (empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    imageView.setFitHeight(image.getHeight());
+                    imageView.setFitWidth(image.getWidth());
+                    System.out.println(image.getHeight());
+                    imageView.setImage(image);
+                    setGraphic(imageView);
+                }
+            }
+        });
     }
 
     @Override
@@ -60,42 +91,58 @@ public class History implements Observer {
      * Save the current states to the stacks
      */
     private void save() {
-        System.out.println("Save");
-        // If a modification is done, a new "branch" begins. No action to redo anymore
-        redoHistory.clear();
-        redoSelectedLayers.clear();
+        Platform.runLater(() -> {
+            // If a modification is done, a new "branch" begins. No action to redo anymore
+            redoHistory.clear();
+            redoSelectedLayers.clear();
+            imagesHistory.remove(0, workspace.getHistoryList().getSelectionModel().getSelectedIndex());
 
-        try {
-            // Get the selected layers indexes
-            List<Integer> indexes = new LinkedList<>();
-            workspace.getCurrentLayers().forEach(n -> indexes.add(workspace.getLayers().indexOf(n)));
+            try {
+                // Get the selected layers indexes
+                List<Integer> indexes = new LinkedList<>();
+                workspace.getCurrentLayers().forEach(n -> indexes.add(workspace.getLayers().indexOf(n)));
 
-            // Push the current states except the first time an action is done
-            if (currentState != null) {
-                undoSelectedLayers.push(currentIndexes);
-                undoHistory.push(currentState);
+                // Push the current states except the first time an action is done
+                if (currentState != null) {
+                    undoSelectedLayers.push(currentIndexes);
+                    undoHistory.push(currentState);
+                    imagesHistory.add(workspace.getHistoryList().getSelectionModel().getSelectedIndex(), currentImage);
+                }
+
+                // Save the current states
+                currentState = Utils.serializeNodeList(workspace.getLayers());
+                currentIndexes = indexes;
+
+                // Snapshot
+                final SnapshotParameters sp = new SnapshotParameters();
+
+                double scale = 120./workspace.width();
+                sp.setTransform(Transform.scale(scale, scale));
+
+                currentImage = workspace.snapshot(sp, null);
+                PixelReader reader = currentImage.getPixelReader();
+                WritableImage newImage = new WritableImage(reader, 0, 0, 120, (int)(workspace.height() * scale));
+                currentImage = newImage;
+
+                System.out.println(currentImage.getWidth() + " x " + currentImage.getHeight());
+            } catch (Exception e) {
+                // TODO: Manage exceptions
+                e.printStackTrace();
             }
-
-            // Save the current states
-            currentState = Utils.serializeNodeList(workspace.getLayers());
-            currentIndexes = indexes;
-        } catch (Exception e) {
-            // TODO: Manage exceptions
-            e.printStackTrace();
-        }
+        });
     }
 
     /**
      * Undo the last action (rollback to layers precedent state)
      */
-    public void undo() {
+    public void undo(int number) {
         historyAction(undoHistory, redoHistory, undoSelectedLayers, redoSelectedLayers);
     }
 
     /**
      * Redo the last canceled action
      */
-    public void redo() {
+    public void redo(int number) {
         historyAction(redoHistory, undoHistory, redoSelectedLayers, undoSelectedLayers);
     }
 
@@ -114,6 +161,8 @@ public class History implements Observer {
             // Save current state
             layersPutIn.push(currentState);
             indexesPutIn.push(currentIndexes);
+            imagesHistory.add(workspace.getHistoryList().getSelectionModel().getSelectedIndex(), currentImage);
+            workspace.getHistoryList().getSelectionModel().select(workspace.getHistoryList().getSelectionModel().getSelectedIndex()+1);
 
             try {
                 workspace.getLayers().clear();
@@ -122,6 +171,8 @@ public class History implements Observer {
 
                 currentState = layersTakeFrom.pop();
                 currentIndexes = indexesTakeFrom.pop();
+                currentImage = imagesHistory.get(workspace.getHistoryList().getSelectionModel().getSelectedIndex());
+
 
                 workspace.getLayers().addAll(Utils.deserializeNodeList(currentState));
                 currentIndexes.forEach(i -> workspace.selectLayerByIndex(i));

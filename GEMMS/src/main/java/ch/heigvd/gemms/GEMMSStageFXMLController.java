@@ -1077,7 +1077,7 @@ public class GEMMSStageFXMLController implements Initializable {
        layerController.getChildren().add(w.getWorkspaceController());
        historyViewer.getChildren().clear();
        historyViewer.getChildren().add(w.getHistoryList());
-
+       
        // Create tab
        Tab tab = new Tab(document.name() != "" ? document.name() : "untitled", w);
        workspaces.getTabs().add(tab);

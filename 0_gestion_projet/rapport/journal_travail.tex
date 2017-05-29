@@ -1,3 +1,190 @@
-\section{Journal de travail du groupe}
+% -----------------------------------------------------------------------
+% --- DOCUMENT ---
+% -----------------------------------------------------------------------
 
-\input{./journal_travail_mathieu.tex}
+\documentclass[11pt, a4paper, french]{article}
+
+
+
+% -----------------------------------------------------------------------
+% --- PACKAGE ---
+% -----------------------------------------------------------------------
+\usepackage[french]{babel}
+
+% Font
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Marge du document
+\usepackage[top=3.5cm, 
+bottom=3cm, 
+left=2cm, 
+right=2cm, 
+footskip=1.5cm, 
+headheight=1.5cm, 
+headsep=0.9cm]{geometry}
+
+% Gérer les positionnement d'images
+\usepackage{float}
+
+% Import de fichier externe
+\usepackage{graphicx}
+
+% Mise en forme des URL
+\usepackage{url}
+
+% Informations sur un document compilé en PDF et les liens externes / internes
+\usepackage{hyperref}
+
+% Mise en page des tableaux
+\usepackage{array}
+\usepackage{tabularx}
+
+% Espacement entre les lignes
+\usepackage{setspace}
+
+% Modifier la mise en page de l'abstract
+\usepackage{abstract}
+
+\usepackage{titlesec}
+
+% Pour les entêtes
+\usepackage{fancyhdr}
+
+% Pour l'import de code
+\usepackage{listings}
+
+% Utilisation de couleur
+\usepackage{color}
+
+%pour utiliser \floatbarrier
+%\usepackage{placeins}
+%\usepackage{floatrow}
+
+% Pour voir les mages
+%\usepackage{layout}
+%\layout
+
+
+
+% -----------------------------------------------------------------------
+% --- Couleurs définies
+% -----------------------------------------------------------------------
+\definecolor{pblue}{rgb}{0.13,0.13,1}
+\definecolor{pgreen}{rgb}{0,0.5,0}
+\definecolor{pred}{rgb}{0.9,0,0}
+\definecolor{pgrey}{rgb}{0.46,0.45,0.48}
+\definecolor{backcolour}{gray}{0.95}
+
+
+% -----------------------------------------------------------------------
+% --- Listing de code
+% -----------------------------------------------------------------------
+\lstset{language=Java,
+    backgroundcolor=\color{backcolour},
+    showspaces=false,
+    showtabs=false,
+    breaklines=true,
+    xleftmargin=0.5cm,
+    framexleftmargin=0.5cm,
+    framextopmargin=6pt,
+    framexbottommargin=6pt, 
+    frame=tb, 
+    framerule=0pt,
+    showstringspaces=false,
+    breakatwhitespace=true,
+    commentstyle=\color{pgreen},
+    keywordstyle=\color{pblue},
+    stringstyle=\color{pred},
+    basicstyle=\ttfamily,
+    moredelim=[is][\textcolor{pgrey}]{\%\%}{\%\%}
+}
+
+
+
+% -----------------------------------------------------------------------
+% --- INFORMATION SUR LE DOCUMENT
+% -----------------------------------------------------------------------
+
+% Information sur le document
+\hypersetup{							
+    pdfauthor = {
+        Edward Ransome, 
+        Guillaume Milani, 
+        Mathieu Monteverde, 
+        Michael Spierer,
+        Sathiya Kirushnapillai},                    % Auteurs
+    pdftitle = {GEMMS - Edtieur d'image},           % Titre du document
+    pdfsubject = {Mémoire de Projet},               % Sujet
+    pdfkeywords = {Tag1, Tag2, Tag3, ...},          % Mots-clefs
+    pdfstartview={FitH}}                            % ajuste la page à la largueur de l'écran
+%pdfcreator = {MikTeX},                             % Logiciel qui a crée le document
+%pdfproducer = {}}                                  % Société avec produit le logiciel
+
+
+
+% -----------------------------------------------------------------------
+% --- EN-TETE ET PIED DE PAGE ---
+% -----------------------------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{} % Supprime les entetes et pieds de page existants
+
+\fancyhead[L]{Projet de semestre\\}
+\fancyhead[R]{IL - TIC - HEIG-VD \\ Printemps 2017}
+\fancyfoot[L]{E. Ransome, G. Milani, S. Kirushnapillai, M. Spierer, M. Monteverde}
+\fancyfoot[R]{\thepage{}}
+
+
+\title{Éditeur d'images GEMMS \\ Cahier des charges}
+\author{E. Ransome, G. Milani, S. Kirushnapillai, M. Spierer, M. Monteverde}
+\date{Mars 2017}
+
+
+
+% -----------------------------------------------------------------------
+% --- DEBUT DU DOCUMENT ---
+% -----------------------------------------------------------------------
+\begin{document}
+    \selectlanguage{french}
+    \graphicspath{ {img/} }
+    
+    % Espacement entre les lignes
+    \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+    
+    % Page de garde
+    \input{./title.tex}
+    \newpage~
+    
+    
+
+    
+    % Espacement entre les lignes d'un tableau
+    \renewcommand{\arraystretch}{1.5}
+    
+    % Config des pages
+    \setlength{\parskip}{1em}
+    \setlength{\parindent}{0pt}
+    
+    \titlespacing\section{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+    \titlespacing\subsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+    \titlespacing\subsubsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+    
+    
+    ~
+    \thispagestyle{empty}
+    % Recommencer la numérotation des pages à "1"
+    \setcounter{page}{0}
+    \newpage
+
+    \input{./journal_travail_mathieu.tex}
+    
+    \input{./journal_travail_sathiya.tex}
+
+    \input{./journal_travail_michael.tex}
+
+
+    
+
+\end{document}
+
+

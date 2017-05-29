@@ -51,24 +51,6 @@ public class History implements Observer {
         this.imagesHistory = FXCollections.observableArrayList();
 
         this.workspace = workspace;
-
-        workspace.getHistoryList().setCellFactory(listView -> new ListCell<Image>() {
-            private ImageView imageView = new ImageView();
-            @Override
-            public void updateItem(Image image, boolean empty) {
-                super.updateItem(image, empty);
-                if (empty) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    imageView.setFitHeight(image.getHeight());
-                    imageView.setFitWidth(image.getWidth());
-                    System.out.println(image.getHeight());
-                    imageView.setImage(image);
-                    setGraphic(imageView);
-                }
-            }
-        });
     }
 
     @Override
@@ -119,14 +101,18 @@ public class History implements Observer {
      * Cancel the last action done
      */
     public void undo() {
-        restoreToIndex(currentIndex + 1);
+        if (currentIndex < history.size() - 1) {
+            restoreToIndex(currentIndex + 1);
+        }
     }
 
     /**
      * Redo the last canceled action
      */
     public void redo() {
-        restoreToIndex(currentIndex - 1);
+        if (currentIndex > 0) {
+            restoreToIndex(currentIndex - 1);
+        }
     }
 
     /**
@@ -137,10 +123,9 @@ public class History implements Observer {
         if (index < 0 || index > history.size()) {
             Logger.getLogger(History.class.getName()).log(Level.SEVERE, "Trying to restore a state at index out of bounds");
         } else {
-            // Save current state
+            // Select the new current state in the list
             currentIndex = index;
             workspace.getHistoryList().getSelectionModel().select(currentIndex);
-            System.out.println(currentIndex);
             try {
                 workspace.getLayers().clear();
                 // Selected layers

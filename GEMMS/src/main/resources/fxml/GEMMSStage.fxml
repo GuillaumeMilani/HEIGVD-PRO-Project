@@ -155,7 +155,7 @@
                 <AnchorPane minHeight="0.0" minWidth="0.0">
                     <children>
                         <ScrollPane fitToHeight="true" fitToWidth="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                            <VBox fx:id="history" minHeight="50.0" minWidth="0.0" prefWidth="100.0">
+                            <VBox fx:id="historyViewer" minHeight="50.0" minWidth="0.0" prefWidth="100.0">
 
                             </VBox>
                         </ScrollPane>

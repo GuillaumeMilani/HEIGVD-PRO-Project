@@ -21,8 +21,11 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
@@ -135,10 +138,31 @@ public class Workspace extends StackPane implements Serializable {
       historyNotifier.addObserver(history);
 
       this.historyListView = new ListView<WritableImage>();
+
+      // Load the ListView with the thumbnails from history
+      historyListView.setItems(history.getImagesHistory());
+
+      // When selecting an element in the ListView, go to the corresponding state in history
       historyListView.setOnMouseClicked(e -> {
          getHistory().restoreToIndex(historyListView.getSelectionModel().getSelectedIndex());
       });
-      historyListView.setItems(history.getImagesHistory());
+
+      // Display an ImageView in the ListView
+      historyListView.setCellFactory(listView -> new ListCell<Image>() {
+         private ImageView imageView = new ImageView();
+         @Override
+         public void updateItem(Image image, boolean empty) {
+            super.updateItem(image, empty);
+            if (empty) {
+               setGraphic(null);
+            } else {
+               imageView.setFitHeight(image.getHeight());
+               imageView.setFitWidth(image.getWidth());
+               imageView.setImage(image);
+               setGraphic(imageView);
+            }
+         }
+      });
    }
    
    

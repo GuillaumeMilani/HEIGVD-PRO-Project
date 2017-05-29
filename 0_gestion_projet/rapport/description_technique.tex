@@ -42,5 +42,63 @@ Pour garder un historique de chaque action effectuée, on utilise la sérialisat
 \subsection{Positionnement}
 TODO TODO TODO
 
+\subsection{Outils}
+\par
+JavaFX offre (entre autres) les événements MousePressed, MouseDragged et MouseReleased. Ils correspondent respectivement à l'action de presser la souris, de la déplacer en gardant le clic gauche enfoncé ou de relâcher le clic gauche de la souris. 
+\subsubsection{Hiérarchie des outils}
+\par
+La plupart des outils de l'application  fonctionnent grâce à ces trois événements. On pensera notamment au pinceau qui doit dessiner un trait en suivant la souris lors d'un MouseDragged. 
+\par
+Comme on peut le voir sur la figure \ref{fig:tool_hier}, les outils implémentent donc une interface Tool, possédant des méthodes correspondant à ces événements. Au long de l'exécution du programme, le Workspace garde une référence vers un outil considéré actif (qui peut aussi être référence nulle), et lorsqu'il détecte un des événements cités plus haut, il se charge d'appeler la ou les méthodes correspondantes de cet outil.
+\par
+
+\begin{figure}[h]
+	\caption{Diagramme simplifié de la hiérarchie des outils}
+	\centering
+	\includegraphics[scale=0.6]{tool_hierarchy.png}
+	\label{fig:tool_hier}
+\end{figure}
+
+\subsubsection{Réglage des outils}
+Certains de ces outils nécessitent d'être paramétrés en temps réel en fonction des calques sélectionnés par l'utilisateur. Par exemple, la taille de la gomme est stockée dans l'objet représentant l'outil, et est utilisée pour déterminer la taille du rectangle à effacer. L'utilisateur peut la régler au moyen d'un Slider (il s'agit d'un composant JavaFX). Les même besoin concernent la gestion de la couleur du pinceau, de la taille et de la police de l'outil de modification de texte.
+\par
+TODO TODO TODO expliquer mieux les réglages d'outils
+
+Ces réglages sont gérés au moyen d'une hiérarchie de classes (se référer à la figure \ref{tool_settings}), qui sont en fait des spécialisations de composant JavaFX permettant à l'utilisateur de paramétrer les outils, et d'une série d'interfaces représentant des outils pouvant être paramétrés sur divers aspects (la taille, la couleur, la police et ainsi de suite).
+\par
+
+
+\begin{figure}[h]
+	\caption{Diagramme simplifié des réglages d'outils}
+	\centering
+	\includegraphics[scale=0.6]{tool_settings.png}
+	\label{fig:tool_settings}
+\end{figure}
+
+\subsubsection{Pinceau et gomme}
+Le pinceau et la gomme ont un comportement et une implémentation quasiment identiques. Dans le programme GEMMS, ce sont les classes Brush et Eraser qui se chargent d'implémenter ces fonctionnalités. Toutes deux héritent d'une classe commune: LineTool. 
+\par
+Pour ces deux outils, la problématique était la suivante: 
+\par 
+L'événement MouseDragged est déclenché à intervalles réguliers, tant que l'utilisateur effectue cette action. Pour chaque répétition, il est facile de garder trace de la position de la souris au dernier événement et à l'événement actuel. Connaissant ces deux points, il est possible de dessiner une droite.
+\par
+Pour ce faire, nous avons utilisé l'algorithme de tracé de segment de Bresenham. Mis au point en 1962, cet algorithme permet de déterminer quels pixels sont à colorer pour relier harmonieusement deux points par une ligne droite.
+\par
+Il existe de nombreuses implémentations de cet algorithme, et nous avons choisi l'implémentation compacte, que l'on peut trouver sur la page allemande de l'article Wikipédia dédié à ce sujet \cite{Bresenham}.
+\par
+La classe LineTool se charge donc d'implémenter cet algorithme et pour chaque pixel à colorer, elle appelle une méthode abstraite drawPixel que ses sous classes se chargent de définir. Ainsi, Brush dessiner un disque correspondant à la taille du pinceau, et Eraser efface un carré de pixel, correspondant à la taille de la gomme.
+\subsubsection{Pipette}
+Le rôle de l'outil pipette et de permettre à l'utilisateur de choisir une couleur en la prélevant sur un élément existant du document. Il s'agirait typiquement de récupérer la couleur d'un calque GEMMSText, GEMMSCanvas ou GEMMSImage.
+\par 
+Dans le cas d'un texte, la pipette retourne simplement la couleur de celui-ci. Dans le cas d'un objet de type GEMMSCanvas ou d'une GEMMSImage, l'outil lit le pixel exact cliqué par l'utilisateur, ci celui-ci se trouve à l'intérieur des bornes du calque sélectionné.
+\subsubsection{Modification de texte}
+L'outil de modification de texte permet à l'utilisateur de modifier les propriétés d'un calque texte existant. Lorsque cet outil est activé
+\subsubsection{Symétries}
+\subsubsection{Déplacement}
+\subsubsection{Rotation}
+\subsubsection{Redimensionnement}
+\subsubsection{Sélection}
+\subsubsection{Rognage}
+
 
 

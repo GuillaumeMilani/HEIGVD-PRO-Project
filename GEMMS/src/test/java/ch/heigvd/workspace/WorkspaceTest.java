@@ -1,6 +1,8 @@
 package ch.heigvd.workspace;
 
 import ch.heigvd.layer.GEMMSCanvas;
+import ch.heigvd.layer.GEMMSText;
+import ch.heigvd.tool.Brush;
 import javafxrule.JavaFXThreadingRule;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -130,6 +132,17 @@ public class WorkspaceTest {
     */
    @Test
    public void testMove() {
+      double initX = sWorkspace.getLayerTool().getTranslateX();
+      double initY = sWorkspace.getLayerTool().getTranslateY();
+      
+      sWorkspace.move(10, 10);
+      assertEquals(initX + 10, sWorkspace.getLayerTool().getTranslateX(), 0.00001);
+      assertEquals(initY + 10, sWorkspace.getLayerTool().getTranslateY(), 0.00001);
+      
+      
+      sWorkspace.move(-20, -20);
+      assertEquals(initX - 10, sWorkspace.getLayerTool().getTranslateX(), 0.00001);
+      assertEquals(initY - 10, sWorkspace.getLayerTool().getTranslateY(), 0.00001);
    }
 
    /**
@@ -137,13 +150,9 @@ public class WorkspaceTest {
     */
    @Test
    public void testResizeCanvas() {
-   }
-
-   /**
-    * Test of getWorkspaceController method, of class Workspace.
-    */
-   @Test
-   public void testGetWorkspaceController() {
+      sWorkspace.resizeCanvas(100, 100, 0, 0);
+      assertEquals(100, (int)sWorkspace.width());
+      assertEquals(100, (int)sWorkspace.height());
    }
 
    /**
@@ -151,6 +160,9 @@ public class WorkspaceTest {
     */
    @Test
    public void testSetCurrentTool() {
+      Brush b = new Brush(sWorkspace);
+      sWorkspace.setCurrentTool(b);
+      assertTrue(b == sWorkspace.getCurrentTool());
    }
 
    /**
@@ -158,6 +170,9 @@ public class WorkspaceTest {
     */
    @Test
    public void testGetCurrentTool() {
+      Brush b = new Brush(sWorkspace);
+      sWorkspace.setCurrentTool(b);
+      assertTrue(b == sWorkspace.getCurrentTool());
    }
 
    /**
@@ -165,6 +180,8 @@ public class WorkspaceTest {
     */
    @Test
    public void testWidth() {
+      Workspace instance = new Workspace(200, 300);
+      assertEquals(200, instance.width());
    }
 
    /**
@@ -172,27 +189,8 @@ public class WorkspaceTest {
     */
    @Test
    public void testHeight() {
-   }
-
-   /**
-    * Test of getWorkspaceScaleX method, of class Workspace.
-    */
-   @Test
-   public void testGetWorkspaceScaleX() {
-   }
-
-   /**
-    * Test of getWorkspaceScaleY method, of class Workspace.
-    */
-   @Test
-   public void testGetWorkspaceScaleY() {
-   }
-
-   /**
-    * Test of getLayerTool method, of class Workspace.
-    */
-   @Test
-   public void testGetLayerTool() {
+      Workspace instance = new Workspace(200, 300);
+      assertEquals(300, instance.height());
    }
 
    /**
@@ -200,6 +198,14 @@ public class WorkspaceTest {
     */
    @Test
    public void testSelectLayers() {
+      GEMMSCanvas c = new GEMMSCanvas();
+      GEMMSText t = new GEMMSText("Bonjour");
+      sWorkspace.getLayers().add(c);
+      sWorkspace.getLayers().add(t);
+      sWorkspace.selectLayers(c, t);
+      
+      assertTrue(sWorkspace.getCurrentLayers().contains(c));
+      assertTrue(sWorkspace.getCurrentLayers().contains(t));
    }
 
    /**
@@ -207,6 +213,14 @@ public class WorkspaceTest {
     */
    @Test
    public void testSelectLayer() {
+      GEMMSCanvas c = new GEMMSCanvas();
+      GEMMSText t = new GEMMSText("Bonjour");
+      sWorkspace.getLayers().add(c);
+      sWorkspace.getLayers().add(t);
+      
+      sWorkspace.selectLayer(c);
+      
+      assertTrue(sWorkspace.getCurrentLayers().contains(c));
    }
 
    /**
@@ -214,20 +228,14 @@ public class WorkspaceTest {
     */
    @Test
    public void testSelectLayerByIndex() {
-   }
-
-   /**
-    * Test of getHistory method, of class Workspace.
-    */
-   @Test
-   public void testGetHistory() {
-   }
-
-   /**
-    * Test of notifyHistory method, of class Workspace.
-    */
-   @Test
-   public void testNotifyHistory() {
+      GEMMSCanvas c = new GEMMSCanvas();
+      GEMMSText t = new GEMMSText("Bonjour");
+      sWorkspace.getLayers().add(c);
+      sWorkspace.getLayers().add(t);
+      
+      sWorkspace.selectLayerByIndex(1);
+      
+      assertTrue(sWorkspace.getCurrentLayers().contains(t));
    }
    
 }

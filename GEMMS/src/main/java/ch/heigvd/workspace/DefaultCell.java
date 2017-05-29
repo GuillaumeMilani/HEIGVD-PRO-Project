@@ -7,18 +7,21 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 /**
  * <h1>DefaultCell</h1>
- * 
+ *
  * Default Cell implementation for the GEMMS application.
+ *
  * @param <T> the type of elements represented
  */
 public class DefaultCell<T> extends Cell<T> {
 
    static int count = 0;
    Text t;
+   private static int MAX_LENGTH = 10;
 
    public DefaultCell(T target) {
       super(target);
@@ -26,16 +29,20 @@ public class DefaultCell<T> extends Cell<T> {
 
       // Create a thumbnail for estetic purposes
       AnchorPane rect = new AnchorPane();
-      rect.setPrefSize(40, 40);
+      rect.setPrefSize(35, 35);
+      rect.setMinSize(35, 35);
 
       // Add a Label (To be replaced by the name of the type of Node ?)
       t = new Text("Layer");
+      t.setFont(Font.font(t.getFont().getFamily(), 10));
+      t.setWrappingWidth(65);
 
       if (LayerListable.class.isInstance(target)) {
          rect.getStyleClass().add(((LayerListable) target).getThumbnailClass());
-         t.setText(((LayerListable) target).getLayerName());
+         String name = ((LayerListable) target).getLayerName();
+         t.setText(parseName(name));
       }
-      
+
       // Button to toggle the layer visibility
       Button visibility = new Button("");
       visibility.getStyleClass().add(CSSIcons.VISIBLE);
@@ -69,6 +76,14 @@ public class DefaultCell<T> extends Cell<T> {
       setAlignment(Pos.CENTER_LEFT);
       setSpacing(10);
    }
+   
+   private static String parseName(String name) {
+      if (name.length() > MAX_LENGTH) {
+         name = name.substring(0, MAX_LENGTH);
+         name += "...";
+      }
+      return name;
+   }
 
    @Override
    public void select() {
@@ -86,9 +101,10 @@ public class DefaultCell<T> extends Cell<T> {
 
    @Override
    public void setLayerName(String name) {
-      t.setText(name);
       if (LayerListable.class.isInstance(getTarget())) {
-         ((LayerListable)getTarget()).setLayerName(name);
+         ((LayerListable) getTarget()).setLayerName(name);
       }
+      
+      t.setText(parseName(name));
    }
 }

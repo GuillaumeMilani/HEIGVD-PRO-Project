@@ -130,7 +130,7 @@ public class Drag extends AbstractTool {
         //Lignes principales (Axes)
         gc.setLineWidth(2);
         gc.strokeLine(workspace.width() / 2, 0, workspace.width() / 2, workspace.height());
-        gc.strokeLine(0, workspace.height() / 2, workspace.height(), workspace.height() / 2);
+        gc.strokeLine(0, workspace.height() / 2, workspace.width(), workspace.height() / 2);
 
         anchorPane.getChildren().add(alignement);
     }

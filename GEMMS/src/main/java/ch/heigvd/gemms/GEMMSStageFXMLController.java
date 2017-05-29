@@ -578,10 +578,10 @@ public class GEMMSStageFXMLController implements Initializable {
 
             } else if (w != null && Constants.CTRL_Z.match(keyEvent)) {
                 // ---------- CTRL + Z ----------
-                getCurrentWorkspace().getHistory().undo(1);
+                getCurrentWorkspace().getHistory().undo();
             } else if (Constants.CTRL_Y.match(keyEvent)) {
                 // ---------- CTRL + Y ----------
-                getCurrentWorkspace().getHistory().redo(1);
+                getCurrentWorkspace().getHistory().redo();
             }
 
             // ---------- CTRL + C ----------

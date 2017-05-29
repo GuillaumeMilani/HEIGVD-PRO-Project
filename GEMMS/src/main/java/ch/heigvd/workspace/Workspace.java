@@ -10,6 +10,8 @@ import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -130,6 +132,11 @@ public class Workspace extends StackPane implements Serializable {
 
       // History
       this.historyListView = new ListView<WritableImage>();
+      historyListView.setOnMouseClicked(e -> {
+         getHistory().restoreToIndex(historyListView.getSelectionModel().getSelectedIndex());
+         System.out.println("Click");
+      });
+
       this.history = new History(this);
       historyNotifier.addObserver(history);
    }

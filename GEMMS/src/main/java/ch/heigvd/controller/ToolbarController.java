@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;

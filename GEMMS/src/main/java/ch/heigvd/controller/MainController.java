@@ -1,41 +1,25 @@
 package ch.heigvd.controller;
 
-import ch.heigvd.dialog.ImportImageDialog;
-import ch.heigvd.dialog.NewDocument;
-import ch.heigvd.dialog.NewDocumentDialog;
-import ch.heigvd.dialog.OpenDocumentDialog;
-import ch.heigvd.dialog.ResizeDialog;
+
 import ch.heigvd.gemms.Constants;
 import ch.heigvd.gemms.Document;
 import ch.heigvd.gemms.Utils;
 import ch.heigvd.gemms.WelcomeInvite;
-
-import ch.heigvd.layer.GEMMSText;
 import ch.heigvd.layer.GEMMSCanvas;
-import ch.heigvd.layer.GEMMSImage;
-
 import ch.heigvd.tool.*;
-import ch.heigvd.tool.settings.ToolColorSettings;
-import ch.heigvd.tool.settings.ToolFontSettings;
-import ch.heigvd.tool.settings.ToolSettingsContainer;
-import ch.heigvd.tool.settings.ToolSizeSettings;
-
 import ch.heigvd.workspace.Workspace;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.*;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -47,31 +31,20 @@ import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.effect.ColorAdjust;
-import javafx.scene.effect.SepiaTone;
-import javafx.scene.image.Image;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.StackPane;
 
 
@@ -257,11 +230,11 @@ public class MainController implements Initializable {
         
         
         colorController.getChildren().add(ColorSet.getInstance().getColorController());
-        
 
         
-    
-
+        
+        
+        
         mainAnchorPane.setOnKeyPressed(keyEvent -> {
             Workspace w = getCurrentWorkspace();
             // ---------- ESC ----------

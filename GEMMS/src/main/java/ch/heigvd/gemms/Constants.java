@@ -6,6 +6,7 @@ import javafx.scene.input.KeyCombination;
 
 public class Constants {
     public static double BUTTONS_HEIGHT = 50;
+    public static double HISTORY_THUMB_WIDTH = 120.;
 
     public static KeyCodeCombination CTRL_C = new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_ANY);
     public static KeyCodeCombination CTRL_V = new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_ANY);

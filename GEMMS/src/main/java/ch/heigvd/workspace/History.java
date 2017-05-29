@@ -1,10 +1,23 @@
 package ch.heigvd.workspace;
 
+import ch.heigvd.gemms.Constants;
 import ch.heigvd.gemms.Utils;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
+import javafx.application.Platform;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.control.ListCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
 import java.io.IOException;
 import javafx.scene.image.WritableImage;
+import javafx.scene.transform.Transform;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Guillaume Milani
@@ -16,36 +29,27 @@ import java.util.*;
  */
 public class History implements Observer {
     /**
-     * Stacks to save the serialized (& compressed) layers states
+     * Lists to save the history, thumbnails and selected layers
      */
-    private Stack<String> undoHistory;
-    private Stack<String> redoHistory;
+    List<String> history;
+    List<List<Integer>> selectedHistory;
+
+    ObservableList<Image> imagesHistory;
 
     /**
-     * Stacks to save the currently selected layers
+     * Current index in the history lists
      */
-    private Stack<List<Integer>> undoSelectedLayers;
-    private Stack<List<Integer>> redoSelectedLayers;
-
-    private Stack<WritableImage> undoImages;
-    private Stack<WritableImage> redoImages;
-
-    /**
-     * Contains the data to save the current states
-     */
-    private String currentState;
-    private List<Integer> currentIndexes;
-    private WritableImage currentImage;
+    private int currentIndex;
 
     private Workspace workspace;
 
     public History(Workspace workspace) {
-        this.undoHistory = new Stack();
-        this.redoHistory = new Stack();
-        this.undoSelectedLayers = new Stack();
-        this.redoSelectedLayers = new Stack();
-        this.undoHistory = new Stack();
-        this.redoHistory = new Stack();
+        currentIndex = 0;
+
+        this.history = new LinkedList<>();
+        this.selectedHistory = new LinkedList<>();
+        this.imagesHistory = FXCollections.observableArrayList();
+
         this.workspace = workspace;
     }
 
@@ -55,77 +59,91 @@ public class History implements Observer {
     }
 
     /**
-     * Save the current states to the stacks
+     * Save the current state to the history
      */
     private void save() {
-        // If a modification is done, a new "branch" begins. No action to redo anymore
-        redoHistory.clear();
-        redoSelectedLayers.clear();
+        Platform.runLater(() -> {
+            // If a modification is done, a new "branch" begins. No action to redo anymore
+            history.subList(0, currentIndex).clear();
+            selectedHistory.subList(0, currentIndex).clear();
+            imagesHistory.remove(0, currentIndex);
 
-        try {
-            // Get the selected layers indexes
-            List<Integer> indexes = new LinkedList<>();
-            workspace.getCurrentLayers().forEach(n -> indexes.add(workspace.getLayers().indexOf(n)));
+            currentIndex = 0;
 
-            // Push the current states except the first time an action is done
-            if (currentState != null) {
-                undoSelectedLayers.push(currentIndexes);
-                undoHistory.push(currentState);
+            try {
+                // Get the selected layers indexes
+                List<Integer> indexes = new LinkedList<>();
+                workspace.getCurrentLayers().forEach(n -> indexes.add(workspace.getLayers().indexOf(n)));
+
+                // Get the thumbnail for visual history
+                final SnapshotParameters sp = new SnapshotParameters();
+
+                double scale = Constants.HISTORY_THUMB_WIDTH/workspace.width();
+                sp.setTransform(Transform.scale(scale, scale));
+
+                Image snapshot = workspace.snapshot(sp, null);
+                PixelReader reader = snapshot.getPixelReader();
+                WritableImage newImage = new WritableImage(reader, 0, 0, (int)Constants.HISTORY_THUMB_WIDTH, (int)(workspace.height() * scale));
+
+                // Save the current states
+                history.add(0,Utils.serializeNodeList(workspace.getLayers()));
+                selectedHistory.add(0, indexes);
+                imagesHistory.add(0, newImage);
+
+                workspace.getHistoryList().getSelectionModel().select(currentIndex);
+            } catch (Exception e) {
+                Logger.getLogger(History.class.getName()).log(Level.SEVERE, null, e);
             }
-
-            // Save the current states
-            currentState = Utils.serializeNodeList(workspace.getLayers());
-            currentIndexes = indexes;
-        } catch (Exception e) {
-            // TODO: Manage exceptions
-            e.printStackTrace();
-        }
+        });
     }
 
     /**
-     * Undo the last action (rollback to layers precedent state)
+     * Cancel the last action done
      */
     public void undo() {
-        historyAction(undoHistory, redoHistory, undoSelectedLayers, redoSelectedLayers);
+        if (currentIndex < history.size() - 1) {
+            restoreToIndex(currentIndex + 1);
+        }
     }
 
     /**
      * Redo the last canceled action
      */
     public void redo() {
-        historyAction(redoHistory, undoHistory, redoSelectedLayers, undoSelectedLayers);
+        if (currentIndex > 0) {
+            restoreToIndex(currentIndex - 1);
+        }
     }
 
     /**
-     * Restore the history from one stack (and save the current state in the other stack)
-     * @param layersTakeFrom
-     * @param layersPutIn
-     * @param indexesTakeFrom
-     * @param indexesPutIn
+     * Restore the workspace at the state in parameter
+     * @param index index in the history list to restore the workspace state from
      */
-    private void historyAction(Stack<String> layersTakeFrom, Stack<String> layersPutIn,
-                               Stack<List<Integer>> indexesTakeFrom, Stack<List<Integer>> indexesPutIn) {
-        if (!layersTakeFrom.isEmpty()) {
-
-            // Save current state
-            layersPutIn.push(currentState);
-            indexesPutIn.push(currentIndexes);
-
+    public void restoreToIndex(int index) {
+        if (index < 0 || index > history.size()) {
+            Logger.getLogger(History.class.getName()).log(Level.SEVERE, "Trying to restore a state at index out of bounds");
+        } else {
+            // Select the new current state in the list
+            currentIndex = index;
+            workspace.getHistoryList().getSelectionModel().select(currentIndex);
             try {
                 workspace.getLayers().clear();
                 // Selected layers
                 workspace.getCurrentLayers().clear();
 
-                currentState = layersTakeFrom.pop();
-                currentIndexes = indexesTakeFrom.pop();
-
-                workspace.getLayers().addAll(Utils.deserializeNodeList(currentState));
-                currentIndexes.forEach(i -> workspace.selectLayerByIndex(i));
+                workspace.getLayers().addAll(Utils.deserializeNodeList(history.get(currentIndex)));
+                selectedHistory.get(currentIndex).forEach(i -> workspace.selectLayerByIndex(i));
 
             } catch (IOException | ClassNotFoundException e) {
-                // TODO: Manage exceptions
-                e.printStackTrace();
+                Logger.getLogger(History.class.getName()).log(Level.SEVERE, null, e);
             }
         }
+    }
+
+    /**
+     * @return an observable list of history's thumbnails
+     */
+    public ObservableList<Image> getImagesHistory() {
+        return imagesHistory;
     }
 }

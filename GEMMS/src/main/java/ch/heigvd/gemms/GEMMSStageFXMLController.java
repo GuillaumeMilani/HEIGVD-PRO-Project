@@ -51,7 +51,6 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.Image;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.effect.GaussianBlur;
@@ -68,7 +67,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.StackPane;
 
@@ -97,6 +95,9 @@ public class GEMMSStageFXMLController implements Initializable {
     
     @FXML
     private VBox layerController;
+
+    @FXML
+    private VBox historyViewer;
     
     @FXML
     private AnchorPane colorController;
@@ -230,6 +231,8 @@ public class GEMMSStageFXMLController implements Initializable {
            if(w != null) {
                 layerController.getChildren().clear();
                 layerController.getChildren().add(w.getWorkspaceController());
+                historyViewer.getChildren().clear();
+                historyViewer.getChildren().add(w.getHistoryList());
             }
             // Suppress tab
             else {
@@ -248,6 +251,7 @@ public class GEMMSStageFXMLController implements Initializable {
                 
                 // Clear
                 layerController.getChildren().clear();
+                historyViewer.getChildren().clear();
               }
         });
         
@@ -575,11 +579,10 @@ public class GEMMSStageFXMLController implements Initializable {
 
             } else if (w != null && Constants.CTRL_Z.match(keyEvent)) {
                 // ---------- CTRL + Z ----------
-                
                 getCurrentWorkspace().getHistory().undo();
-            } else if (w != null && Constants.CTRL_Y.match(keyEvent)) {
+            } else if (Constants.CTRL_Y.match(keyEvent)) {
                 // ---------- CTRL + Y ----------
-                w.getHistory().redo();
+                getCurrentWorkspace().getHistory().redo();
             }
 
             // ---------- CTRL + C ----------
@@ -921,6 +924,7 @@ public class GEMMSStageFXMLController implements Initializable {
            }
         }
         displayToolSetting(null);
+        w.notifyHistory();
       }
    }
    
@@ -947,6 +951,7 @@ public class GEMMSStageFXMLController implements Initializable {
             }
          }
          displayToolSetting(null);
+         w.notifyHistory();
       }
    }
    
@@ -1063,11 +1068,21 @@ public class GEMMSStageFXMLController implements Initializable {
         displayToolSetting(null);
       }
    }
-   
-   
 
+   private void updateRightPanelAndCreateTab(Document document) {
+       Workspace w = document.workspace();
 
-   
+       // Clear
+       layerController.getChildren().clear();
+       layerController.getChildren().add(w.getWorkspaceController());
+       historyViewer.getChildren().clear();
+       historyViewer.getChildren().add(w.getHistoryList());
+
+       // Create tab
+       Tab tab = new Tab(document.name() != "" ? document.name() : "untitled", w);
+       workspaces.getTabs().add(tab);
+       workspaces.getSelectionModel().select(tab);
+   }
     
     @FXML
     private void newButtonAction(ActionEvent e) {
@@ -1098,14 +1113,7 @@ public class GEMMSStageFXMLController implements Initializable {
             gc.setFill(color);
             gc.fillRect(0, 0, width, height);
 
-            // Clear
-            layerController.getChildren().clear();
-            layerController.getChildren().add(w.getWorkspaceController());
-
-            // Create tab
-            Tab tab = new Tab("untitled", w);
-            workspaces.getTabs().add(tab);
-            workspaces.getSelectionModel().select(tab);
+            updateRightPanelAndCreateTab(document);
             
             // Set background
             w.addLayer(canvas);
@@ -1131,17 +1139,8 @@ public class GEMMSStageFXMLController implements Initializable {
                 Logger.getLogger(GEMMSStageFXMLController.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            Workspace w = document.workspace();
-            
-            // Clear
-            layerController.getChildren().clear();
-            layerController.getChildren().add(w.getWorkspaceController());
+            updateRightPanelAndCreateTab(document);
 
-            // Create tab
-            Tab tab = new Tab(document.name(), w);
-            workspaces.getTabs().add(tab);
-            workspaces.getSelectionModel().select(tab);
-            
             documents.add(document);
         }
     }
@@ -1270,7 +1269,7 @@ public class GEMMSStageFXMLController implements Initializable {
      * Creates a slider in a pane at a certain position. Used to create opacity,
      * sepia, saturation and contrast sliders.
      * @param pane
-     * @param label
+     * @param value
      * @param slider
      * @param position
      */

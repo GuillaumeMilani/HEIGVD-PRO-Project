@@ -1,25 +1,25 @@
 package ch.heigvd.workspace;
 
-import ch.heigvd.tool.Tool;
-import java.util.List;
-import javafx.scene.Node;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.image.WritableImage;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafxrule.JavaFXThreadingRule;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author mathieu
  */
 public class WorkspaceTest {
+   
+   // Workspace to last for all the tests
+   private static Workspace sWorkspace;
    
    @org.junit.Rule
    public JavaFXThreadingRule rule = new JavaFXThreadingRule();
@@ -29,6 +29,7 @@ public class WorkspaceTest {
    
    @BeforeClass
    public static void setUpClass() {
+      //sWorkspace = new Workspace(200, 200);
    }
    
    @AfterClass
@@ -44,31 +45,17 @@ public class WorkspaceTest {
    }
 
    /**
-    * Test of init method, of class Workspace.
-    */
-   @Test
-   public void testInit() {
-   }
-
-   /**
-    * Test of layoutChildren method, of class Workspace.
-    */
-   @Test
-   public void testLayoutChildren() {
-   }
-
-   /**
-    * Test of snapshot method, of class Workspace.
-    */
-   @Test
-   public void testSnapshot() {
-   }
-
-   /**
     * Test of addLayer method, of class Workspace.
     */
    @Test
    public void testAddLayer() {
+      int size = sWorkspace.getLayers().size();
+      Rectangle r = new Rectangle();
+      sWorkspace.addLayer(r);
+      
+      // Check that the workspace contains the new layer
+      assertEquals(size + 1, sWorkspace.getLayers().size());
+      assertTrue(sWorkspace.getLayers().contains(r));
    }
 
    /**
@@ -76,6 +63,13 @@ public class WorkspaceTest {
     */
    @Test
    public void testRemoveLayer() {
+      int size = sWorkspace.getLayers().size();
+      Rectangle r = new Rectangle();
+      sWorkspace.addLayer(r);
+      
+      sWorkspace.removeLayer(r);
+      assertEquals(size, sWorkspace.getLayers().size());
+      assertFalse(sWorkspace.getLayers().contains(r));
    }
 
    /**
@@ -83,6 +77,16 @@ public class WorkspaceTest {
     */
    @Test
    public void testGetCurrentLayers() {
+      Workspace instance = new Workspace(200, 200);
+      Rectangle r = new Rectangle();
+      Circle c = new Circle();
+      instance.addLayer(r);
+      instance.addLayer(c);
+      instance.selectLayerByIndex(0);
+      
+      // Check that it returns contained layers
+      assertTrue(instance.getCurrentLayers().contains(r));
+      assertFalse(instance.getCurrentLayers().contains(c));
    }
 
    /**
@@ -90,6 +94,18 @@ public class WorkspaceTest {
     */
    @Test
    public void testGetLayers() {
+      Workspace instance = new Workspace(200, 200);
+      assertTrue(instance.getLayers().isEmpty());
+      
+      Rectangle r = new Rectangle();
+      Circle c = new Circle();
+      
+      instance.addLayer(r);
+      instance.addLayer(c);
+      
+      assertEquals(2, instance.getLayers().size());
+      assertTrue(instance.getLayers().contains(r));
+      assertTrue(instance.getLayers().contains(c));
    }
 
    /**
@@ -97,6 +113,17 @@ public class WorkspaceTest {
     */
    @Test
    public void testZoom() {
+      sWorkspace.zoom(1.5);
+      assertEquals(1.5, sWorkspace.getScaleX());
+      assertEquals(1.5, sWorkspace.getScaleY());
+      
+      sWorkspace.zoom(1);
+      assertEquals(1.5, sWorkspace.getScaleX());
+      assertEquals(1.5, sWorkspace.getScaleY());
+      
+      sWorkspace.zoom(2);
+      assertEquals(1.5 * 2, sWorkspace.getScaleX());
+      assertEquals(1.5 * 2, sWorkspace.getScaleY());
    }
 
    /**

@@ -1,7 +1,6 @@
 package ch.heigvd.workspace;
 
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
+import ch.heigvd.layer.GEMMSCanvas;
 import javafxrule.JavaFXThreadingRule;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -19,7 +18,7 @@ import org.junit.Test;
 public class WorkspaceTest {
    
    // Workspace to last for all the tests
-   private static Workspace sWorkspace;
+   private Workspace sWorkspace;
    
    @org.junit.Rule
    public JavaFXThreadingRule rule = new JavaFXThreadingRule();
@@ -29,7 +28,6 @@ public class WorkspaceTest {
    
    @BeforeClass
    public static void setUpClass() {
-      //sWorkspace = new Workspace(200, 200);
    }
    
    @AfterClass
@@ -38,6 +36,7 @@ public class WorkspaceTest {
    
    @Before
    public void setUp() {
+      sWorkspace = new Workspace(200, 200);
    }
    
    @After
@@ -50,12 +49,12 @@ public class WorkspaceTest {
    @Test
    public void testAddLayer() {
       int size = sWorkspace.getLayers().size();
-      Rectangle r = new Rectangle();
-      sWorkspace.addLayer(r);
+      GEMMSCanvas c = new GEMMSCanvas(200, 200);
+      sWorkspace.addLayer(c);
       
       // Check that the workspace contains the new layer
       assertEquals(size + 1, sWorkspace.getLayers().size());
-      assertTrue(sWorkspace.getLayers().contains(r));
+      assertTrue(sWorkspace.getLayers().contains(c));
    }
 
    /**
@@ -64,12 +63,12 @@ public class WorkspaceTest {
    @Test
    public void testRemoveLayer() {
       int size = sWorkspace.getLayers().size();
-      Rectangle r = new Rectangle();
-      sWorkspace.addLayer(r);
+      GEMMSCanvas c = new GEMMSCanvas(200, 200);
+      sWorkspace.addLayer(c);
       
-      sWorkspace.removeLayer(r);
+      sWorkspace.removeLayer(c);
       assertEquals(size, sWorkspace.getLayers().size());
-      assertFalse(sWorkspace.getLayers().contains(r));
+      assertFalse(sWorkspace.getLayers().contains(c));
    }
 
    /**
@@ -78,11 +77,11 @@ public class WorkspaceTest {
    @Test
    public void testGetCurrentLayers() {
       Workspace instance = new Workspace(200, 200);
-      Rectangle r = new Rectangle();
-      Circle c = new Circle();
-      instance.addLayer(r);
+      GEMMSCanvas r = new GEMMSCanvas(200, 200);
+      GEMMSCanvas c = new GEMMSCanvas(200, 200);
       instance.addLayer(c);
-      instance.selectLayerByIndex(0);
+      instance.addLayer(r);
+      instance.selectLayerByIndex(1);
       
       // Check that it returns contained layers
       assertTrue(instance.getCurrentLayers().contains(r));
@@ -97,8 +96,8 @@ public class WorkspaceTest {
       Workspace instance = new Workspace(200, 200);
       assertTrue(instance.getLayers().isEmpty());
       
-      Rectangle r = new Rectangle();
-      Circle c = new Circle();
+      GEMMSCanvas r = new GEMMSCanvas(200, 200);
+      GEMMSCanvas c = new GEMMSCanvas(200, 200);
       
       instance.addLayer(r);
       instance.addLayer(c);
@@ -114,16 +113,16 @@ public class WorkspaceTest {
    @Test
    public void testZoom() {
       sWorkspace.zoom(1.5);
-      assertEquals(1.5, sWorkspace.getScaleX());
-      assertEquals(1.5, sWorkspace.getScaleY());
+      assertEquals(1.5, sWorkspace.getWorkspaceScaleX(), 0.0001);
+      assertEquals(1.5, sWorkspace.getWorkspaceScaleY(), 0.0001);
       
       sWorkspace.zoom(1);
-      assertEquals(1.5, sWorkspace.getScaleX());
-      assertEquals(1.5, sWorkspace.getScaleY());
+      assertEquals(1.5, sWorkspace.getWorkspaceScaleX(), 0.0001);
+      assertEquals(1.5, sWorkspace.getWorkspaceScaleY(), 0.0001);
       
       sWorkspace.zoom(2);
-      assertEquals(1.5 * 2, sWorkspace.getScaleX());
-      assertEquals(1.5 * 2, sWorkspace.getScaleY());
+      assertEquals(1.5 * 2, sWorkspace.getWorkspaceScaleX(), 0.0001);
+      assertEquals(1.5 * 2, sWorkspace.getWorkspaceScaleY(), 0.0001);
    }
 
    /**

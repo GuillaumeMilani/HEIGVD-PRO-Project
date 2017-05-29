@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runners.model.MultipleFailureException;
 
 public class LayerListTest {
    // List of nodes for all the series of tests
@@ -68,6 +69,22 @@ public class LayerListTest {
     */
    @Test
    public void testGetSelectedItems() {
+      // Test that no selected items at the beggining
+      assertEquals(0, layerList.getSelectedItems().size());
+      
+      // Select items
+      layerList.selectTopLayer();
+      layerList.selectBottomLayer();
+      layerList.selectLayers(staticList.get(3));
+      
+      // Check
+      assertEquals(3, layerList.getSelectedItems().size());
+      assertTrue(layerList.getSelectedItems().contains(staticList.get(5)));
+      assertTrue(layerList.getSelectedItems().contains(staticList.get(0)));
+      assertTrue(layerList.getSelectedItems().contains(staticList.get(3)));
+      assertFalse(layerList.getSelectedItems().contains(staticList.get(1)));
+      assertFalse(layerList.getSelectedItems().contains(staticList.get(2)));
+      assertFalse(layerList.getSelectedItems().contains(staticList.get(4)));
    }
 
    /**
@@ -153,6 +170,21 @@ public class LayerListTest {
     */
    @Test
    public void testSelectLayerByIndex() {
+      
+      // Arbitrary select layers
+      layerList.selectLayerByIndex(0);
+      layerList.selectLayerByIndex(2);
+      layerList.selectLayerByIndex(3);
+      
+      // Check that the LayerList selected the right layers
+      List<Node> list = layerList.getSelectedItems();
+      assertEquals(3, list.size());
+      assertTrue(list.contains(staticList.get(0)));
+      assertTrue(list.contains(staticList.get(2)));
+      assertTrue(list.contains(staticList.get(3)));
+      assertFalse(list.contains(staticList.get(1)));
+      assertFalse(list.contains(staticList.get(4)));
+      assertFalse(list.contains(staticList.get(5)));
    }
    
 }

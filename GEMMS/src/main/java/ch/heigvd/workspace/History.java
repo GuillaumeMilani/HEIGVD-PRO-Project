@@ -1,5 +1,6 @@
 package ch.heigvd.workspace;
 
+import ch.heigvd.gemms.Constants;
 import ch.heigvd.gemms.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,45 +29,28 @@ import java.util.logging.Logger;
  */
 public class History implements Observer {
     /**
-     * Stacks to save the serialized (& compressed) layers states
+     * Lists to save the history, thumbnails and selected layers
      */
-    private Stack<String> undoHistory;
-    private Stack<String> redoHistory;
-
-    /**
-     * Stacks to save the currently selected layers
-     */
-    private Stack<List<Integer>> undoSelectedLayers;
-    private Stack<List<Integer>> redoSelectedLayers;
-
-
-    /**
-     * Contains the data to save the current states
-     */
-    private String currentState;
-    private List<Integer> currentIndexes;
-
     List<String> history;
     List<List<Integer>> selectedHistory;
+
     ObservableList<Image> imagesHistory;
 
+    /**
+     * Current index in the history lists
+     */
     private int currentIndex;
 
     private Workspace workspace;
 
     public History(Workspace workspace) {
-        this.undoHistory = new Stack();
-        this.redoHistory = new Stack();
-        this.undoSelectedLayers = new Stack();
-        this.redoSelectedLayers = new Stack();
-        this.undoHistory = new Stack();
-        this.redoHistory = new Stack();
         currentIndex = 0;
 
         this.history = new LinkedList<>();
         this.selectedHistory = new LinkedList<>();
+        this.imagesHistory = FXCollections.observableArrayList();
+
         this.workspace = workspace;
-        this.imagesHistory = workspace.getHistoryList().getItems();
 
         workspace.getHistoryList().setCellFactory(listView -> new ListCell<Image>() {
             private ImageView imageView = new ImageView();
@@ -93,7 +77,7 @@ public class History implements Observer {
     }
 
     /**
-     * Save the current states to the stacks
+     * Save the current state to the history
      */
     private void save() {
         Platform.runLater(() -> {
@@ -112,12 +96,12 @@ public class History implements Observer {
                 // Get the thumbnail for visual history
                 final SnapshotParameters sp = new SnapshotParameters();
 
-                double scale = 120./workspace.width();
+                double scale = Constants.HISTORY_THUMB_WIDTH/workspace.width();
                 sp.setTransform(Transform.scale(scale, scale));
 
                 Image snapshot = workspace.snapshot(sp, null);
                 PixelReader reader = snapshot.getPixelReader();
-                WritableImage newImage = new WritableImage(reader, 0, 0, 120, (int)(workspace.height() * scale));
+                WritableImage newImage = new WritableImage(reader, 0, 0, (int)Constants.HISTORY_THUMB_WIDTH, (int)(workspace.height() * scale));
 
                 // Save the current states
                 history.add(0,Utils.serializeNodeList(workspace.getLayers()));
@@ -131,6 +115,9 @@ public class History implements Observer {
         });
     }
 
+    /**
+     * Cancel the last action done
+     */
     public void undo() {
         restoreToIndex(currentIndex + 1);
     }
@@ -144,6 +131,7 @@ public class History implements Observer {
 
     /**
      * Restore the workspace at the state in parameter
+     * @param index index in the history list to restore the workspace state from
      */
     public void restoreToIndex(int index) {
         if (index < 0 || index > history.size()) {
@@ -165,5 +153,12 @@ public class History implements Observer {
                 Logger.getLogger(History.class.getName()).log(Level.SEVERE, null, e);
             }
         }
+    }
+
+    /**
+     * @return an observable list of history's thumbnails
+     */
+    public ObservableList<Image> getImagesHistory() {
+        return imagesHistory;
     }
 }

@@ -131,14 +131,14 @@ public class Workspace extends StackPane implements Serializable {
 
 
       // History
+      this.history = new History(this);
+      historyNotifier.addObserver(history);
+
       this.historyListView = new ListView<WritableImage>();
       historyListView.setOnMouseClicked(e -> {
          getHistory().restoreToIndex(historyListView.getSelectionModel().getSelectedIndex());
-         System.out.println("Click");
       });
-
-      this.history = new History(this);
-      historyNotifier.addObserver(history);
+      historyListView.setItems(history.getImagesHistory());
    }
    
    

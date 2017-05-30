@@ -8,11 +8,8 @@ Notre application se base sur la structure officielle d'une application JavaFX, 
 \par
 Les trois point-clés sont la notion de \gls{stage}, de \gls{scene} et de \gls{scene_graphe}. Le Stage est le container haut-niveau d'une application JavaFX \cite{javadoc_stage}. Il doit contenir tout le contenu d'une fenêtre. La Scene est le container pour un Scene Graph. Chaque scène doit avoir un et un seul nœud racine du Scene Graph \cite{javadoc_scene}.
 \par
-<<<<<<< HEAD
 Le Scene Graph est une structure en arbre qui garde une représentation interne des éléments graphiques de l'application. En tout temps, il sait quels éléments afficher, quels zones de l'écrans doivent être rafraîchies, et comment le faire de la manière la plus efficace \cite{javadoc_scene_graphe}. 	
-=======
-Le Scene Graph est une structure en arbre qui garde une représentation interne des éléments graphiques de l'application. En tout temps, il sait quels éléments afficher, quels zones de l'écrans doivent être rafraîchies, et comment le faire de la manière la plus efficace.
->>>>>>> c8ce2aecdad1067740a9e64c7dedafd99fc3099e
+
 \begin{figure}[H]
 	\caption{Représentation du Scene Graph de JavaFX. Source: documentation Oracle \cite{javadoc_scene_graphe}}
 	\centering
@@ -51,11 +48,8 @@ Bien que la sérialisation soit possible, ceci engendre des contraintes et des p
 La sauvegarde d'un document utilise la sérialisation des objets. Comme mentionné précédemment, la sérialisation de certaines classes peut être volumineux. Ainsi, les données sont compressées dans le format GZIP.
 
 \subsection{Workspace et liste des calques}
-<<<<<<< HEAD
 Le \gls{workspace} correspond à l'espace de travail d'un Document GEMMS. Workspace est une classe personnalisée héritant de la classe StackPane de JavaFX. Il s'insère donc dans le graphe de scène de JavaFX. 
-=======
-Le Workspace correspond à l'espace de travail d'un Document GEMMS. Le Workspace est une classe personnalisée héritant de la classe StackPane de JavaFX. Il s'insère donc dans le graphe de scène de JavaFX.
->>>>>>> c8ce2aecdad1067740a9e64c7dedafd99fc3099e
+
 \subsubsection{Structure d'un Workspace}
 Chaque document ouvert possède un objet Workspace permettant à l'utilisateur de manipuler le contenu du fichier. Il est constitué de couches comme représenté sur la figure \ref{fig:workspace_representation}.
 
@@ -200,9 +194,9 @@ Les réglages de couleur et de police de cet outils utilisent la structure expli
 \subsubsection{Redimensionnement}
 \subsubsection{Sélection}
 \label{sec:selection}
-La sélection permet à l'utilisateur de sélectionner une zone du workspace à l'aide d'un rectangle. Ce dernier peut être déplacer ou recréer si la zone de sélection ne convient pas. 
+La sélection permet à l'utilisateur de sélectionner une zone du workspace à l'aide d'un rectangle. Ce dernier peut être déplacer ou recréer si la zone de sélection ne convient pas. Une fois la zone choisie, si le calque courant est un GEMMSCanvas, il possible de supprimer à l'aide de la touche DEL ou de copier à l'aide de la touche CTRL+C.
 
-Pour l'instant, seul le copier coller utilise l'outil de sélection afin de choisir la zone à copier.
+Pour la suppression de la zone, la classe GraphicsContext qui s'occupe de la partie graphique d'un Canvas offre la méthode clearRect qui permet d'effacer une partie rectangulaire du Canvas. Pour cela, il faut
 
 \subsubsection{Rognage}
 \subsection{Effets}

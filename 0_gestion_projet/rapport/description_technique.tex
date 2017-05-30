@@ -231,6 +231,12 @@ Pour la suppression de la zone, la classe GraphicsContext qui s'occupe de la par
 Et enfin pour le copier-coller, voir la section \ref{sec:copiercoller} pour plus d'informations sur son fonctionnement.
 
 \subsubsection{Rognage}
+L'outil rognage permet à l'utilisateur de rogner le Workspace à l'aide d'un rectangle. Ce dernier peut être déplacé ou recrée si la zone ne convient pas. Puis lorsque l'utilisateur est satisfait de la zone de rognage, il suffit de cliquer une fois sur le rectangle pour valider.
+
+Le rognage redimensionne simplement le zone d'affichage du Workspace et décale tous les calques présents afin d'afficher la zone choisie par l'utilisateur. Contrairement aux éditeurs comme Gimp ou Paint, le rognage ne coupe pas les calques présents.
+
+Enfin, l'outil rognage et le menu Resize font exactement les mêmes actions.
+
 \subsection{Effets}
 La section \og Effect \fg{} permet d'appliquer des effets colorimétriques, régler la transparence et ajouter un flou à un ou plusieurs calques. Chaque calque qui doit être modifié passe par une vérification: s'il n'a aucun effet appliqué, on lui applique trois effets: un ColorAdjust, un SepiaTone et un GaussianBlur permettant d'effectuer respectivement des ajustements de la couleur, un effet sépia, et un flou. Ces effets sont initialement tous réglés pour n'effectuer aucun changement visuel. Ceci permet, lors d'une future modification des effets, de simplement devoir faire varier les paramètres de ces effets.
 

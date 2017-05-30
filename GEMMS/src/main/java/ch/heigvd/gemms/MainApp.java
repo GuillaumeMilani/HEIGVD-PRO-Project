@@ -1,5 +1,6 @@
 package ch.heigvd.gemms;
 
+import ch.heigvd.controller.MainController;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
@@ -14,9 +15,9 @@ public class MainApp extends Application {
     @Override 
     public void start(Stage stage) throws Exception {
         
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GEMMSStage.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
         Parent root = (Parent)loader.load();
-        GEMMSStageFXMLController controller = (GEMMSStageFXMLController)loader.getController();
+        MainController controller = (MainController)loader.getController();
         
         
         Scene scene = new Scene(root);

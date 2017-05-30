@@ -14,7 +14,6 @@
 % Font
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{hyperref}
 
 % Marge du document
 \usepackage[top=3.5cm, 
@@ -37,6 +36,7 @@
 % Informations sur un document compilé en PDF et les liens externes / internes
 \usepackage{hyperref}
 
+
 % Mise en page des tableaux
 \usepackage{array}
 \usepackage{tabularx}
@@ -48,6 +48,15 @@
 \usepackage{abstract}
 
 \usepackage{titlesec}
+
+% Lignes suivantes pour modifier le bug titlesec
+% https://bugs.launchpad.net/ubuntu/+source/texlive-extra/+bug/1574052
+\usepackage{etoolbox}
+
+\makeatletter
+\patchcmd{\ttlh@hang}{\parindent\z@}{\parindent\z@\leavevmode}{}{}
+\patchcmd{\ttlh@hang}{\noindent}{}{}{}
+\makeatother
 
 % Pour les entêtes
 \usepackage{fancyhdr}
@@ -66,6 +75,10 @@
 %\usepackage{layout}
 %\layout
 
+% Ajouter un glossaire
+\usepackage[toc]{glossaries}
+\makeglossary
+\loadglsentries{glossaire}
 
 
 % -----------------------------------------------------------------------
@@ -200,6 +213,8 @@
 
 \input{./conclusion.tex}
 
+\glsaddall
+\printglossaries
 
 \newpage
 

@@ -3,9 +3,24 @@
 Comme cité précédemment, notre application a été codé à l'aide de la librairie JavaFX. Ainsi, toute notre implémentation technique est basée sur cette dernière. 
 
 \subsection{Structure}
-JavaFX utilise des fichiers FXML pour séparer la logique de la vue TODO TODO TODO
-ImageView, Canvas et Text
-Controller
+\subsubsection{Structure de JavaFX}
+Notre application se base sur la structure officielle d'une application JavaFX, qui se prête parfaitement à notre type d'application. Sa compréhension est essentielle pour discuter de l'architecture de notre logiciel. 
+\par
+Les trois point-clés sont la notion de Stage, de Scene et de Scene Graph (graphe de scène). Le Stage est le container haut-niveau d'une application JavaFX \cite{javadoc_stage}. Il doit contenir tout le contenu d'une fenêtre. La Scene est le container pour un Scene Graph. Chaque scène doit avoir un et un seul nœud racine du Scene Graph \cite{javadoc_scene}.
+\par
+Le Scene Graph est une structure en arbre qui garde une représentation interne des éléments graphiques de l'application. En tout temps, il sait quels éléments afficher, quels zones de l'écrans doivent être rafraîchies, et comment le faire de la manière la plus efficace. 	
+\begin{figure}[H]
+	\caption{Représentation du Scene Graph de JavaFX}
+	\centering
+	\includegraphics[scale=0.6]{scene_graphe_1.png}
+	\label{fig:scene_graphe_1}
+\end{figure}
+Comme ont peut le voir sur la figure \ref{fig:scene_graphe_1}, chaque nœud de l'arbre du Scene Graph appartient à la hiérarchie de la classe Node. De plus chacun de ces nœuds est soit une feuille (ne pouvant pas contenir d'enfants), soit une branche (pouvant alors contenir des enfants).
+\par
+Cette structure particulière permet donc de créer facilement des interfaces graphiques, car il suffit que chaque élément visuel de notre application soit un objet (spécialisé ou non) d'une classe héritant de Node pour l'affichage de cet élément soit géré automatiquement par JavaFX. 
+\par 
+Pour beaucoup de nos composants, nous avons donc spécialisé une des classes offertes par JavaFx proposant la fonctionnalité recherchée, en y ajoutant les comportements dont nous avions besoin. Il sont ensuite ajouté au Scene Graph de la scène principale, et nous pouvons ainsi construire notre application.
+
 
 \subsection{Serialisation}
 En Java, la sérialisation s'effectue à l'aide de l'interface \og Serializable \fg{}. Par conséquent, chaque classes de Java implémentant cette dernière telle que \og String \fg{}, peut être sérialisé et désérialisé à volonté. Cependant, la majorité des classes JavaFX n'implémente pas cette interface. En effet, cette librairie utilise grandement des mécanismes et des liaisons dynamiques tel que les listeners qui sont pour l'instant des sous-systèmes non-sérialisable. C'est pourquoi, JavaFX contient peu d'objet sérialisable.
@@ -31,7 +46,22 @@ Bien que la sérialisation soit possible, ceci engendre des contraintes et des p
 La sauvegarde d'un document utilise la sérialisation des objets. Comme mentionné précédemment, la sérialisation de certaines classes peut être volumineux. Ainsi, les données sont compressées dans le format GZIP.
 
 \subsection{Workspace et liste des calques}
-TODO TODO TODO
+Le Workspace correspond à l'espace de travail d'un Document GEMMS. Le Workspace est une classe personnalisée héritant de la classe StackPane de JavaFX. Il s'insère donc dans le graphe de scène de JavaFX. 
+\subsubsection{Structure d'un Workspace}
+Chaque document ouvert possède un objet Workspace permettant à l'utilisateur de manipuler le contenu du fichier. Il est constitué de couches comme représenté sur la figure \ref{fig:workspace_representation}.
+
+
+\begin{figure}[H]
+	\caption{Représentation des couches du Workspace}
+	\centering
+	\includegraphics[scale=0.5]{workspace_schema.png}
+	\label{fig:workspace_representation}
+\end{figure}
+
+L'espace de travail (Workspace) est un container contenant deux enfants (au sens de l'arbre de JavaFX): une zone de dessin (une branche du graphe de scène) ou seront ajoutés tous les calques créés et modifiés par l'utilisateur, et une interface des outils permettant de dessiner les retours visuels des outils (comme le curseur du pinceau par exemple). Tous deux sont de type AnchorPane, car cela permet de positionner leurs enfants selon des coordonnées (x, y).
+\par
+La zone d'affichage correspond à un masque appliqué à l'espace 
+
 
 \subsection{Copier-coller}
 TODO TODO TODO
@@ -40,27 +70,95 @@ TODO TODO TODO
 Pour garder un historique de chaque action effectuée, on utilise la sérialisation des composants présentée précédemment. A la fin de chaque action modifiant l'espace de travail, une fonction va être appelée permettant de sauvegarder intégralement l'espace de travail courant et le placer sur une pile. A chaque détection de la commande Ctrl + Z, la sauvegarde sera chargée et la modification sera donc effacée. De même, à la détection de la commande Ctrl + Y, on va charger un espace de travail plus récent (s'il y en à un, c'est-à-dire si le Ctrl + Y était précédé d'un Ctrl + Z).
 
 \subsection{Positionnement}
-TODO TODO TODO
+TODO TODO TODO 
 
 \subsection{Outils}
+\par
+JavaFX offre (entre autres) les événements MousePressed, MouseDragged et MouseReleased. Ils correspondent respectivement à l'action de presser la souris, de la déplacer en gardant le clic gauche enfoncé ou de relâcher le clic gauche de la souris. 
+\subsubsection{Hiérarchie des outils}
+\par
+La plupart des outils de l'application  fonctionnent grâce à ces trois événements. On pensera notamment au pinceau qui doit dessiner un trait en suivant la souris lors d'un MouseDragged. 
+\par
+Comme on peut le voir sur la figure \ref{fig:tool_hier}, les outils implémentent une interface Tool, possédant des méthodes correspondant à ces événements. Au long de l'exécution du programme, le Workspace garde une référence vers un outil considéré actif (qui peut aussi être référence nulle), et lorsqu'il détecte un des événements cités plus haut, il se charge d'appeler la ou les méthodes correspondantes de cet outil.
+\par
+Lorsque l'utilisateur clique sur un bouton pour activer un outil, le programme crée une nouvelle instance de ce type d'outil, et le Workspace utilise cet outil pour traiter les événement MousePressed, MouseDragged ou MouseReleased.
+\par
+D'autres outils plus simples, comme la symétrie horizontale ou verticale ou les effets de couleurs sont implémentés en ajoutant un action à des composants de bases de JavaFX comme des Button ou des Slider.
+	
+\begin{figure}[H]
+	\caption{Diagramme simplifié de la hiérarchie des outils}
+	\centering
+	\includegraphics[scale=0.6]{tool_hierarchy.png}
+	\label{fig:tool_hier}
+\end{figure}
+
+\subsubsection{Réglage des outils} \label{reglage-outils}
+Certains de ces outils nécessitent d'être paramétrés en temps réel en fonction des calques sélectionnés par l'utilisateur. Par exemple, la taille de la gomme est stockée dans l'objet représentant l'outil, et est utilisée pour déterminer la taille du rectangle à effacer. L'utilisateur peut la régler au moyen d'un Slider (il s'agit d'un composant JavaFX). Les même besoin concernent la gestion de la couleur du pinceau, de la taille et de la police de l'outil de modification de texte. La figure \ref{fig:text_settings} illustre l'apparence des réglages de l'outil de modification de texte.
+
+\begin{figure}[H]
+	\caption{Composant de réglages de l'outil de modification texte}
+	\centering
+	\includegraphics[scale=0.6]{toolSettings.png}
+	\label{fig:text_settings}
+\end{figure}
+
+\par
+Ces réglages doivent pouvoir s'adapter à un outil existant, comme par exemple récupérer la taille actuelle du pinceau et la garder en mémoire.
+
+Pour ce faire, les réglages sont gérés au moyen d'une hiérarchie de classes (se référer à la figure \ref{fig:tool_settings}), qui sont en fait des spécialisations de composants JavaFX permettant à l'utilisateur de paramétrer les outils, et d'une série d'interfaces représentant des outils pouvant être paramétrés sur divers aspects (la taille, la couleur, la police et ainsi de suite).
+\par
+Ainsi un objet ToolFontSettings permet de paramétrer la Font (les paramètres de police d'écriture) d'un objet implémentant l'interface FontConfigruableTool. Dans le cas de l'outil texte, qui implémente cette interface, les réglages doivent s'adapter aux paramètres d'un calque texte et ainsi se mettre à jour en temps réel. 
+\par 
+Lorsque l'utilisateur modifie la valeur du Slider contenu dans l'objet ToolFontSettings, celui-ci met à jour sa cible SizeConfigurableTool en temps réel (ici, l'outil de modification de texte).
+
+\begin{figure}[h]
+	\caption{Diagramme simplifié des réglages d'outils}
+	\centering
+	\includegraphics[scale=0.6]{tool_settings.png}
+	\label{fig:tool_settings}
+\end{figure}
+
 \subsubsection{Pinceau et gomme}
 Le pinceau et la gomme ont un comportement et une implémentation quasiment identiques. Dans le programme GEMMS, ce sont les classes Brush et Eraser qui se chargent d'implémenter ces fonctionnalités. Toutes deux héritent d'une classe commune: LineTool. 
-\\
-Pour ces deux outils, la problématique était la suivante: JavaFX offre (entre autres) les événements MousePressed, MouseDragged et MouseReleased. Ils correspondent respectivement à l'action de presser la souris, de la déplacer en gardant le clic gauche enfoncé ou de relâcher le clic gauche de la souris. 
-\\ 
+\par
+Pour ces deux outils, la problématique était la suivante: 
+\par 
 L'événement MouseDragged est déclenché à intervalles réguliers, tant que l'utilisateur effectue cette action. Pour chaque répétition, il est facile de garder trace de la position de la souris au dernier événement et à l'événement actuel. Connaissant ces deux points, il est possible de dessiner une droite.
-\\
-Pour ce faire, nous avons utilisé l'algorithme de tracé de segment de Bresenham. Mis au point en 1962, cet algorithme permet de déterminer quels pixels colorer pour relier harmonieusement deux points par une ligne droite.
-\\ 
-Il existe de nombreuses implémentations de cet algorithme, et nous avons choisi l'implémentation compacte, que l'on peut trouvé sur la page allemande de l'article Wikipédia dédié à ce sujet \cite{Bresenham}.
+\par
+Pour ce faire, nous avons utilisé l'algorithme de tracé de segment de Bresenham. Mis au point en 1962, cet algorithme permet de déterminer quels pixels sont à colorer pour relier harmonieusement deux points par une ligne droite.
+\par
+Il existe de nombreuses implémentations de cet algorithme, et nous avons choisi l'implémentation compacte, que l'on peut trouver sur la page allemande de l'article Wikipédia dédié à ce sujet \cite{Bresenham}.
+\par
+La classe LineTool se charge donc d'implémenter cet algorithme et pour chaque pixel à colorer, elle appelle une méthode abstraite drawPixel que ses sous classes se chargent de définir. Ainsi, Brush dessiner un disque correspondant à la taille du pinceau, et Eraser efface un carré de pixel, correspondant à la taille de la gomme.
 \subsubsection{Pipette}
+Le rôle de l'outil pipette et de permettre à l'utilisateur de choisir une couleur en la prélevant sur un élément existant du document. Il s'agirait typiquement de récupérer la couleur d'un calque GEMMSText, GEMMSCanvas ou GEMMSImage.
+\par 
+Dans le cas d'un texte, la pipette retourne simplement la couleur de celui-ci. Dans le cas d'un objet de type GEMMSCanvas ou d'une GEMMSImage, l'outil lit le pixel exact cliqué par l'utilisateur, si celui-ci se trouve à l'intérieur des bornes du calque sélectionné.
 \subsubsection{Modification de texte}
+L'outil de modification de texte permet à l'utilisateur de modifier les propriétés d'un calque texte existant. Lorsque il clique dessus, si le clic est effectué dans les bornes visuelles du texte, l'outil ouvre une fenêtre de dialogue invitant à changer le contenu du texte. 
+\par
+Les réglages de couleur et de police de cet outils utilisent la structure expliquée à la section \ref{reglage-outils} en utilisant des objets de type ToolColorSettings et ToolFontSettings.
 \subsubsection{Symétries}
 \subsubsection{Déplacement}
 \subsubsection{Rotation}
 \subsubsection{Redimensionnement}
 \subsubsection{Sélection}
 \subsubsection{Rognage}
+
+\subsection{Effets}
+La section \og Effet \fg{} permet d'appliquer des effets colorimétriques, régler la transparence et ajouter un flou à un ou plusieurs calques. Chaque calque qui doit être modifié passe par une vérification: s'il n'a aucun effet appliqué, on lui applique trois effets: un ColorAdjust, un SepiaTone et un GaussianBlur permettant d'effectuer respectivement des ajustements de la couleur, un effet sépia, et un flou. Ces effets sont initialiement tous réglés pour n'effectuer aucun changement visuel. Ceci permet, lors d'un futur changement des effets, de simplement devoir faire varier les paramètres de ces effets. 
+
+\subsubsection{Noir et blanc}
+Le bouton \og B\&W \fg{} à pour effet de régler la saturation de l'image à sa valeur minimale, donnant pour effet une image en nuances de gris.
+
+\subsubsection{Tint}
+Applique une teinture de la couleur sélectionnée à l'image. Ceci est fait en calculant une valeur de la teinte et en l'appliquant à l'effet ColorAdjust.
+
+\subsubsection{Barres glissantes}
+Les barres glissantes (\og Sliders \fg{} JavaFX) permettent d'ajuster tous les autres effets implémentés. La transparence règle directement un attribut \og Opacity \fg{} d'un noeud. La saturation, le contraste et la luminosité peuvent être ajustés en modifiant l'effet ColorAdjust. L'effet sépia et le flou ajustent respectivement l'effet SepiaTone et GaussianBlur.
+
+\subsection{Remise à zéro}
+Le bouton \og Reset \fg{} permet de remettre à zéro tous les effets sur tous les calques sélectionnés, les restaurant à leur état visuel initial.
 
 
 

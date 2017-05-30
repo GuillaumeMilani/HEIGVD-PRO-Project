@@ -205,6 +205,7 @@ public class MainController implements Initializable {
                 layerController.getChildren().add(w.getWorkspaceController());
                 historyViewer.getChildren().clear();
                 historyViewer.getChildren().add(w.getHistoryList());
+                w.setCurrentTool(null);
             }
             // Suppress tab
             else {
@@ -217,14 +218,13 @@ public class MainController implements Initializable {
                 documents.remove(d);
                 
                 
-                toolboxController.clearSelectedButtons();
-                
                 // TODO : save when close ?
                 
                 // Clear
                 layerController.getChildren().clear();
                 historyViewer.getChildren().clear();
               }
+              toolboxController.clearSelectedButtons();
         });
         
         

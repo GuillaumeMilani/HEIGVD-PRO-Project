@@ -1,25 +1,38 @@
+/**
+ * Fichier: FontConfigurableTool.java
+ * Date: 31.05.2017
+ *
+ * @author Guillaume Milani
+ * @author Edward Ransome
+ * @author Mathieu Monteverde
+ * @author Michael Spierer
+ * @author Sathiya Kirushnapillai
+ */
 package ch.heigvd.tool.settings;
 
 import javafx.scene.text.Font;
 
 /**
  * <h1>FontConfigurableTool</h1>
- * 
- * The FontConfigurableTool represents tools that can change Font settings.
- * It uses JavaFx javafx.scene.text.font Font instances to represent font-family
- * and font-sizes for example.
+ *
+ * The FontConfigurableTool represents tools that can change Font settings. It uses
+ * JavaFx javafx.scene.text.font Font instances to represent font-family and
+ * font-sizes for example.
  */
 public interface FontConfigurableTool {
-   /**
-    * Set the new Font of the tool.
-    * @param font the new Font
-    */
-   public void setFont(Font font);
-   
-   /**
-    * Get the current font of the tool. This method should be allowed to return
-    * null if the tool doesn't have a current Font available.
-    * @return the current Font
-    */
-   public Font getFont();  
+
+    /**
+     * Set the new Font of the tool.
+     *
+     * @param font the new Font
+     */
+    public void setFont(Font font);
+
+    /**
+     * Get the current font of the tool. This method should be allowed to return null
+     * if the tool doesn't have a current Font available.
+     *
+     * @return the current Font
+     */
+    public Font getFont();
 }

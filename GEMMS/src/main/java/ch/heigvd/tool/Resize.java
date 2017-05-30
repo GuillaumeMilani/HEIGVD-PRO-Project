@@ -1,3 +1,13 @@
+/**
+ * Fichier: Resize.java
+ * Date: 31.05.2017
+ *
+ * @author Guillaume Milani
+ * @author Edward Ransome
+ * @author Mathieu Monteverde
+ * @author Michael Spierer
+ * @author Sathiya Kirushnapillai
+ */
 package ch.heigvd.tool;
 
 import ch.heigvd.workspace.Workspace;
@@ -21,9 +31,9 @@ public class Resize extends AbstractTool {
      *
      * @param w workspace to crop
      */
-    public Resize(Workspace w){
+    public Resize(Workspace w) {
         super(w);
-         workspace.getLayerTool().setCursor(Cursor.DEFAULT);
+        workspace.getLayerTool().setCursor(Cursor.DEFAULT);
     }
 
     @Override
@@ -36,13 +46,12 @@ public class Resize extends AbstractTool {
     @Override
     public void mouseDragged(double x, double y) {
 
-
         double newX = x - mouseX;
 
         double newScale;
         for (Node node : layers) {
-            newScale = node.getScaleX() + (newX * FACTOR)*DIRECTION;
-            if(newScale>=0) {
+            newScale = node.getScaleX() + (newX * FACTOR) * DIRECTION;
+            if (newScale >= 0) {
                 node.setScaleX(newScale);
                 node.setScaleY(newScale);
                 node.setScaleZ(newScale);
@@ -55,10 +64,10 @@ public class Resize extends AbstractTool {
     @Override
     public void mouseReleased(double x, double y) {
         notifier.notifyHistory();
-         workspace.getLayerTool().setCursor(Cursor.DEFAULT);
+        workspace.getLayerTool().setCursor(Cursor.DEFAULT);
     }
 
-   @Override
-   public void mouseMoved(double x, double y) {
-   }
+    @Override
+    public void mouseMoved(double x, double y) {
+    }
 }

@@ -1,3 +1,13 @@
+/**
+ * Fichier: GEMMSImage.java
+ * Date: 31.05.2017
+ *
+ * @author Guillaume Milani
+ * @author Edward Ransome
+ * @author Mathieu Monteverde
+ * @author Michael Spierer
+ * @author Sathiya Kirushnapillai
+ */
 package ch.heigvd.layer;
 
 import ch.heigvd.gemms.CSSIcons;
@@ -20,60 +30,61 @@ import javafx.scene.transform.Transform;
 
 /**
  * <h1>GEMMSImage</h1>
- * 
+ *
  * This class was created to implement Serializable
  */
-public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSNode, LayerListable {
-   
-   private static int layerCount = 0;
-   private String name = "Image " + ++layerCount;
-    
+public class GEMMSImage extends javafx.scene.image.ImageView implements IGEMMSNode,
+        LayerListable {
+
+    private static int layerCount = 0;
+    private String name = "Image " + ++layerCount;
+
     /**
      * Constructor
-     * 
+     *
      * Allocates a new ImageView object.
      */
     public GEMMSImage() {
         super();
     }
-    
+
     /**
      * Constructor
-     * 
+     *
      * Allocates a new ImageView object using the given image.
-     * 
+     *
      * @param image load this image
      */
     public GEMMSImage(Image image) {
         super(image);
     }
-    
+
     /**
      * Constructor
-     * 
+     *
      * Allocates a new ImageView object with image loaded from the specified URL.
-     * 
+     *
      * @param url load an image with url
      */
     public GEMMSImage(String url) {
         super(url);
     }
-    
+
     /**
      * Write all informations for serialization
-     * 
+     *
      * @param s output stream
-     * @throws IOException 
+     * @throws IOException
      */
     private void writeObject(ObjectOutputStream s) throws IOException {
-       s.defaultWriteObject();
-        
+        s.defaultWriteObject();
+
         // Get image
         Image image = getImage();
-        
+
         // Write the size
-        int height = (int)image.getHeight();
-        int width = (int)image.getWidth();
+        int height = (int) image.getHeight();
+        int width = (int) image.getWidth();
         s.writeInt(width);
         s.writeInt(height);
 
@@ -91,33 +102,33 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
                 s.writeDouble(c.getOpacity());
             }
         }
-        
+
         // Write viewport
         Rectangle2D r = getViewport();
         s.writeDouble(r.getMinX());
         s.writeDouble(r.getMinY());
         s.writeDouble(r.getWidth());
         s.writeDouble(r.getHeight());
-        
+
         // Write translate info
         s.writeDouble(getTranslateX());
         s.writeDouble(getTranslateY());
         s.writeDouble(getTranslateZ());
-        
+
         // Write scale info
         s.writeDouble(getScaleX());
         s.writeDouble(getScaleY());
         s.writeDouble(getScaleZ());
-        
+
         // Wrtie rotate info
         s.writeDouble(getRotate());
         s.writeDouble(getRotationAxis().getX());
         s.writeDouble(getRotationAxis().getY());
         s.writeDouble(getRotationAxis().getZ());
-        
+
         //Write effect info
         ColorAdjust c;
-        if(getEffect() instanceof ColorAdjust){
+        if (getEffect() instanceof ColorAdjust) {
             s.writeBoolean(true);
             c = ((ColorAdjust) getEffect());
             s.writeDouble(c.getContrast());
@@ -125,8 +136,9 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
             s.writeDouble(c.getSaturation());
             s.writeDouble(c.getBrightness());
             s.writeDouble(((SepiaTone) c.getInput()).getLevel());
-            s.writeDouble(((GaussianBlur) ((SepiaTone) c.getInput()).getInput()).getRadius());
-        }else{
+            s.writeDouble(((GaussianBlur) ((SepiaTone) c.getInput()).getInput())
+                    .getRadius());
+        } else {
             s.writeBoolean(false);
         }
 
@@ -147,20 +159,21 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
             }
         }
     }
-    
+
     /**
      * Read all informations for serialization
-     * 
+     *
      * @param s input stream
-     * @throws IOException 
+     * @throws IOException
      */
-    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
-       s.defaultReadObject();
-       
+    private void readObject(ObjectInputStream s) throws IOException,
+            ClassNotFoundException {
+        s.defaultReadObject();
+
         // Get image size
         int width = s.readInt();
         int height = s.readInt();
-        
+
         // Create an empty image
         WritableImage w = new WritableImage(width, height);
 
@@ -170,31 +183,33 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
         // Set the color every pixel of this image
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
-                Color c = new Color(s.readDouble(), s.readDouble(), s.readDouble(), s.readDouble());
+                Color c = new Color(s.readDouble(), s.readDouble(), s.readDouble(),
+                        s.readDouble());
                 pixelWriter.setColor(x, y, c);
             }
         }
-        
+
         setImage(w);
-        
-        setViewport(new Rectangle2D(s.readDouble(), s.readDouble(), s.readDouble(), s.readDouble()));
-        
+
+        setViewport(new Rectangle2D(s.readDouble(), s.readDouble(), s.readDouble(),
+                s.readDouble()));
+
         // Set translate info
         setTranslateX(s.readDouble());
         setTranslateY(s.readDouble());
         setTranslateZ(s.readDouble());
-        
+
         // Set scale info
         setScaleX(s.readDouble());
         setScaleY(s.readDouble());
         setScaleZ(s.readDouble());
-        
+
         // Set rotate info
         setRotate(s.readDouble());
         setRotationAxis(new Point3D(s.readDouble(), s.readDouble(), s.readDouble()));
-        
+
         //Boolean to notify if effects are on their way, if so read them and apply
-        if(s.readBoolean()){
+        if (s.readBoolean()) {
             ColorAdjust c = new ColorAdjust();
             c.setContrast(s.readDouble());
             c.setHue(s.readDouble());
@@ -220,10 +235,11 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
                     double pAxisY = s.readDouble();
                     double pAxisZ = s.readDouble();
                     Point3D axis = new Point3D(pAxisX, pAxisY, pAxisZ);
-                    getTransforms().add(new Rotate(angle, pivotX, pivotY, pivotZ, axis));
-                break;
+                    getTransforms().add(new Rotate(angle, pivotX,
+                            pivotY, pivotZ, axis));
+                    break;
             }
-        } 
+        }
     }
 
     @Override
@@ -241,8 +257,8 @@ public class GEMMSImage  extends javafx.scene.image.ImageView implements IGEMMSN
         return null;
     }
 
-   @Override
-   public void setLayerName(String name) {
-      this.name = name;
-   }
+    @Override
+    public void setLayerName(String name) {
+        this.name = name;
+    }
 }

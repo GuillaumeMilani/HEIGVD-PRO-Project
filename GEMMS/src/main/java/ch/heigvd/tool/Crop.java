@@ -1,3 +1,13 @@
+/**
+ * Fichier: Crop.java
+ * Date: 31.05.2017
+ *
+ * @author Guillaume Milani
+ * @author Edward Ransome
+ * @author Mathieu Monteverde
+ * @author Michael Spierer
+ * @author Sathiya Kirushnapillai
+ */
 package ch.heigvd.tool;
 
 import ch.heigvd.workspace.Workspace;
@@ -8,27 +18,26 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 /**
- * The Crop tool class. Allow users to crop the workspace with a box.
- * It resize the workspace but do not resize the layers.
+ * The Crop tool class. Allow users to crop the workspace with a box. It resize the
+ * workspace but do not resize the layers.
  */
 public class Crop extends AbstractTool {
-    
+
     // Crop box
     private final Rectangle rectangle;
-    
+
     // Last mouse position
     private double lastX;
     private double lastY;
-    
+
     // Flag
     private boolean isMoving;
     private boolean isDragging;
     private boolean isMoved;
-    
-    
+
     /**
      * Constructor
-     * 
+     *
      * @param w workspace to crop
      */
     public Crop(Workspace w) {
@@ -47,12 +56,12 @@ public class Crop extends AbstractTool {
 
     @Override
     public void mousePressed(double x, double y) {
-        
+
         Point3D p = PositionMapper.convert(rectangle, new Point3D(x, y, 0));
-        
+
         // Create a crop box
         if (!rectangle.contains(new Point2D(p.getX(), p.getY()))) {
-            
+
             workspace.getLayerTool().getChildren().remove(rectangle);
             workspace.getLayerTool().getChildren().add(rectangle);
             rectangle.setWidth(0);
@@ -60,28 +69,27 @@ public class Crop extends AbstractTool {
             rectangle.setX(x);
             rectangle.setY(y);
             rectangle.setVisible(false);
-            
+
             workspace.getLayerTool().setCursor(Cursor.NE_RESIZE);
 
             isDragging = true;
-        }
-        // When pressed on crop box, set the flag isMoving
+        } // When pressed on crop box, set the flag isMoving
         else {
             workspace.getLayerTool().setCursor(Cursor.MOVE);
-            
+
             isMoving = true;
         }
 
         // Save last mouse position
-        lastX = x; 
+        lastX = x;
         lastY = y;
     }
 
     @Override
     public void mouseDragged(double x, double y) {
-        
+
         // Resize the crop box
-        if(isDragging) {
+        if (isDragging) {
             double width = x - rectangle.getX();
             double height = y - rectangle.getY();
 
@@ -99,56 +107,55 @@ public class Crop extends AbstractTool {
 
             rectangle.setWidth(Math.abs(width));
             rectangle.setHeight(Math.abs(height));
-            
+
             isMoved = true;
             rectangle.setVisible(true);
-        }
-        // Moving the crop box
-        else if(isMoving) {
+        } // Moving the crop box
+        else if (isMoving) {
             double addX = x - lastX;
             double addY = y - lastY;
 
             rectangle.setTranslateX(rectangle.getTranslateX() + addX);
             rectangle.setTranslateY(rectangle.getTranslateY() + addY);
-            
-            lastX = x; 
+
+            lastX = x;
             lastY = y;
-            
+
             isMoved = true;
         }
     }
 
     @Override
     public void mouseReleased(double x, double y) {
-        
+
         Point3D p = PositionMapper.convert(rectangle, new Point3D(x, y, 0));
 
         // Crop
-        if(!isMoved && 
-            rectangle.contains(new Point2D(p.getX(), p.getY())) && 
-            rectangle.getWidth() > 0 && 
-            rectangle.getHeight() > 0) {
+        if (!isMoved
+                && rectangle.contains(new Point2D(p.getX(), p.getY()))
+                && rectangle.getWidth() > 0
+                && rectangle.getHeight() > 0) {
 
             workspace.resizeCanvas(
-                    (int)rectangle.getWidth(), 
-                    (int)rectangle.getHeight(), 
-                    -(int)rectangle.getBoundsInParent().getMinX(), 
-                    -(int)rectangle.getBoundsInParent().getMinY());
-            
+                    (int) rectangle.getWidth(),
+                    (int) rectangle.getHeight(),
+                    -(int) rectangle.getBoundsInParent().getMinX(),
+                    -(int) rectangle.getBoundsInParent().getMinY());
+
             rectangle.setWidth(0);
             rectangle.setHeight(0);
             rectangle.setX(0);
             rectangle.setY(0);
         }
-        
+
         workspace.getLayerTool().setCursor(Cursor.CROSSHAIR);
-        
+
         isDragging = false;
         isMoving = false;
         isMoved = false;
     }
 
-   @Override
-   public void mouseMoved(double x, double y) {
-   }
+    @Override
+    public void mouseMoved(double x, double y) {
+    }
 }

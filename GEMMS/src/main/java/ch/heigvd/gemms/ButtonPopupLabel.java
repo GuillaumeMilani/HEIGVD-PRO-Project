@@ -1,3 +1,13 @@
+/**
+ * Fichier: ButtonPopupLabel.java
+ * Date: 31.05.2017
+ *
+ * @author Guillaume Milani
+ * @author Edward Ransome
+ * @author Mathieu Monteverde
+ * @author Michael Spierer
+ * @author Sathiya Kirushnapillai
+ */
 package ch.heigvd.gemms;
 
 import javafx.geometry.Insets;
@@ -11,26 +21,26 @@ import javafx.scene.paint.Color;
 
 /**
  * <h1>ButtonPopuLabel</h1>
- * 
- * Create a button popup label styling to describe a button function. 
- * This class styles a HBox. Use it to have similar look between all buttons 
- * labels.
+ *
+ * Create a button popup label styling to describe a button function. This class
+ * styles a HBox. Use it to have similar look between all buttons labels.
  */
 public class ButtonPopupLabel extends HBox {
 
-   public ButtonPopupLabel(String text) {
-      
-      // Set HBox container
-      setAlignment(Pos.CENTER);
-      setBackground(new Background(new BackgroundFill(Color.web("#cdcdcd"), CornerRadii.EMPTY, Insets.EMPTY)));
-      
-      // Set padding and alignement
-      setPadding(new Insets(5, 5, 5, 5));
-      setAlignment(Pos.CENTER);
-      
-      setStyle("-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.25) , 1 ,0 , 1 , 1 );");
-      
-      // Add elements
-      getChildren().add(new Label(text));
-   }
+    public ButtonPopupLabel(String text) {
+
+        // Set HBox container
+        setAlignment(Pos.CENTER);
+        setBackground(new Background(new BackgroundFill(Color.web("#cdcdcd"),
+                CornerRadii.EMPTY, Insets.EMPTY)));
+
+        // Set padding and alignement
+        setPadding(new Insets(5, 5, 5, 5));
+        setAlignment(Pos.CENTER);
+
+        setStyle("-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.25) , 1 ,0 , 1 , 1 );");
+
+        // Add elements
+        getChildren().add(new Label(text));
+    }
 }

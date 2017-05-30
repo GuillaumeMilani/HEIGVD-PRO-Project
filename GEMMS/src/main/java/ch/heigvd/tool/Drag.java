@@ -1,3 +1,13 @@
+/**
+ * Fichier: Drag.java
+ * Date: 31.05.2017
+ *
+ * @author Guillaume Milani
+ * @author Edward Ransome
+ * @author Mathieu Monteverde
+ * @author Michael Spierer
+ * @author Sathiya Kirushnapillai
+ */
 package ch.heigvd.tool;
 
 import ch.heigvd.workspace.Workspace;
@@ -30,8 +40,8 @@ public class Drag extends AbstractTool {
         super(w);
         this.isAlignementActive = false;
         this.anchorPane = workspace.getLayerTool();
-        
-         workspace.getLayerTool().setCursor(Cursor.DEFAULT);
+
+        workspace.getLayerTool().setCursor(Cursor.DEFAULT);
     }
 
     @Override
@@ -42,7 +52,7 @@ public class Drag extends AbstractTool {
         layers = workspace.getCurrentLayers();
         workspaceWidth = workspace.width();
         workspaceHeight = workspace.height();
-         workspace.getLayerTool().setCursor(Cursor.MOVE);
+        workspace.getLayerTool().setCursor(Cursor.MOVE);
     }
 
     @Override
@@ -84,23 +94,23 @@ public class Drag extends AbstractTool {
             nodeCenterY = n.getBoundsInParent().getHeight() / 2;
             isAlignOnX = Math.abs(x - workspaceWidth / 2) < DELTA;
             isAlignOnY = Math.abs(y - workspaceHeight / 2) < DELTA;
-            
+
             double toMoveX;
             double toMoveY;
 
             // Find by how much we need to move the node
             if (isAlignOnX) {
-               toMoveX = workspaceWidth/2 - (n.getBoundsInParent().getMinX() + nodeCenterX);
+                toMoveX = workspaceWidth / 2 - (n.getBoundsInParent().getMinX() + nodeCenterX);
             } else {
-               toMoveX = offsetX;
+                toMoveX = offsetX;
             }
-            
+
             if (isAlignOnY) {
-               toMoveY = workspaceHeight/2 - (n.getBoundsInParent().getMinY() + nodeCenterY);
+                toMoveY = workspaceHeight / 2 - (n.getBoundsInParent().getMinY() + nodeCenterY);
             } else {
-               toMoveY = offsetY;
+                toMoveY = offsetY;
             }
-            
+
             n.setTranslateX(n.getTranslateX() + toMoveX);
             n.setTranslateY(n.getTranslateY() + toMoveY);
         }
@@ -110,7 +120,7 @@ public class Drag extends AbstractTool {
 
     @Override
     public void mouseReleased(double x, double y) {
-         workspace.getLayerTool().setCursor(Cursor.DEFAULT);
+        workspace.getLayerTool().setCursor(Cursor.DEFAULT);
         notifier.notifyHistory();
     }
 
@@ -139,7 +149,7 @@ public class Drag extends AbstractTool {
         return isAlignementActive;
     }
 
-   @Override
-   public void mouseMoved(double x, double y) {
-   }
+    @Override
+    public void mouseMoved(double x, double y) {
+    }
 }

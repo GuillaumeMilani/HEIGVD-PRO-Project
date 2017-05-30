@@ -84,6 +84,13 @@ Une des fonctionnalités indispensables de GEMMS est de permettre à l'utilisate
 
 La classe ListView de JavaFX propose cette fonctionnalité. Malheureusement, ce composant n'étant pas paramétrable comme nous le souhaitions pour les besoins ergonomiques de l'application, nous avons dû implémenter notre propre système de gestion de calques. Il est cependant fortement inspiré du fonctionnement de ListView.
 
+\begin{figure}[H]
+	\caption{Implémentation du composant LayerList. Structure simplifiée.}
+	\centering
+	\includegraphics[scale=0.55]{layer_management.png}
+	\label{fig:layer_management}
+\end{figure}
+
 \subsection{Copier-coller}
 \label{sec:copiercoller}
 Deux façon d'aborder le copier-coller ont été implémentées : la première consiste à enregistrer dans le presse-papier un ou des calques sélectionnés, la seconde consiste à enregistrer uniquement la partie sélectionnée et visible à l'écran.

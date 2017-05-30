@@ -6,7 +6,7 @@ Comme cité précédemment, notre application a été codé à l'aide de la libr
 \subsubsection{Structure de JavaFX}
 Notre application se base sur la structure officielle d'une application JavaFX, qui se prête parfaitement à notre type d'application. Sa compréhension est essentielle pour discuter de l'architecture de notre logiciel. 
 \par
-Les trois point-clés sont la notion de Stage, de Scene et de Scene Graph (graphe de scène). Le Stage est le container haut-niveau d'une application JavaFX. Il doit contenir tout le contenu d'une fenêtre. La Scene est le container pour un Scene Graph. Chaque scène doit avoir un et un seul nœud racine du Scene Graph.
+Les trois point-clés sont la notion de Stage, de Scene et de Scene Graph (graphe de scène). Le Stage est le container haut-niveau d'une application JavaFX \cite{javadoc_stage}. Il doit contenir tout le contenu d'une fenêtre. La Scene est le container pour un Scene Graph. Chaque scène doit avoir un et un seul nœud racine du Scene Graph \cite{javadoc_scene}.
 \par
 Le Scene Graph est une structure en arbre qui garde une représentation interne des éléments graphiques de l'application. En tout temps, il sait quels éléments afficher, quels zones de l'écrans doivent être rafraîchies, et comment le faire de la manière la plus efficace. 	
 \begin{figure}[H]
@@ -58,8 +58,9 @@ Chaque document ouvert possède un objet Workspace permettant à l'utilisateur d
 	\label{fig:workspace_representation}
 \end{figure}
 
-L'espace de travail (Workspace) est un container contenant deux enfants (au sens de l'arbre de JavaFX): une zone de dessin (une branche du graphe de scène) ou seront ajoutés tous les calques créés et modifiés par l'utilisateur, et une interface des outils permettant de dessiner les retours visuels des outils (comme le curseur à la taille du pinceau par exemple). Tous deux sont de type AnchorPane, car cela permet de positionner leurs enfants selon des coordonnées (x, y).
+L'espace de travail (Workspace) est un container contenant deux enfants (au sens de l'arbre de JavaFX): une zone de dessin (une branche du graphe de scène) ou seront ajoutés tous les calques créés et modifiés par l'utilisateur, et une interface des outils permettant de dessiner les retours visuels des outils (comme le curseur du pinceau par exemple). Tous deux sont de type AnchorPane, car cela permet de positionner leurs enfants selon des coordonnées (x, y).
 \par
+La zone d'affichage correspond à un masque appliqué à l'espace 
 
 
 \subsection{Copier-coller}

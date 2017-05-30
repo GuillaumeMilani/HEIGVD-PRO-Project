@@ -6,11 +6,15 @@ Comme cité précédemment, notre application a été codé à l'aide de la libr
 \subsubsection{Structure de JavaFX}
 Notre application se base sur la structure officielle d'une application JavaFX, qui se prête parfaitement à notre type d'application. Sa compréhension est essentielle pour discuter de l'architecture de notre logiciel.
 \par
-Les trois point-clés sont la notion de Stage, de Scene et de Scene Graph (graphe de scène). Le Stage est le container haut-niveau d'une application JavaFX \cite{javadoc_stage}. Il doit contenir tout le contenu d'une fenêtre. La Scene est le container pour un Scene Graph. Chaque scène doit avoir un et un seul nœud racine du Scene Graph \cite{javadoc_scene}.
+Les trois point-clés sont la notion de \gls{stage}, de \gls{scene} et de \gls{scene_graphe}. Le Stage est le container haut-niveau d'une application JavaFX \cite{javadoc_stage}. Il doit contenir tout le contenu d'une fenêtre. La Scene est le container pour un Scene Graph. Chaque scène doit avoir un et un seul nœud racine du Scene Graph \cite{javadoc_scene}.
 \par
+<<<<<<< HEAD
+Le Scene Graph est une structure en arbre qui garde une représentation interne des éléments graphiques de l'application. En tout temps, il sait quels éléments afficher, quels zones de l'écrans doivent être rafraîchies, et comment le faire de la manière la plus efficace \cite{javadoc_scene_graphe}. 	
+=======
 Le Scene Graph est une structure en arbre qui garde une représentation interne des éléments graphiques de l'application. En tout temps, il sait quels éléments afficher, quels zones de l'écrans doivent être rafraîchies, et comment le faire de la manière la plus efficace.
+>>>>>>> c8ce2aecdad1067740a9e64c7dedafd99fc3099e
 \begin{figure}[H]
-	\caption{Représentation du Scene Graph de JavaFX}
+	\caption{Représentation du Scene Graph de JavaFX. Source: documentation Oracle \cite{javadoc_scene_graphe}}
 	\centering
 	\includegraphics[scale=0.6]{scene_graphe_1.png}
 	\label{fig:scene_graphe_1}
@@ -47,7 +51,11 @@ Bien que la sérialisation soit possible, ceci engendre des contraintes et des p
 La sauvegarde d'un document utilise la sérialisation des objets. Comme mentionné précédemment, la sérialisation de certaines classes peut être volumineux. Ainsi, les données sont compressées dans le format GZIP.
 
 \subsection{Workspace et liste des calques}
+<<<<<<< HEAD
+Le \gls{workspace} correspond à l'espace de travail d'un Document GEMMS. Workspace est une classe personnalisée héritant de la classe StackPane de JavaFX. Il s'insère donc dans le graphe de scène de JavaFX. 
+=======
 Le Workspace correspond à l'espace de travail d'un Document GEMMS. Le Workspace est une classe personnalisée héritant de la classe StackPane de JavaFX. Il s'insère donc dans le graphe de scène de JavaFX.
+>>>>>>> c8ce2aecdad1067740a9e64c7dedafd99fc3099e
 \subsubsection{Structure d'un Workspace}
 Chaque document ouvert possède un objet Workspace permettant à l'utilisateur de manipuler le contenu du fichier. Il est constitué de couches comme représenté sur la figure \ref{fig:workspace_representation}.
 

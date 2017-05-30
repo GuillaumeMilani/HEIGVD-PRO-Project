@@ -57,7 +57,7 @@ public class ToolboxController {
    private ToolbarController toolbarController;
 
    // List of created tool buttons
-   private LinkedList<Button> toolButtons = new LinkedList();
+   private Button selectedButton;
 
    @FXML
    private GridPane gridFilterTools;
@@ -238,7 +238,6 @@ public class ToolboxController {
       BW.setOnAction((ActionEvent e) -> {
          Workspace w = mainController.getCurrentWorkspace();
          if (w != null) {
-            clearSelectedButtons();
             for (Node n : w.getCurrentLayers()) {
                getColorAdjust(n).setSaturation(-1);
                saturation.setValue(-1);
@@ -255,7 +254,6 @@ public class ToolboxController {
       tint.setOnAction((ActionEvent e) -> {
          Workspace w = mainController.getCurrentWorkspace();
          if (w != null) {
-            clearSelectedButtons();
             for (Node n : w.getCurrentLayers()) {
                //Algorithm to convert color to hue:
                //https://stackoverflow.com/questions/31587092
@@ -279,7 +277,6 @@ public class ToolboxController {
       Button reset = createToolButton("Reset", effectButtonsContainer);
       reset.setTooltip(new Tooltip("Reset all color effects"));
       reset.setOnAction((ActionEvent e) -> {
-         clearSelectedButtons();
          Workspace w = mainController.getCurrentWorkspace();
          if (w != null) {
             for (Node n : w.getCurrentLayers()) {
@@ -315,7 +312,6 @@ public class ToolboxController {
       Button effectsToggl = createToolButton("Effects", gridFilterTools);
       effectsToggl.setTooltip(new Tooltip("Open/Close effects panel"));
       effectsToggl.setPrefWidth(160);
-      toolButtons.remove(effectsToggl);
       
       
       
@@ -328,7 +324,7 @@ public class ToolboxController {
             effectsContainer.setLayoutX(-10000);
             effectsContainer.setLayoutY(0);
          } else { // The container is not visible
-            selectButton(effectsToggl);
+            effectsToggl.getStyleClass().add("selected");
 
             // Get height of the window
             double windowHeight = mainController.getMainPane().getBoundsInParent().getHeight();
@@ -380,8 +376,6 @@ public class ToolboxController {
       button.getStyleClass().add("tool-button");
 
       pane.add(button, col, row);
-
-      toolButtons.add(button);
 
       return button;
    }
@@ -437,15 +431,15 @@ public class ToolboxController {
    }
 
    public void clearSelectedButtons() {
-      for (Button b : toolButtons) {
-         if (b.getStyleClass().contains("selected")) {
-            b.getStyleClass().remove("selected");
-         }
+      if (selectedButton != null) {
+         selectedButton.getStyleClass().remove("selected");
+         selectedButton = null;
       }
-      toolbarController.clearToolSettings();
    }
 
    private void selectButton(Button b) {
+      clearSelectedButtons();
+      selectedButton = b;
       b.getStyleClass().add("selected");
    }
 
@@ -457,7 +451,6 @@ public class ToolboxController {
     */
    @FXML
    private void newCanvasButtonAction(ActionEvent e) {
-      clearSelectedButtons();
       Workspace w = mainController.getCurrentWorkspace();
       if (w != null) {
          w.addLayer(new GEMMSCanvas(w.width(), w.height()));
@@ -494,7 +487,6 @@ public class ToolboxController {
     */
    @FXML
    private void newTextButtonAction(ActionEvent e) {
-      clearSelectedButtons();
       Workspace w = mainController.getCurrentWorkspace();
       if (w != null) {
          Optional<String> result = TextTool.getDialogText(null);
@@ -506,7 +498,6 @@ public class ToolboxController {
             w.addLayer(t);
             toolbarController.displayToolSetting(null);
          }
-         clearSelectedButtons();
       }
    }
 
@@ -519,11 +510,9 @@ public class ToolboxController {
    @FXML
    private void brushButtonAction(ActionEvent e) {
       Button source = (Button) e.getSource();
-      toolButtons.add(source);
 
       Workspace w = mainController.getCurrentWorkspace();
       if (w != null) {
-         clearSelectedButtons();
          selectButton(source);
          Brush b = new Brush(w);
          w.setCurrentTool(b);
@@ -541,11 +530,9 @@ public class ToolboxController {
    @FXML
    private void eraserButtonAction(ActionEvent e) {
       Button source = (Button) e.getSource();
-      toolButtons.add(source);
 
       Workspace w = mainController.getCurrentWorkspace();
       if (w != null) {
-         clearSelectedButtons();
          selectButton(source);
          Eraser er = new Eraser(w);
          w.setCurrentTool(er);
@@ -563,11 +550,9 @@ public class ToolboxController {
    @FXML
    private void eyeDropperButtonAction(ActionEvent e) {
       Button source = (Button) e.getSource();
-      toolButtons.add(source);
 
       Workspace w = mainController.getCurrentWorkspace();
       if (w != null) {
-         clearSelectedButtons();
          selectButton(source);
          w.setCurrentTool(new EyeDropper(w));
          toolbarController.displayToolSetting(null);
@@ -583,9 +568,6 @@ public class ToolboxController {
    @FXML
    private void textButtonAction(ActionEvent e) {
       Button source = (Button) e.getSource();
-      toolButtons.add(source);
-
-      clearSelectedButtons();
       Workspace w = mainController.getCurrentWorkspace();
       if (w != null) {
          selectButton(source);
@@ -607,7 +589,6 @@ public class ToolboxController {
    private void hSymmetryButtonAction(ActionEvent e) {
       Workspace w = mainController.getCurrentWorkspace();
       if (w != null) {
-         clearSelectedButtons();
          for (Node node : w.getCurrentLayers()) {
             // If the node is a text, use the special formula for GEMMSTexts
             if (node instanceof GEMMSText) {
@@ -632,7 +613,6 @@ public class ToolboxController {
    private void vSymmetryButtonAction(ActionEvent e) {
       Workspace w = mainController.getCurrentWorkspace();
       if (w != null) {
-         clearSelectedButtons();
          // If the node is a text, use the special formula for GEMMSTexts
          for (Node node : w.getCurrentLayers()) {
 
@@ -657,11 +637,9 @@ public class ToolboxController {
    @FXML
    private void dragButtonAction(ActionEvent e) {
       Button source = (Button) e.getSource();
-      toolButtons.add(source);
 
       Workspace w = mainController.getCurrentWorkspace();
       if (w != null) {
-         clearSelectedButtons();
          selectButton(source);
          Drag dragTool = new Drag(w);
          w.setCurrentTool(dragTool);
@@ -691,11 +669,9 @@ public class ToolboxController {
    @FXML
    private void rotateButtonAction(ActionEvent e) {
       Button source = (Button) e.getSource();
-      toolButtons.add(source);
 
       Workspace w = mainController.getCurrentWorkspace();
       if (w != null) {
-         clearSelectedButtons();
          selectButton(source);
          w.setCurrentTool(new ch.heigvd.tool.Rotate(w));
          toolbarController.displayToolSetting(null);
@@ -711,11 +687,9 @@ public class ToolboxController {
    @FXML
    private void scaleButtonAction(ActionEvent e) {
       Button source = (Button) e.getSource();
-      toolButtons.add(source);
 
       Workspace w = mainController.getCurrentWorkspace();
       if (w != null) {
-         clearSelectedButtons();
          selectButton(source);
          w.setCurrentTool(new ch.heigvd.tool.Resize(w));
          toolbarController.displayToolSetting(null);
@@ -731,11 +705,9 @@ public class ToolboxController {
    @FXML
    private void selectionButtonAction(ActionEvent e) {
       Button source = (Button) e.getSource();
-      toolButtons.add(source);
 
       Workspace w = mainController.getCurrentWorkspace();
       if (w != null) {
-         clearSelectedButtons();
          selectButton(source);
          w.setCurrentTool(new Selection(w));
          toolbarController.displayToolSetting(null);
@@ -750,11 +722,9 @@ public class ToolboxController {
    @FXML
    private void cropButtonAction(ActionEvent e) {
       Button source = (Button) e.getSource();
-      toolButtons.add(source);
 
       Workspace w = mainController.getCurrentWorkspace();
       if (w != null) {
-         clearSelectedButtons();
          selectButton(source);
          w.setCurrentTool(new Crop(w));
          toolbarController.displayToolSetting(null);

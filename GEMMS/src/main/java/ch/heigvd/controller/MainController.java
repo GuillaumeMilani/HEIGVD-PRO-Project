@@ -263,6 +263,7 @@ public class MainController implements Initializable {
                             }
                         }
                     }
+                    w.notifyHistory();
                 } else {
                     // Drop the current selected layers
                     w.getCurrentLayers().forEach(n -> w.removeLayer(n));

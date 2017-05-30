@@ -25,6 +25,8 @@ dist/
 nbdist/
 .nb-gradle/
 
+rapport.pdf
+
 # LateX
 *.aux
 *.glo
@@ -39,7 +41,6 @@ nbdist/
 *.blg
 *.dvi
 *.glg
-*.gls
 *.ilg
 *.ind
 *.lof

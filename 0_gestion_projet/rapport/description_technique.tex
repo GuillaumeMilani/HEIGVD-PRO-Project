@@ -65,6 +65,9 @@ La zone d'affichage correspond à un masque appliqué à l'espace de travail pou
 
 Le Workspace détecte les mouvements de souris sur l'interface des outils et se charge d'appeler les méthodes correspondantes de l'objet Tool activé (se référer à la section \ref{section_outils}).
 
+\subsubsection{Gestion des calques}
+Dans GEMMS, les éléments d'un document sont gérés au moyen de calques. L'application utilise trois sortes de calques, qui sont en fait des types de Node proposés par JavaFX. La classe Text permet de représenter des textes, la classe Canvas permet de dessiner des éléments graphiques (lignes, formes, etc.), et la ImageView permet de représenter des images. 
+
 \subsection{Copier-coller}
 Deux façon d'aborder le copier-coller ont été implémentées : la première consiste à enregistrer dans le presse-papier un ou des calques sélectionnés, la seconde consiste à enregistrer uniquement la partie sélectionnée et visible à l'écran.
 

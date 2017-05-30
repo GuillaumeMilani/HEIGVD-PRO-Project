@@ -1,7 +1,7 @@
 \section{Conception \& Architecture}
 \subsection{Technologies utilisées}
 \subsubsection{Java 8}
-Parmi les deux langages de haut niveau proposés pour l'élaboration de ce projet (Java ou C++), nous avons choisi Java pour sa portabilité, sa sécurité et ses performances. De plus, la dernière version de Java propose la librairie graphique JavaFX qui correspond en tout point à notre projet. Enfin, notre équipe est également plus habile à programmer à l'aide du langage Java.
+Parmi les deux langages de haut niveau proposés pour l'élaboration de ce projet (Java ou C++), nous avons choisi Java pour sa portabilité, sa sécurité et ses performances. De plus, la dernière version de Java propose la librairie graphique JavaFX qui convient parfaitement à notre projet. Enfin, notre équipe est également plus habile à programmer à l'aide du langage Java.
 
 \subsubsection{JavaFX 8}
 JavaFX, successeur de Swing, est la librairie de création d'interface graphiques officielle de Java. La version 8, utilisée pour ce projet, ajoute de nouvelles fonctionnalités et est la plus récente version utilisable avec Scene Builder.
@@ -17,7 +17,7 @@ Comme vous pouvez le voir sur la figure \ref{fig:arch_javafx}, BLA BLA BLA A COM
 
 
 \subsubsection{Scene Builder 8.3.0}
-Scene Builder de Gluon permet de manipuler des objets JavaFX graphiquement et exporter ceux-ci dans un fichier .fxml interprétable par la librairie graphique. L'interface de base à été conçue lors de l'élaboration du cahier des charges pour présenter un exemple de l'interface de l'application finale. Plusieurs mock-ups ont été présentés et c'est sur ceux-cis que nous nous sommes basés pour construire, grâce à Scene Builder, une base d'interface sur la laquelle nous avons rajouté des composants et fonctionnalités tout au long de l'élaboration de l'application. La flexibilité de JavaFX permet d'ajouter des éléments via un fichier externe fxml mais aussi directement dans le code, ce que nous avons aussi utilisé.
+Scene Builder de Gluon permet de manipuler des objets JavaFX graphiquement et exporter ceux-ci dans un fichier .fxml interprétable par la librairie graphique. L'interface de base à été conçue lors de l'élaboration du cahier des charges pour présenter un exemple de l'interface de l'application finale. Plusieurs mock-ups ont été présentés et c'est sur ceux-ci que nous nous sommes basés pour construire, grâce à Scene Builder, une base d'interface sur la laquelle nous avons rajouté des composants et fonctionnalités tout au long de l'élaboration de l'application. La flexibilité de JavaFX permet d'ajouter des éléments via un fichier externe fxml mais aussi directement dans le code, ce que nous avons aussi utilisé.
 
 \subsubsection{Maven}
 Pour la compilation du projet et l'importation aisée de celui-ci dans un nouvel environnement de travail, nous avons utilisé l'outil Maven de Apache. Il permet de spécifier les dépendances d'un programme ainsi que des instructions permettant de compiler les fichiers source en fichiers exécutables. Ces instructions se trouvent dans le fichier \og pom.xml \fg{} et est librement modifiable par les développeurs.
@@ -27,10 +27,10 @@ Pour la compilation du projet et l'importation aisée de celui-ci dans un nouvel
 Git est un logiciel de gestion de version utilisé pour permettre de stocker tous les fichiers du projet ainsi que toutes les modifications leur ayant été apportés depuis leur création. Pour chaque nouvelle fonctionnalité, nous avons procédé par la création d'une branche à partir de la branche principale (une version fonctionnelle du programme, contenant les fonctionnalités implémentées et testées). Ces nouvelles branches permettent de développer les fonctionnalités du programme indépendamment et de les ajouter à la branche principale une fois inspectées et testées par plusieurs membres de l'équipe.
 
 \subsubsection{GitHub}
-Github est un service web permettant de parcourir visuellement l'historique Git ainsi que de fournir des outils de gestion de Git. Notamment, pour chaque fonctionnalité ou chaque bug découvert, une "issue" (un problème) peut être ouverte et assignée à un ou plusieurs membres de l'équipe. Dès la fin de l'élaboration du planning de notre projet, des issues ont été assignées à chaque développeur. Celles-ci ont permis de mieux se fier au planning et toujours avoir en vue ce qu'il restait à implémenter.
+Github est un service web permettant de parcourir visuellement l'historique Git et qui fournit également des outils de gestion de Git. Notamment, pour chaque fonctionnalité ou chaque bug découvert, une "issue" (un problème) peut être ouverte et assignée à un ou plusieurs membres de l'équipe. Dès la fin de l'élaboration du planning de notre projet, des issues ont été assignées à chaque développeur. Celles-ci ont permis de mieux se fier au planning et toujours avoir en vue ce qu'il restait à implémenter.
 
 \subsection{Comparaison de l'interface finale avec notre mock-up}
-Le mock-up de l'interface à été conçu au début du projet en prenant compte de toutes les fonctionnalités que le programme devait fournir. Voici une comparaison de celui-ci avec l'interface finale.
+Le mock-up de l'interface à été conçu au début du projet en prenant compte de toutes les fonctionnalités que le programme devait fournir. Les figures \ref{fig:cat_mockup} et \ref{fig:cat_gemms} ci-dessous proposent une comparaison de celui-ci avec l'interface finale.
 
 \begin{figure}[H]
 	\caption{Mock-up de l'interface}
@@ -46,4 +46,4 @@ Le mock-up de l'interface à été conçu au début du projet en prenant compte 
 	\label{fig:cat_gemms}
 \end{figure}
 
-Comme le montrent les figures \ref{fig:cat_mockup} et \ref{fig:cat_gemms}, l'interface conçue lors de l'élaboration du cahier des charges à été repris presque entièrement pour notre programme. Les différences majeurs sont les paramétrages des outils, qui ont lieux en haut de l'interface à coté du menu déroulant, ainsi que les filtres \& effets, qui ont lieux dans une fenêtre qui peut être ouverte ou fermée à souhait pour rendre l'interface moins chargée. 
+Comme le montrent les figures \ref{fig:cat_mockup} et \ref{fig:cat_gemms}, l'interface conçue lors de l'élaboration du cahier des charges à été repris presque entièrement pour notre programme. Les différences majeurs sont les paramétrages des outils, qui ont lieu en haut de l'interface à coté du menu déroulant, ainsi que les filtres \& effets, qui ont lieu dans une fenêtre qui peut être ouverte ou fermée à souhait pour rendre l'interface moins chargée. 

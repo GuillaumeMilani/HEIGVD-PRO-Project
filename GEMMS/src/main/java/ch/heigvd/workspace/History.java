@@ -1,3 +1,13 @@
+/**
+ * Fichier: History.java
+ * Date: 31.05.2017
+ *
+ * @author Guillaume Milani
+ * @author Edward Ransome
+ * @author Mathieu Monteverde
+ * @author Michael Spierer
+ * @author Sathiya Kirushnapillai
+ */
 package ch.heigvd.workspace;
 
 import ch.heigvd.gemms.Constants;
@@ -24,10 +34,12 @@ import java.util.logging.Logger;
  * @date 23 May 2017
  * @brief Manage history for a GEMMS workspace
  *
- * Each time one of this class instance is notified it saves the workspace layer's state.
- * It is then possible to undo() (restore previous state) or redo() (restore state before undo())
+ * Each time one of this class instance is notified it saves the workspace layer's
+ * state. It is then possible to undo() (restore previous state) or redo() (restore
+ * state before undo())
  */
 public class History implements Observer {
+
     /**
      * Lists to save the history, thumbnails and selected layers
      */
@@ -73,20 +85,23 @@ public class History implements Observer {
             try {
                 // Get the selected layers indexes
                 List<Integer> indexes = new LinkedList<>();
-                workspace.getCurrentLayers().forEach(n -> indexes.add(workspace.getLayers().indexOf(n)));
+                workspace.getCurrentLayers().forEach(
+                        n -> indexes.add(workspace.getLayers().indexOf(n)));
 
                 // Get the thumbnail for visual history
                 final SnapshotParameters sp = new SnapshotParameters();
 
-                double scale = Constants.HISTORY_THUMB_WIDTH/workspace.width();
+                double scale = Constants.HISTORY_THUMB_WIDTH / workspace.width();
                 sp.setTransform(Transform.scale(scale, scale));
 
                 Image snapshot = workspace.snapshot(sp, null);
                 PixelReader reader = snapshot.getPixelReader();
-                WritableImage newImage = new WritableImage(reader, 0, 0, (int)Constants.HISTORY_THUMB_WIDTH, (int)(workspace.height() * scale));
+                WritableImage newImage = new WritableImage(reader, 0, 0,
+                        (int) Constants.HISTORY_THUMB_WIDTH,
+                        (int) (workspace.height() * scale));
 
                 // Save the current states
-                history.add(0,Utils.serializeNodeList(workspace.getLayers()));
+                history.add(0, Utils.serializeNodeList(workspace.getLayers()));
                 selectedHistory.add(0, indexes);
                 imagesHistory.add(0, newImage);
 
@@ -117,11 +132,13 @@ public class History implements Observer {
 
     /**
      * Restore the workspace at the state in parameter
+     *
      * @param index index in the history list to restore the workspace state from
      */
     public void restoreToIndex(int index) {
         if (index < 0 || index > history.size()) {
-            Logger.getLogger(History.class.getName()).log(Level.SEVERE, "Trying to restore a state at index out of bounds");
+            Logger.getLogger(History.class.getName()).log(Level.SEVERE,
+                    "Trying to restore a state at index out of bounds");
         } else {
             // Select the new current state in the list
             currentIndex = index;
@@ -131,8 +148,10 @@ public class History implements Observer {
                 // Selected layers
                 workspace.getCurrentLayers().clear();
 
-                workspace.getLayers().addAll(Utils.deserializeNodeList(history.get(currentIndex)));
-                selectedHistory.get(currentIndex).forEach(i -> workspace.selectLayerByIndex(i));
+                workspace.getLayers().addAll(Utils.deserializeNodeList(
+                        history.get(currentIndex)));
+                selectedHistory.get(currentIndex).forEach(
+                        i -> workspace.selectLayerByIndex(i));
 
             } catch (IOException | ClassNotFoundException e) {
                 Logger.getLogger(History.class.getName()).log(Level.SEVERE, null, e);

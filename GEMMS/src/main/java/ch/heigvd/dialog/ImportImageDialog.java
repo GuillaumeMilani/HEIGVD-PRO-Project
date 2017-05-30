@@ -1,3 +1,13 @@
+/**
+ * Fichier: ImportImageDialog.java
+ * Date: 31.05.2017
+ *
+ * @author Guillaume Milani
+ * @author Edward Ransome
+ * @author Mathieu Monteverde
+ * @author Michael Spierer
+ * @author Sathiya Kirushnapillai
+ */
 package ch.heigvd.dialog;
 
 import ch.heigvd.controller.MainController;
@@ -14,27 +24,27 @@ import javax.imageio.ImageIO;
 
 /**
  * <h1>ImportImageDialog</h1>
- * 
- * Display a new file open dialog that allow users to open an image. 
- * Only png and jpg format are allowed (*.png or .jpg)
+ *
+ * Display a new file open dialog that allow users to open an image. Only png and jpg
+ * format are allowed (*.png or .jpg)
  */
 public class ImportImageDialog {
-    
+
     private final FileChooser fileChooser;
     private final Stage stage;
-    
+
     /**
      * Constructor
-     * 
+     *
      * @param s stage for FileChooser
      */
     public ImportImageDialog(Stage s) {
         stage = s;
-        
+
         // Init file chooser
         fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-        
+
         fileChooser.setTitle("Open image");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("All Files", "*.*"),
@@ -42,32 +52,33 @@ public class ImportImageDialog {
                 new FileChooser.ExtensionFilter("jpg files (*.jpg)", "*.jpg"),
                 new FileChooser.ExtensionFilter("gif files (*.gif)", "*.gif"));
     }
-    
+
     /**
      * Shows a new file open dialog
-     * 
+     *
      * @return Image
      */
     public Image showAndWait() {
         File file = fileChooser.showOpenDialog(stage);
-        
+
         // Get name and extension
         String fileName = file.getName();
         String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
-        
+
         Image image = null;
-        
+
         // Convert loaded file to image
-        if(file != null) {
-           if(ext.equals("jpg") || ext.equals("png") || ext.equals("gif")) {
-               try {
-                   BufferedImage bufferedImage = ImageIO.read(file);
-                   image = SwingFXUtils.toFXImage(bufferedImage, null);
-               } catch (IOException ex) {
-                   // TODO : manage exceptions
-                   Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-               }
-           }
+        if (file != null) {
+            if (ext.equals("jpg") || ext.equals("png") || ext.equals("gif")) {
+                try {
+                    BufferedImage bufferedImage = ImageIO.read(file);
+                    image = SwingFXUtils.toFXImage(bufferedImage, null);
+                } catch (IOException ex) {
+                    // TODO : manage exceptions
+                    Logger.getLogger(MainController.class.getName())
+                            .log(Level.SEVERE, null, ex);
+                }
+            }
         }
 
         return image;

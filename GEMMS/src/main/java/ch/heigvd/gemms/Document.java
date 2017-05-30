@@ -1,3 +1,13 @@
+/**
+ * Fichier: Document.java
+ * Date: 31.05.2017
+ *
+ * @author Guillaume Milani
+ * @author Edward Ransome
+ * @author Mathieu Monteverde
+ * @author Michael Spierer
+ * @author Sathiya Kirushnapillai
+ */
 package ch.heigvd.gemms;
 
 import ch.heigvd.workspace.Workspace;
@@ -22,9 +32,9 @@ import javafx.stage.Stage;
 /**
  * <h1>Document</h1>
  *
- * This class creates or loads from a file a workspace. And allows to save 
- * in file project (*.gemms). The save file is compressed with GZIP.
- * 
+ * This class creates or loads from a file a workspace. And allows to save in file
+ * project (*.gemms). The save file is compressed with GZIP.
+ *
  * And this class allows also to export the workspace as an image.
  */
 public class Document {
@@ -34,14 +44,13 @@ public class Document {
 
     // Stage for fileChooser
     private Stage stage;
-    
+
     // File that contains the workspace
     private File currentFile;
 
     // Contains document's name
     private String name;
 
-    
     /**
      * Constructor
      *
@@ -65,12 +74,13 @@ public class Document {
      *
      * @param s stage for the file chooser
      * @param f file to open
-     * 
+     *
      * @throws FileNotFoundException
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public Document(Stage s, File f) throws FileNotFoundException, IOException, ClassNotFoundException {
+    public Document(Stage s, File f) throws FileNotFoundException, IOException,
+            ClassNotFoundException {
         init(s);
 
         // TODO : Check file extension
@@ -127,7 +137,7 @@ public class Document {
      * @throws FileNotFoundException
      */
     public void saveAs() throws FileNotFoundException, IOException {
-        
+
         // Set FileChooser
         FileChooser fileChooser;
         fileChooser = new FileChooser();
@@ -150,8 +160,6 @@ public class Document {
                 }
 
                 name = currentFile.getName();
-            } else {
-                // TODO : throw new Exception(currentFile.getName() + " has no valid file-extension.");
             }
         }
     }
@@ -162,7 +170,7 @@ public class Document {
      * @throws IOException
      */
     public void export() throws IOException {
-        
+
         // Set fileChooser
         FileChooser fileChooser;
         fileChooser = new FileChooser();
@@ -174,39 +182,42 @@ public class Document {
         // Shows the dialog and waits for the user response
         File file = fileChooser.showSaveDialog(stage);
         if (file != null) {
-           
+
             // Get name and extension
             String fileName = file.getName();
             String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
-            
+
             // Take a snapshot
-            WritableImage writableImage = new WritableImage((int) workspace.width(), (int) workspace.height());
+            WritableImage writableImage = new WritableImage((int) workspace.width(),
+                    (int) workspace.height());
             workspace.snapshot(null, writableImage);
             BufferedImage image = SwingFXUtils.fromFXImage(writableImage, null);
-            
-            // Write image
-            switch(ext) {
-               case "png":
-                  ImageIO.write(image, "png", file);
-               break;
-               
-               case "jpg":
-                  BufferedImage convertedImg = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
-                  convertedImg.getGraphics().setColor(Color.white);
-                  convertedImg.getGraphics().fillRect(0, 0, image.getWidth(), image.getHeight());
-                  convertedImg.getGraphics().drawImage(image, 0, 0, null);
 
-                  ImageIO.write(convertedImg, "jpg", file);
-               break;
-               
-               case "gif":
-                  ImageIO.write(image, "gif", file);
-               break;
-               
-               default:
-                  // Manage exceptions
-                  System.out.println("This is not a supported extension");
-               break;
+            // Write image
+            switch (ext) {
+                case "png":
+                    ImageIO.write(image, "png", file);
+                    break;
+
+                case "jpg":
+                    BufferedImage convertedImg = new BufferedImage(image.getWidth(),
+                            image.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+                    convertedImg.getGraphics().setColor(Color.white);
+                    convertedImg.getGraphics().fillRect(0, 0, image.getWidth(),
+                            image.getHeight());
+                    convertedImg.getGraphics().drawImage(image, 0, 0, null);
+
+                    ImageIO.write(convertedImg, "jpg", file);
+                    break;
+
+                case "gif":
+                    ImageIO.write(image, "gif", file);
+                    break;
+
+                default:
+                    // Manage exceptions
+                    System.out.println("This is not a supported extension");
+                    break;
             }
         }
     }

@@ -1,3 +1,13 @@
+/**
+ * Fichier: ToolbarController.java
+ * Date: 31.05.2017
+ *
+ * @author Guillaume Milani
+ * @author Edward Ransome
+ * @author Mathieu Monteverde
+ * @author Michael Spierer
+ * @author Sathiya Kirushnapillai
+ */
 package ch.heigvd.controller;
 
 import ch.heigvd.dialog.NewDocument;
@@ -22,183 +32,186 @@ import javafx.scene.shape.Rectangle;
 
 public class ToolbarController {
 
-   // Main controller
-   private MainController mainController;
+    // Main controller
+    private MainController mainController;
 
-   @FXML
-   private HBox toolSettingsContainer;
+    @FXML
+    private HBox toolSettingsContainer;
 
-   // Init this controller
-   public void init(MainController c) {
-      mainController = c;
-   }
+    // Init this controller
+    public void init(MainController c) {
+        mainController = c;
+    }
 
-   /**
-    * Clear tool settings
-    */
-   public void clearToolSettings() {
-      toolSettingsContainer.getChildren().clear();
-   }
+    /**
+     * Clear tool settings
+     */
+    public void clearToolSettings() {
+        toolSettingsContainer.getChildren().clear();
+    }
 
-   /**
-    * Add and display tool settings
-    * 
-    * @param toolBox tool settings to add
-    */
-   public void displayToolSetting(HBox toolBox) {
-      clearToolSettings();
-      if (toolBox != null) {
-         toolSettingsContainer.getChildren().add(toolBox);
-      }
-   }
+    /**
+     * Add and display tool settings
+     *
+     * @param toolBox tool settings to add
+     */
+    public void displayToolSetting(HBox toolBox) {
+        clearToolSettings();
+        if (toolBox != null) {
+            toolSettingsContainer.getChildren().add(toolBox);
+        }
+    }
 
-   /**
-    * Action when clicked on new button. Create a new document and a workspace.
-    * And create a new tab with the workspace.
-    * 
-    * @param e 
-    */
-   @FXML
-   protected void newButtonAction(ActionEvent e) {
+    /**
+     * Action when clicked on new button. Create a new document and a workspace. And
+     * create a new tab with the workspace.
+     *
+     * @param e
+     */
+    @FXML
+    protected void newButtonAction(ActionEvent e) {
 
-      mainController.hideWelcome();
+        mainController.hideWelcome();
 
-      // Create a new dialog
-      NewDocumentDialog dialog = new NewDocumentDialog();
+        // Create a new dialog
+        NewDocumentDialog dialog = new NewDocumentDialog();
 
-      // Display dialog
-      Optional<NewDocument> result = dialog.showAndWait();
+        // Display dialog
+        Optional<NewDocument> result = dialog.showAndWait();
 
-      // Dialog OK
-      if (result.isPresent()) {
+        // Dialog OK
+        if (result.isPresent()) {
 
-         int width = result.get().getWidth();
-         int height = result.get().getHeiht();
-         Color color = result.get().getColor();
+            int width = result.get().getWidth();
+            int height = result.get().getHeiht();
+            Color color = result.get().getColor();
 
-         // Create a new document
-         Document document = new Document(mainController.getStage(), width, height);
+            // Create a new document
+            Document document = new Document(mainController.getStage(), width, height);
 
-         // Get workspace
-         Workspace w = document.workspace();
+            // Get workspace
+            Workspace w = document.workspace();
 
-         GEMMSCanvas canvas = new GEMMSCanvas(width, height);
-         GraphicsContext gc = canvas.getGraphicsContext2D();
-         gc.setFill(color);
-         gc.fillRect(0, 0, width, height);
+            GEMMSCanvas canvas = new GEMMSCanvas(width, height);
+            GraphicsContext gc = canvas.getGraphicsContext2D();
+            gc.setFill(color);
+            gc.fillRect(0, 0, width, height);
 
-         mainController.createTab(document);
+            mainController.createTab(document);
 
-         // Set background
-         w.addLayer(canvas);
+            // Set background
+            w.addLayer(canvas);
 
-         mainController.addDocument(document);
-      }
-   }
+            mainController.addDocument(document);
+        }
+    }
 
-   /**
-    * Action when clicked on open button. Open a document.
-    * And create a new tab with the workspace contained in the document.
-    * 
-    * @param e 
-    */
-   @FXML
-   protected void openButtonAction(ActionEvent e) {
+    /**
+     * Action when clicked on open button. Open a document. And create a new tab with
+     * the workspace contained in the document.
+     *
+     * @param e
+     */
+    @FXML
+    protected void openButtonAction(ActionEvent e) {
 
-      mainController.hideWelcome();
+        mainController.hideWelcome();
 
-      OpenDocumentDialog dialog = new OpenDocumentDialog(mainController.getStage());
+        OpenDocumentDialog dialog = new OpenDocumentDialog(mainController.getStage());
 
-      File f = dialog.showAndWait();
-      if (f != null) {
-         Document document = null;
-         try {
-            document = new Document(mainController.getStage(), f);
-         } catch (IOException | ClassNotFoundException ex) {
-            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-         }
-
-         mainController.createTab(document);
-
-         mainController.addDocument(document);
-      }
-   }
-
-   /**
-    * Action when clicked on save button. Save the current workspace document.
-    * 
-    * @param e 
-    */
-   @FXML
-   protected void saveButtonAction(ActionEvent e) {
-      Workspace w = mainController.getCurrentWorkspace();
-      if (w != null) {
-         // Get current tab
-         Tab tab = mainController.getCurrentTab();
-
-         // Research document with workspace
-         Document d = mainController.getDocument(w);
-
-         // Save document
-         if (d != null) {
+        File f = dialog.showAndWait();
+        if (f != null) {
+            Document document = null;
             try {
-               d.save();
-            } catch (IOException ex) {
-               Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+                document = new Document(mainController.getStage(), f);
+            } catch (IOException | ClassNotFoundException ex) {
+                Logger.getLogger(MainController.class.getName())
+                        .log(Level.SEVERE, null, ex);
             }
-         }
 
-         // Set tab title
-         tab.setText(d.name());
-      }
-   }
+            mainController.createTab(document);
 
-   /**
-    * Action when clicked on export button. Export the current workspace as
-    * an image. PNG format.
-    * 
-    * @param e 
-    */
-   @FXML
-   protected void exportButtonAction(ActionEvent e) {
-      Workspace w = mainController.getCurrentWorkspace();
-      if (w != null) {
-         // Research document with workspace
-         Document d = mainController.getDocument(w);
+            mainController.addDocument(document);
+        }
+    }
 
-         // export document as image
-         if (d != null) {
-            try {
-               d.export();
-            } catch (IOException ex) {
-               Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+    /**
+     * Action when clicked on save button. Save the current workspace document.
+     *
+     * @param e
+     */
+    @FXML
+    protected void saveButtonAction(ActionEvent e) {
+        Workspace w = mainController.getCurrentWorkspace();
+        if (w != null) {
+            // Get current tab
+            Tab tab = mainController.getCurrentTab();
+
+            // Research document with workspace
+            Document d = mainController.getDocument(w);
+
+            // Save document
+            if (d != null) {
+                try {
+                    d.save();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainController.class.getName())
+                            .log(Level.SEVERE, null, ex);
+                }
             }
-         }
-      }
-   }
 
-   /**
-    * Action when clicked on resize button. Resize the current workspace.
-    * an image. PNG format
-    * 
-    * @param e 
-    */
-   @FXML
-   protected void resizeButtonAction(ActionEvent e) {
-      Workspace w = mainController.getCurrentWorkspace();
-      if (w != null) {
+            // Set tab title
+            tab.setText(d.name());
+        }
+    }
 
-         ResizeDialog dialog = new ResizeDialog(w);
+    /**
+     * Action when clicked on export button. Export the current workspace as an
+     * image. PNG format.
+     *
+     * @param e
+     */
+    @FXML
+    protected void exportButtonAction(ActionEvent e) {
+        Workspace w = mainController.getCurrentWorkspace();
+        if (w != null) {
+            // Research document with workspace
+            Document d = mainController.getDocument(w);
 
-         Optional<Rectangle> result = dialog.showAndWait();
+            // export document as image
+            if (d != null) {
+                try {
+                    d.export();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainController.class.getName())
+                            .log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
 
-         if (result.isPresent()) {
+    /**
+     * Action when clicked on resize button. Resize the current workspace. an image.
+     * PNG format
+     *
+     * @param e
+     */
+    @FXML
+    protected void resizeButtonAction(ActionEvent e) {
+        Workspace w = mainController.getCurrentWorkspace();
+        if (w != null) {
 
-            w.resizeCanvas((int) result.get().getWidth(),
-                    (int) result.get().getHeight(),
-                    (int) result.get().getX(),
-                    (int) result.get().getY());
-         }
-      }
-   }
+            ResizeDialog dialog = new ResizeDialog(w);
+
+            Optional<Rectangle> result = dialog.showAndWait();
+
+            if (result.isPresent()) {
+
+                w.resizeCanvas((int) result.get().getWidth(),
+                        (int) result.get().getHeight(),
+                        (int) result.get().getX(),
+                        (int) result.get().getY());
+            }
+        }
+    }
 }

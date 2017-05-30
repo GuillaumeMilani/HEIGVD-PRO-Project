@@ -16,12 +16,12 @@
 \usepackage[T1]{fontenc}
 
 % Marge du document
-\usepackage[top=3.5cm, 
-            bottom=3cm, 
-            left=2cm, 
-            right=2cm, 
-            footskip=1.5cm, 
-            headheight=1.5cm, 
+\usepackage[top=3.5cm,
+            bottom=3cm,
+            left=2cm,
+            right=2cm,
+            footskip=1.5cm,
+            headheight=1.5cm,
             headsep=0.9cm]{geometry}
 
 % Gérer les positionnement d'images
@@ -49,15 +49,6 @@
 
 \usepackage{titlesec}
 
-% Lignes suivantes pour modifier le bug titlesec
-% https://bugs.launchpad.net/ubuntu/+source/texlive-extra/+bug/1574052
-\usepackage{etoolbox}
-
-\makeatletter
-\patchcmd{\ttlh@hang}{\parindent\z@}{\parindent\z@\leavevmode}{}{}
-\patchcmd{\ttlh@hang}{\noindent}{}{}{}
-\makeatother
-
 % Pour les entêtes
 \usepackage{fancyhdr}
 
@@ -75,9 +66,13 @@
 %\usepackage{layout}
 %\layout
 
+% Annexes
+\usepackage{appendix}
+
 % Ajouter un glossaire
 \usepackage[toc]{glossaries}
 \makeglossary
+\loadglsentries{glossaire}
 
 
 % -----------------------------------------------------------------------
@@ -101,8 +96,8 @@
     xleftmargin=0.5cm,
     framexleftmargin=0.5cm,
     framextopmargin=6pt,
-    framexbottommargin=6pt, 
-    frame=tb, 
+    framexbottommargin=6pt,
+    frame=tb,
     framerule=0pt,
     showstringspaces=false,
     breakatwhitespace=true,
@@ -120,11 +115,11 @@
 % -----------------------------------------------------------------------
 
 % Information sur le document
-\hypersetup{							
+\hypersetup{
     pdfauthor = {
-        Edward Ransome, 
-        Guillaume Milani, 
-        Mathieu Monteverde, 
+        Edward Ransome,
+        Guillaume Milani,
+        Mathieu Monteverde,
         Michael Spierer,
         Sathiya Kirushnapillai},                    % Auteurs
     pdftitle = {GEMMS - Edtieur d'image},           % Titre du document
@@ -175,12 +170,6 @@
 
 % Table des matières
 \tableofcontents
-\thispagestyle{empty}
-\newpage
-
-% Table des figures
-\listoffigures
-\thispagestyle{empty}
 \newpage
 
 
@@ -203,7 +192,6 @@
 \newpage
 
 %====================== INCLUSION DES PARTIES ======================
-\input{./glossaire.tex}
 
 \input{./intro_objectifs.tex}
 
@@ -226,5 +214,9 @@
 %inclusion de la biblio
 \bibliography{bibliographie.bib}
 %voir wiki pour plus d'information sur la syntaxe des entrées d'une bibliographie
+
+\section{Annexes}
+\appendix
+\input{./journal_travail.tex}
 
 \end{document}

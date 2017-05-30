@@ -60,9 +60,10 @@ Chaque document ouvert possède un objet Workspace permettant à l'utilisateur d
 \end{figure}
 
 L'espace de travail (Workspace) est un container contenant deux enfants (au sens de l'arbre de JavaFX): une zone de dessin (une branche du Scene Graph) où sont ajoutés tous les calques créés et modifiés par l'utilisateur, et une interface des outils permettant de dessiner les retours visuels des outils (comme le curseur du pinceau par exemple). Tous deux sont de type \gls{anchorpane}, un type spécifique de container JavaFX, car cette classe permet de positionner leurs enfants selon des coordonnées (x, y).
-\par
-La zone d'affichage correspond à un masque appliqué à l'espace
 
+La zone d'affichage correspond à un masque appliqué à l'espace de travail pour éviter que les calques ne dépassent de la zone dessin. En effet les parents de type AnchorPane ne cachent pas leur éléments enfants sortant de leurs frontières.
+
+Le Workspace détecte les mouvements de souris sur l'interface des outils et se charge d'appeler les méthodes correspondantes de l'objet Tool activé (se référer à la section \ref{section_outils}).
 
 \subsection{Copier-coller}
 Deux façon d'aborder le copier-coller ont été implémentées : la première consiste à enregistrer dans le presse-papier un ou des calques sélectionnés, la seconde consiste à enregistrer uniquement la partie sélectionnée et visible à l'écran.
@@ -124,6 +125,7 @@ TODO TODO TODO
 \par
 JavaFX offre (entre autres) les événements MousePressed, MouseDragged et MouseReleased. Ils correspondent respectivement à l'action de presser la souris, de la déplacer en gardant le clic gauche enfoncé ou de relâcher le clic gauche de la souris.
 \subsubsection{Hiérarchie des outils}
+\label{section_outils}
 \par
 La plupart des outils de l'application  fonctionnent grâce à ces trois événements. On pensera notamment au pinceau qui doit dessiner un trait en suivant la souris lors d'un MouseDragged.
 \par

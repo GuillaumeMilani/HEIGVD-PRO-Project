@@ -42,7 +42,7 @@ public class Drag extends AbstractTool {
         layers = workspace.getCurrentLayers();
         workspaceWidth = workspace.width();
         workspaceHeight = workspace.height();
-         workspace.getLayerTool().setCursor(Cursor.MOVE);
+        workspace.getLayerTool().setCursor(Cursor.MOVE);
     }
 
     @Override

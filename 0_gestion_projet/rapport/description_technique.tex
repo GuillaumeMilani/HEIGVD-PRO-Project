@@ -99,6 +99,10 @@ Une Cell (cellule) est un élément HBox JavaFX spécialisé, qui garde trace d'
 
 Ce système de gestion permet de fournir une vue des calques qui se maintient elle-même à jour, et ce quel que ce soit les changements apportés aux à la liste d'enfants de la zone de dessin.
 
+Le Workspace peut donc déléguer entièrement la gestion des calques à un objet de type LayerList. Les méthodes d'accès aux calques sélectionnés du Workspace font donc appel aux méthodes de la LayerList.
+
+\lstinputlisting[language=Java, caption=Exemple de gestion de la sélection des calques par la LayerList au sein du Workspace]{./src/gestion_calques.java}
+
 \subsection{Copier-coller}
 \label{sec:copiercoller}
 Deux façon d'aborder le copier-coller ont été implémentées : la première consiste à enregistrer dans le presse-papier un ou des calques sélectionnés, la seconde consiste à enregistrer uniquement la partie sélectionnée et visible à l'écran.

@@ -80,14 +80,31 @@ Pour les besoins de l'application, nous ne pouvions pas utiliser ces classes tel
 
 \subsubsection{Gestion des calques}
 
-Une des fonctionnalités indispensables de GEMMS est de permettre à l'utilisateur de gérer les calques de son document au moyen d'une liste dans le panneau d'interface correspondant. Il s'agit d'une représentation visuelle de l'état du Scene Graph dans la branche de la zone de dessin dont nous parlons plus haut. Elle doit donc être en tout temps synchronisée avec l'état actuel du document et tout changement doit se répercuter dans ce listing de calques.
+Une des fonctionnalités indispensables de GEMMS est de permettre à l'utilisateur de gérer les calques de son document au moyen d'une liste dans un panneau de l'interface. Il s'agit d'une représentation visuelle de l'état du Scene Graph dans la branche de la zone de dessin dont nous parlons plus haut. Elle doit donc être en tout temps synchronisée avec l'état actuel du document et tout changement doit se répercuter dans ce listing de calques.
 
 La classe ListView de JavaFX propose cette fonctionnalité. Malheureusement, ce composant n'étant pas paramétrable comme nous le souhaitions pour les besoins ergonomiques de l'application, nous avons dû implémenter notre propre système de gestion de calques. Il est cependant fortement inspiré du fonctionnement de ListView.
 
+\begin{figure}[H]
+	\caption{Implémentation du composant LayerList. Structure simplifiée.}
+	\centering
+	\includegraphics[scale=0.6]{layer_management.png}
+	\label{fig:layer_management}
+\end{figure}
+
+LayerList est une classe générique implémentée pour ce projet qui permet d'afficher sous forme de liste de cellules le contenu d'une ObservableList. La figure \ref{fig:layer_management} illustre la structure du Workspace et de sa LayerList. Dans cette représentation, toutes les classes sont instanciées avec Node comme paramètre générique pour une meilleure compréhension.
+
+LayerList hérite du composant VBox de JavaFX, ce qui permet de l'ajouter au Scene Graph. Dans GEMMS, elle observe les enfants de la zone de dessin du Workspace et est notifiée lorsqu'il y a un changement. Pour tout nouveau calque (Node) ajouté dans la liste, elle crée une nouvelle Cell (cellule) en utilisant le pattern de fabrication abstraite. Elle ajoute ces cellules dans un composant interne qui les affiche en colonne.
+
+Une Cell (cellule) est un élément HBox JavaFX spécialisé, qui garde trace d'un Node (calque du document) et qui permet de contrôler et d'afficher des information concernant ce Node. Chaque Cell peut en effet être sélectionnée, masquée, renommée, ou supprimée au clic de la souris, et ces actions se répercutent sur les calques effectifs contenus par le Workspace. 
+
+Ce système de gestion permet de fournir une vue des calques qui se maintient elle-même à jour, et ce quel que ce soit les changements apportés aux à la liste d'enfants de la zone de dessin.
+
 \subsection{Copier-coller}
+\label{sec:copiercoller}
 Deux façon d'aborder le copier-coller ont été implémentées : la première consiste à enregistrer dans le presse-papier un ou des calques sélectionnés, la seconde consiste à enregistrer uniquement la partie sélectionnée et visible à l'écran.
 
 Trois procédés sont à l'origine de cette fonction de l'application : le snapshot, le viewport et la sérialisation.
+
 
 \subsubsection{Snapshot}
 Le snapshot est un outil proposé par JavaFX qui permet d'effectuer une «capture» d'un élément ou un groupe d'élément. C'est ce qui nous intéresse lorsque l'on fait une copie d'une zone sélectionnée de l'écran. L'image ainsi capturée est alors écrite sur un \texttt{GEMMSCanvas} qui est sérialisé et enregistré dans le presse-papier.
@@ -215,18 +232,26 @@ Concernant la sérialisation de cette transformation, comme il s'agit de la tran
 \subsubsection{Déplacement}
 Le rôle de l'outil de déplacement est de pouvoir déplacer un ou des n\oe uds. Pour se faire, il implémente l'interface \textit{Tool} afin de pouvoir déplacer les n\oe uds avec la souris. Il retient la position de la souris lors du clic, calcule un offset lors du déplacement de celle-ci et applique une translation pour chaque n\oe ud selectionné qui consiste à rajouter l'offset aux coordonnées du n\oe ud.
 
- Il y a deux types de déplacement: celui avec l'alignement automatique et celui sans. Ce dernier, activable via un bouton, permet d'afficher des repères qui traversent le centre du workspace et qui permettent d'aligner un n\oe ud sur ceux-ci. De plus, avec ces repères, il y a un mechanisme d'aimant qui permet, lorsque la souris est assez proche d'un repère d'alignement, d'attirer le n\oe ud selectionné sur lui. Ce mechanisme d'attraction ne marche que s'il n'y a qu'un n\oe ud de selectionné.\subsubsection{Rotation}
+ Il y a deux types de déplacement: celui avec l'alignement automatique et celui sans. Ce dernier, activable via un bouton, permet d'afficher des repères qui traversent le centre du workspace et qui permettent d'aligner un n\oe ud sur ceux-ci. De plus, avec ces repères, il y a un mechanisme d'aimant qui permet, lorsque la souris est assez proche d'un repère d'alignement, d'attirer le n\oe ud selectionné sur lui. Ce mechanisme d'attraction ne marche que s'il n'y a qu'un n\oe ud de selectionné.
 \subsubsection{Rotation}
 Plusieurs approchent possible pour le méchanisme de rotation mais nous avons finalement opté pour un méchanisme très similaire a l'outil de déplacement : on calcule un offset via la position de la souris et on applique une rotation sur les n\oe uds selectionnés.
 \subsubsection{Redimensionnement}
 Comme pour l'outil déplacement et l'outil rotation, plusieurs approchent ont été pensées mais celle qui a été retenue est très semblable à la rotation et au déplacement. On calcule un offset avec le déplacement de la souris, on a un certain facteur de grossissement que l'on multiplie à l'offset afin d'obtenir le nouveau grossissement que l'on va appliquer aux n\oe uds.
 \subsubsection{Sélection}
 \label{sec:selection}
-La sélection permet à l'utilisateur de sélectionner une zone du workspace à l'aide d'un rectangle. Ce dernier peut être déplacer ou recréer si la zone de sélection ne convient pas. Une fois la zone choisie, si le calque courant est un GEMMSCanvas, il possible de supprimer à l'aide de la touche DEL ou de copier à l'aide de la touche CTRL+C.
+La sélection permet à l'utilisateur de sélectionner une zone du Workspace à l'aide d'un rectangle. Ce dernier peut être déplacé ou recréé si la zone de sélection ne convient pas. Une fois la zone choisie, si le calque courant est un GEMMSCanvas, il possible de supprimer à l'aide de la touche DEL ou de copier à l'aide de la touche CTRL+C.
 
-Pour la suppression de la zone, la classe GraphicsContext qui s'occupe de la partie graphique d'un Canvas offre la méthode clearRect qui permet d'effacer une partie rectangulaire du Canvas. Pour cela, il faut
+Pour la suppression de la zone, la classe GraphicsContext qui s'occupe de la partie graphique d'un Canvas offre la méthode clearRect qui permet d'effacer une partie rectangulaire du Canvas (Remplace les pixels présents par des pixels de couleur transparent). Il suffit donc de récupérer la position, la largeur et la hauteur de la zone de sélection et d'utiliser clearRect.
+
+Et enfin pour le copier-coller, voir la section \ref{sec:copiercoller} pour plus d'informations sur son fonctionnement.
 
 \subsubsection{Rognage}
+L'outil rognage permet à l'utilisateur de rogner le Workspace à l'aide d'un rectangle. Ce dernier peut être déplacé ou recrée si la zone ne convient pas. Puis lorsque l'utilisateur est satisfait de la zone de rognage, il suffit de cliquer une fois sur le rectangle pour valider.
+
+Le rognage redimensionne simplement le zone d'affichage du Workspace et décale tous les calques présents afin d'afficher la zone choisie par l'utilisateur. Contrairement aux éditeurs comme Gimp ou Paint, le rognage ne coupe pas les calques présents.
+
+Enfin, l'outil rognage et le menu Resize font exactement les mêmes actions.
+
 \subsection{Effets}
 La section \og Effect \fg{} permet d'appliquer des effets colorimétriques, régler la transparence et ajouter un flou à un ou plusieurs calques. Chaque calque qui doit être modifié passe par une vérification: s'il n'a aucun effet appliqué, on lui applique trois effets: un ColorAdjust, un SepiaTone et un GaussianBlur permettant d'effectuer respectivement des ajustements de la couleur, un effet sépia, et un flou. Ces effets sont initialement tous réglés pour n'effectuer aucun changement visuel. Ceci permet, lors d'une future modification des effets, de simplement devoir faire varier les paramètres de ces effets.
 

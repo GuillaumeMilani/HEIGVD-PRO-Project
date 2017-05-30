@@ -1,14 +1,14 @@
 \section{Description technique}
 
-Comme cité précédemment, notre application a été codé à l'aide de la librairie JavaFX. Ainsi, toute notre implémentation technique est basée sur cette dernière.
+Comme cité précédemment, notre application a été codée à l'aide de la librairie JavaFX. Ainsi, toute notre implémentation technique est basée sur cette dernière.
 
 \subsection{Structure}
 \subsubsection{Structure de JavaFX}
 Notre application se base sur la structure officielle d'une application JavaFX, qui se prête parfaitement à notre type d'application. Sa compréhension est essentielle pour discuter de l'architecture de notre logiciel.
 \par
-Les trois point-clés sont la notion de \gls{stage}, de \gls{scene} et de \gls{scene_graphe}. Le Stage est le container haut-niveau d'une application JavaFX \cite{javadoc_stage}. Il doit contenir tout le contenu d'une fenêtre. La Scene est le container pour un Scene Graph. Chaque scène doit avoir un et un seul nœud racine du Scene Graph \cite{javadoc_scene}.
+Les trois point-clés sont la notion de \gls{stage}, de \gls{scene} et de \gls{scene_graphe}. Le Stage est le container haut-niveau d'une application JavaFX \cite{javadoc_stage}. Il doit contenir tout le contenu d'une fenêtre. La Scene est le container pour un Scene Graph. Chaque scène doit avoir un et un seul n\oe ud racine du Scene Graph \cite{javadoc_scene}.
 \par
-Le Scene Graph est une structure en arbre qui garde une représentation interne des éléments graphiques de l'application. En tout temps, il sait quels éléments afficher, quels zones de l'écrans doivent être rafraîchies, et comment le faire de la manière la plus efficace \cite{javadoc_scene_graphe}. 	
+Le Scene Graph est une structure en arbre qui garde une représentation interne des éléments graphiques de l'application. En tout temps, il sait quels éléments afficher, quelles zones de l'écran doivent être rafraîchies, et comment le faire de la manière la plus efficace \cite{javadoc_scene_graphe}. 	
 
 \begin{figure}[H]
 	\caption{Représentation du Scene Graph de JavaFX. Source: documentation Oracle \cite{javadoc_scene_graphe}}
@@ -16,11 +16,11 @@ Le Scene Graph est une structure en arbre qui garde une représentation interne 
 	\includegraphics[scale=0.6]{scene_graphe_1.png}
 	\label{fig:scene_graphe_1}
 \end{figure}
-Comme ont peut le voir sur la figure \ref{fig:scene_graphe_1}, chaque nœud de l'arbre du Scene Graph appartient à la hiérarchie de la classe Node. De plus chacun de ces nœuds est soit une feuille (ne pouvant pas contenir d'enfants), soit une branche (pouvant alors contenir des enfants).
+Comme on peut le voir sur la figure \ref{fig:scene_graphe_1}, chaque n\oe ud de l'arbre du Scene Graph appartient à la hiérarchie de la classe Node. De plus, chacun de ces n\oe uds est soit une feuille (ne pouvant pas contenir d'enfants), soit une branche (pouvant alors contenir des enfants).
 \par
-Cette structure particulière permet donc de créer facilement des interfaces graphiques, car il suffit que chaque élément visuel de notre application soit un objet (spécialisé ou non) d'une classe héritant de Node pour l'affichage de cet élément soit géré automatiquement par JavaFX.
+Cette structure particulière permet donc de créer facilement des interfaces graphiques, car il suffit que chaque élément visuel de notre application soit un objet (spécialisé ou non) d'une classe héritant de Node pour que l'affichage de cet élément soit géré automatiquement par JavaFX.
 \par
-Pour beaucoup de nos composants, nous avons donc spécialisé une des classes offertes par JavaFx proposant la fonctionnalité recherchée, en y ajoutant les comportements dont nous avions besoin. Il sont ensuite ajouté au Scene Graph de la scène principale, et nous pouvons ainsi construire notre application.
+Pour beaucoup de nos composants, nous avons donc spécialisé une des classes offertes par JavaFx proposant la fonctionnalité recherchée, en y ajoutant les comportements dont nous avions besoin. Ils sont ensuite ajoutés au Scene Graph de la scène principale, et nous pouvons ainsi construire notre application.
 
 
 \subsection{Serialisation}

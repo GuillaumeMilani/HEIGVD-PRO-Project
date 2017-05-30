@@ -1,3 +1,13 @@
+/**
+ * Fichier: ResizeDialog.java
+ * Date: 31.05.2017
+ *
+ * @author Guillaume Milani
+ * @author Edward Ransome
+ * @author Mathieu Monteverde
+ * @author Michael Spierer
+ * @author Sathiya Kirushnapillai
+ */
 package ch.heigvd.dialog;
 
 import ch.heigvd.workspace.Workspace;
@@ -18,21 +28,19 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.converter.IntegerStringConverter;
 
-
 /**
  * <h1>OpenDocumentDialog</h1>
- * 
+ *
  * Shows a dialog that allow the user to set resize value.
  */
 public class ResizeDialog {
-    
+
     // Dialog
     private Dialog<Rectangle> dialog;
-    
-    
+
     /**
      * Constructor
-     * 
+     *
      * @param workspace workspace to resize
      */
     public ResizeDialog(Workspace workspace) {
@@ -41,7 +49,8 @@ public class ResizeDialog {
         dialog.setTitle("Resize workspace");
 
         // Set button
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK,
+                ButtonType.CANCEL);
 
         // Set GridPane
         GridPane grid = new GridPane();
@@ -51,19 +60,23 @@ public class ResizeDialog {
 
         // Set text field
         TextField widthText = new TextField();
-        widthText.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        widthText.setTextFormatter(new TextFormatter<>(
+                new IntegerStringConverter()));
         widthText.setText(String.valueOf(workspace.width()));
-        
+
         TextField heightText = new TextField();
-        heightText.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        heightText.setTextFormatter(new TextFormatter<>(
+                new IntegerStringConverter()));
         heightText.setText(String.valueOf(workspace.height()));
-        
+
         TextField offsetXText = new TextField();
-        offsetXText.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        offsetXText.setTextFormatter(new TextFormatter<>(
+                new IntegerStringConverter()));
         offsetXText.setText("0");
-        
+
         TextField offsetYText = new TextField();
-        offsetYText.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        offsetYText.setTextFormatter(new TextFormatter<>(
+                new IntegerStringConverter()));
         offsetYText.setText("0");
 
         // Shows label and text field
@@ -87,30 +100,31 @@ public class ResizeDialog {
 
         Node loginButton = dialog.getDialogPane().lookupButton(ButtonType.OK);
         loginButton.setDisable(true);
-        
+
         // Field validation
-        ChangeListener<String> listener = (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+        ChangeListener<String> listener = (
+                ObservableValue<? extends String> observable, String oldValue,
+                String newValue) -> {
             boolean isError = false;
-            
+
             try {
                 // Get user input
                 int width = Integer.valueOf(widthText.textProperty().get());
                 int height = Integer.valueOf(heightText.textProperty().get());
                 int offsetX = Integer.valueOf(offsetXText.textProperty().get());
                 int offsetY = Integer.valueOf(offsetYText.textProperty().get());
-                
+
                 // Check size
-                if(width <= 0 || width > 3000 || height <= 0 || height > 3000) {
+                if (width <= 0 || width > 3000 || height <= 0 || height > 3000) {
                     isError = true;
                 }
-            }
-            catch(NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 isError = true;
             }
- 
+
             // Disable button if inputs are incorrect
             loginButton.setDisable(isError);
-            
+
         };
 
         // Field validation
@@ -118,20 +132,20 @@ public class ResizeDialog {
         heightText.textProperty().addListener(listener);
         offsetXText.textProperty().addListener(listener);
         offsetYText.textProperty().addListener(listener);
-        
+
         // Return result
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == ButtonType.OK) {
-                return new Rectangle(Integer.valueOf(offsetXText.getText()), 
-                                        Integer.valueOf(offsetYText.getText()), 
-                                        Integer.valueOf(widthText.getText()), 
-                                        Integer.valueOf(heightText.getText()));
+                return new Rectangle(Integer.valueOf(offsetXText.getText()),
+                        Integer.valueOf(offsetYText.getText()),
+                        Integer.valueOf(widthText.getText()),
+                        Integer.valueOf(heightText.getText()));
             }
 
             return null;
         });
     }
-    
+
     /**
      * Shows the dialog and waits for the user response
      *

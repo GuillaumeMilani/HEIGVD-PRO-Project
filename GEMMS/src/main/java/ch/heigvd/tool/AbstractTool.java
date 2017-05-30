@@ -1,10 +1,20 @@
+/**
+ * Fichier: AbstractTool.java
+ * Date: 31.05.2017
+ *
+ * @author Guillaume Milani
+ * @author Edward Ransome
+ * @author Mathieu Monteverde
+ * @author Michael Spierer
+ * @author Sathiya Kirushnapillai
+ */
 package ch.heigvd.tool;
 
 import ch.heigvd.workspace.HistoryNotifier;
 import ch.heigvd.workspace.Workspace;
 
-
 public abstract class AbstractTool implements Tool {
+
     protected final Workspace workspace;
     protected HistoryNotifier notifier;
 

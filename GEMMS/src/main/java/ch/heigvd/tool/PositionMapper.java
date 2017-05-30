@@ -1,3 +1,13 @@
+/**
+ * Fichier: PositionMapper.java
+ * Date: 31.05.2017
+ *
+ * @author Guillaume Milani
+ * @author Edward Ransome
+ * @author Mathieu Monteverde
+ * @author Michael Spierer
+ * @author Sathiya Kirushnapillai
+ */
 package ch.heigvd.tool;
 
 import javafx.geometry.Bounds;
@@ -11,19 +21,19 @@ import javafx.scene.transform.Translate;
 
 /**
  * <h1>PositionMapper</h1>
- * 
+ *
  * Provides function to convert coordinates to Node coordinates
  */
 public class PositionMapper {
-    
+
     /**
      * Convert mouse coordinates to Node coordinates (Apply node transformation)
-     * 
+     *
      * @param node Node as reference
      * @param x x position
      * @param y y position
      * @param z z position
-     * 
+     *
      * @return converted coordinates
      */
     public static Point3D convert(Node node, double x, double y, double z) {
@@ -51,9 +61,9 @@ public class PositionMapper {
         scale.setPivotY(bounds.getHeight() / 2);
         scale.setPivotZ(bounds.getDepth() / 2);
         point = scale.transform(point);
-        
+
         // Transform
-        for(Transform t : node.getTransforms()) {
+        for (Transform t : node.getTransforms()) {
             try {
                 Transform inverseTranform = t.createInverse();
                 point = inverseTranform.transform(point);
@@ -65,16 +75,16 @@ public class PositionMapper {
 
         return point;
     }
-    
+
     /**
      * Convert mouse coordinates to Node coordinates (Apply node transformation)
-     * 
+     *
      * @param node Node as reference
      * @param point coordinates to convert
-     * 
+     *
      * @return converted coordinates
      */
-    public static Point3D convert(Node node, Point3D point) { 
+    public static Point3D convert(Node node, Point3D point) {
         return convert(node, point.getX(), point.getY(), point.getZ());
     }
 }

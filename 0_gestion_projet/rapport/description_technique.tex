@@ -3,9 +3,24 @@
 Comme cité précédemment, notre application a été codé à l'aide de la librairie JavaFX. Ainsi, toute notre implémentation technique est basée sur cette dernière.
 
 \subsection{Structure}
-JavaFX utilise des fichiers FXML pour séparer la logique de la vue TODO TODO TODO
-ImageView, Canvas et Text
-Controller
+\subsubsection{Structure de JavaFX}
+Notre application se base sur la structure officielle d'une application JavaFX, qui se prête parfaitement à notre type d'application. Sa compréhension est essentielle pour discuter de l'architecture de notre logiciel.
+\par
+Les trois point-clés sont la notion de Stage, de Scene et de Scene Graph (graphe de scène). Le Stage est le container haut-niveau d'une application JavaFX \cite{javadoc_stage}. Il doit contenir tout le contenu d'une fenêtre. La Scene est le container pour un Scene Graph. Chaque scène doit avoir un et un seul nœud racine du Scene Graph \cite{javadoc_scene}.
+\par
+Le Scene Graph est une structure en arbre qui garde une représentation interne des éléments graphiques de l'application. En tout temps, il sait quels éléments afficher, quels zones de l'écrans doivent être rafraîchies, et comment le faire de la manière la plus efficace.
+\begin{figure}[H]
+	\caption{Représentation du Scene Graph de JavaFX}
+	\centering
+	\includegraphics[scale=0.6]{scene_graphe_1.png}
+	\label{fig:scene_graphe_1}
+\end{figure}
+Comme ont peut le voir sur la figure \ref{fig:scene_graphe_1}, chaque nœud de l'arbre du Scene Graph appartient à la hiérarchie de la classe Node. De plus chacun de ces nœuds est soit une feuille (ne pouvant pas contenir d'enfants), soit une branche (pouvant alors contenir des enfants).
+\par
+Cette structure particulière permet donc de créer facilement des interfaces graphiques, car il suffit que chaque élément visuel de notre application soit un objet (spécialisé ou non) d'une classe héritant de Node pour l'affichage de cet élément soit géré automatiquement par JavaFX.
+\par
+Pour beaucoup de nos composants, nous avons donc spécialisé une des classes offertes par JavaFx proposant la fonctionnalité recherchée, en y ajoutant les comportements dont nous avions besoin. Il sont ensuite ajouté au Scene Graph de la scène principale, et nous pouvons ainsi construire notre application.
+
 
 \subsection{Serialisation}
 \label{sec:serialisation}
@@ -32,7 +47,22 @@ Bien que la sérialisation soit possible, ceci engendre des contraintes et des p
 La sauvegarde d'un document utilise la sérialisation des objets. Comme mentionné précédemment, la sérialisation de certaines classes peut être volumineux. Ainsi, les données sont compressées dans le format GZIP.
 
 \subsection{Workspace et liste des calques}
-TODO TODO TODO
+Le Workspace correspond à l'espace de travail d'un Document GEMMS. Le Workspace est une classe personnalisée héritant de la classe StackPane de JavaFX. Il s'insère donc dans le graphe de scène de JavaFX.
+\subsubsection{Structure d'un Workspace}
+Chaque document ouvert possède un objet Workspace permettant à l'utilisateur de manipuler le contenu du fichier. Il est constitué de couches comme représenté sur la figure \ref{fig:workspace_representation}.
+
+
+\begin{figure}[H]
+	\caption{Représentation des couches du Workspace}
+	\centering
+	\includegraphics[scale=0.5]{workspace_schema.png}
+	\label{fig:workspace_representation}
+\end{figure}
+
+L'espace de travail (Workspace) est un container contenant deux enfants (au sens de l'arbre de JavaFX): une zone de dessin (une branche du graphe de scène) ou seront ajoutés tous les calques créés et modifiés par l'utilisateur, et une interface des outils permettant de dessiner les retours visuels des outils (comme le curseur du pinceau par exemple). Tous deux sont de type AnchorPane, car cela permet de positionner leurs enfants selon des coordonnées (x, y).
+\par
+La zone d'affichage correspond à un masque appliqué à l'espace
+
 
 \subsection{Copier-coller}
 Deux façon d'aborder le copier-coller ont été implémentées : la première consiste à enregistrer dans le presse-papier un ou des calques sélectionnés, la seconde consiste à enregistrer uniquement la partie sélectionnée et visible à l'écran.
@@ -163,3 +193,17 @@ Les réglages de couleur et de police de cet outils utilisent la structure expli
 \subsubsection{Sélection}
 \label{sec:selection}
 \subsubsection{Rognage}
+\subsection{Effets}
+La section \og Effet \fg{} permet d'appliquer des effets colorimétriques, régler la transparence et ajouter un flou à un ou plusieurs calques. Chaque calque qui doit être modifié passe par une vérification: s'il n'a aucun effet appliqué, on lui applique trois effets: un ColorAdjust, un SepiaTone et un GaussianBlur permettant d'effectuer respectivement des ajustements de la couleur, un effet sépia, et un flou. Ces effets sont initialiement tous réglés pour n'effectuer aucun changement visuel. Ceci permet, lors d'un futur changement des effets, de simplement devoir faire varier les paramètres de ces effets.
+
+\subsubsection{Noir et blanc}
+Le bouton \og B\&W \fg{} à pour effet de régler la saturation de l'image à sa valeur minimale, donnant pour effet une image en nuances de gris.
+
+\subsubsection{Tint}
+Applique une teinture de la couleur sélectionnée à l'image. Ceci est fait en calculant une valeur de la teinte et en l'appliquant à l'effet ColorAdjust.
+
+\subsubsection{Barres glissantes}
+Les barres glissantes (\og Sliders \fg{} JavaFX) permettent d'ajuster tous les autres effets implémentés. La transparence règle directement un attribut \og Opacity \fg{} d'un noeud. La saturation, le contraste et la luminosité peuvent être ajustés en modifiant l'effet ColorAdjust. L'effet sépia et le flou ajustent respectivement l'effet SepiaTone et GaussianBlur.
+
+\subsection{Remise à zéro}
+Le bouton \og Reset \fg{} permet de remettre à zéro tous les effets sur tous les calques sélectionnés, les restaurant à leur état visuel initial.

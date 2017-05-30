@@ -36,6 +36,7 @@
 % Informations sur un document compilé en PDF et les liens externes / internes
 \usepackage{hyperref}
 
+
 % Mise en page des tableaux
 \usepackage{array}
 \usepackage{tabularx}
@@ -67,6 +68,12 @@
 
 % Annexes
 \usepackage{appendix}
+
+% Ajouter un glossaire
+\usepackage[toc]{glossaries}
+\makeglossary
+\loadglsentries{glossaire}
+
 
 % -----------------------------------------------------------------------
 % --- Couleurs définies
@@ -194,6 +201,8 @@
 
 \input{./conclusion.tex}
 
+\glsaddall
+\printglossaries
 
 \newpage
 

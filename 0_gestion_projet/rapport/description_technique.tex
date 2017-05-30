@@ -55,23 +55,31 @@ Lorsque l'utilisateur clique sur un bouton pour activer un outil, le programme c
 \par
 D'autres outils plus simples, comme la symétrie horizontale ou verticale ou les effets de couleurs sont implémentés en ajoutant un action à des composants de bases de JavaFX comme des Button ou des Slider.
 	
-\begin{figure}[h]
+\begin{figure}[H]
 	\caption{Diagramme simplifié de la hiérarchie des outils}
 	\centering
 	\includegraphics[scale=0.6]{tool_hierarchy.png}
 	\label{fig:tool_hier}
 \end{figure}
 
-\subsubsection{Réglage des outils}
-Certains de ces outils nécessitent d'être paramétrés en temps réel en fonction des calques sélectionnés par l'utilisateur. Par exemple, la taille de la gomme est stockée dans l'objet représentant l'outil, et est utilisée pour déterminer la taille du rectangle à effacer. L'utilisateur peut la régler au moyen d'un Slider (il s'agit d'un composant JavaFX). Les même besoin concernent la gestion de la couleur du pinceau, de la taille et de la police de l'outil de modification de texte.
+\subsubsection{Réglage des outils} \label{reglage-outils}
+Certains de ces outils nécessitent d'être paramétrés en temps réel en fonction des calques sélectionnés par l'utilisateur. Par exemple, la taille de la gomme est stockée dans l'objet représentant l'outil, et est utilisée pour déterminer la taille du rectangle à effacer. L'utilisateur peut la régler au moyen d'un Slider (il s'agit d'un composant JavaFX). Les même besoin concernent la gestion de la couleur du pinceau, de la taille et de la police de l'outil de modification de texte. La figure \ref{fig:text_settings} illustre l'apparence des réglages de l'outil de modification de texte.
+
+\begin{figure}[H]
+	\caption{Composant de réglages de l'outil de modification texte}
+	\centering
+	\includegraphics[scale=0.6]{toolSettings.png}
+	\label{fig:text_settings}
+\end{figure}
+
 \par
 Ces réglages doivent pouvoir s'adapter à un outil existant, comme par exemple récupérer la taille actuelle du pinceau et la garder en mémoire.
 
-Pour ce faire, les réglages sont gérés au moyen d'une hiérarchie de classes (se référer à la figure \ref{tool_settings}), qui sont en fait des spécialisations de composants JavaFX permettant à l'utilisateur de paramétrer les outils, et d'une série d'interfaces représentant des outils pouvant être paramétrés sur divers aspects (la taille, la couleur, la police et ainsi de suite).
+Pour ce faire, les réglages sont gérés au moyen d'une hiérarchie de classes (se référer à la figure \ref{fig:tool_settings}), qui sont en fait des spécialisations de composants JavaFX permettant à l'utilisateur de paramétrer les outils, et d'une série d'interfaces représentant des outils pouvant être paramétrés sur divers aspects (la taille, la couleur, la police et ainsi de suite).
 \par
-Ainsi un objet ToolSizeSettings est un élément graphique de contrôle qui contient un Slider JavaFx, pour permettre à l'utilisateur de régler la taille du pinceau, et gardant trace d'un outil de type SizeConfigurableTool à paramétrer.
+Ainsi un objet ToolFontSettings permet de paramétrer la Font (les paramètres de police d'écriture) d'un objet implémentant l'interface FontConfigruableTool. Dans le cas de l'outil texte, qui implémente cette interface, les réglages doivent s'adapter aux paramètres d'un calque texte et ainsi se mettre à jour en temps réel. 
 \par 
-Lorsque l'utilisateur modifie la valeur du Slider contenu dans l'objet ToolSizeSettings, celui-ci met à jour le sa cible SizeConfigurableTool en temps réel (le pinceau par exemple).
+Lorsque l'utilisateur modifie la valeur du Slider contenu dans l'objet ToolFontSettings, celui-ci met à jour sa cible SizeConfigurableTool en temps réel (ici, l'outil de modification de texte).
 
 \begin{figure}[h]
 	\caption{Diagramme simplifié des réglages d'outils}
@@ -95,9 +103,11 @@ La classe LineTool se charge donc d'implémenter cet algorithme et pour chaque p
 \subsubsection{Pipette}
 Le rôle de l'outil pipette et de permettre à l'utilisateur de choisir une couleur en la prélevant sur un élément existant du document. Il s'agirait typiquement de récupérer la couleur d'un calque GEMMSText, GEMMSCanvas ou GEMMSImage.
 \par 
-Dans le cas d'un texte, la pipette retourne simplement la couleur de celui-ci. Dans le cas d'un objet de type GEMMSCanvas ou d'une GEMMSImage, l'outil lit le pixel exact cliqué par l'utilisateur, ci celui-ci se trouve à l'intérieur des bornes du calque sélectionné.
+Dans le cas d'un texte, la pipette retourne simplement la couleur de celui-ci. Dans le cas d'un objet de type GEMMSCanvas ou d'une GEMMSImage, l'outil lit le pixel exact cliqué par l'utilisateur, si celui-ci se trouve à l'intérieur des bornes du calque sélectionné.
 \subsubsection{Modification de texte}
-L'outil de modification de texte permet à l'utilisateur de modifier les propriétés d'un calque texte existant. Lorsque cet outil est activé
+L'outil de modification de texte permet à l'utilisateur de modifier les propriétés d'un calque texte existant. Lorsque il clique dessus, si le clic est effectué dans les bornes visuelles du texte, l'outil ouvre une fenêtre de dialogue invitant à changer le contenu du texte. 
+\par
+Les réglages de couleur et de police de cet outils utilisent la structure expliquée à la section \ref{reglage-outils} en utilisant des objets de type ToolColorSettings et ToolFontSettings.
 \subsubsection{Symétries}
 \subsubsection{Déplacement}
 \subsubsection{Rotation}

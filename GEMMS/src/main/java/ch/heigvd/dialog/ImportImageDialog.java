@@ -1,6 +1,6 @@
 package ch.heigvd.dialog;
 
-import ch.heigvd.gemms.GEMMSStageFXMLController;
+import ch.heigvd.controller.MainController;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +58,7 @@ public class ImportImageDialog {
                 image = SwingFXUtils.toFXImage(bufferedImage, null);
             } catch (IOException ex) {
                 // TODO : manage exceptions
-                Logger.getLogger(GEMMSStageFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 

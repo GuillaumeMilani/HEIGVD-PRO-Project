@@ -80,7 +80,7 @@ Pour les besoins de l'application, nous ne pouvions pas utiliser ces classes tel
 
 \subsubsection{Gestion des calques}
 
-Une des fonctionnalités indispensables de GEMMS est de permettre à l'utilisateur de gérer les calques de son document au moyen d'une liste dans un panneau de l'interface. Il s'agit d'une représentation visuelle de l'état du Scene Graph dans la branche de la zone de dessin dont nous parlons plus haut. Elle doit donc être en tout temps synchronisée avec l'état actuel du document et tout changement doit se répercuter dans ce listing de calques.
+Une des fonctionnalités indispensables de GEMMS est de permettre à l'utilisateur de gérer les calques de son document au moyen d'une liste dans un panneau de l'interface. Il s'agit d'une représentation visuelle de l'état du Scene Graph dans la branche de la zone de dessin dont nous parlons plus haut. Elle doit donc être en tout temps synchronisée avec l'état actuel du document et tout changement doit se répercuter dans cet affichage de calques.
 
 La classe ListView de JavaFX propose cette fonctionnalité. Malheureusement, ce composant n'étant pas paramétrable comme nous le souhaitions pour les besoins ergonomiques de l'application, nous avons dû implémenter notre propre système de gestion de calques. Il est cependant fortement inspiré du fonctionnement de ListView.
 
@@ -91,13 +91,17 @@ La classe ListView de JavaFX propose cette fonctionnalité. Malheureusement, ce 
 	\label{fig:layer_management}
 \end{figure}
 
-LayerList est une classe générique implémentée pour ce projet qui permet d'afficher sous forme de liste de cellules le contenu d'une ObservableList. La figure \ref{fig:layer_management} illustre la structure du Workspace et de sa LayerList. Dans cette représentation, toutes les classes sont instanciées avec Node comme paramètre générique pour une meilleure compréhension.
+LayerList est une classe générique implémentée pour ce projet qui permet d'afficher sous forme de liste de cellules le contenu d'une ObservableList. La figure \ref{fig:layer_management} illustre la structure du Workspace et de sa LayerList. Dans cette représentation, toutes les classes sont instanciées avec Node comme paramètre générique pour une meilleure compréhension. Les enfants d'un Node de type parent étant représentés sous la forme d'une ObservableList<Node> dans JavaFX, Layerlist peut ainsi gérer les calques du Workspace.
 
 LayerList hérite du composant VBox de JavaFX, ce qui permet de l'ajouter au Scene Graph. Dans GEMMS, elle observe les enfants de la zone de dessin du Workspace et est notifiée lorsqu'il y a un changement. Pour tout nouveau calque (Node) ajouté dans la liste, elle crée une nouvelle Cell (cellule) en utilisant le pattern de fabrication abstraite. Elle ajoute ces cellules dans un composant interne qui les affiche en colonne.
 
 Une Cell (cellule) est un élément HBox JavaFX spécialisé, qui garde trace d'un Node (calque du document) et qui permet de contrôler et d'afficher des information concernant ce Node. Chaque Cell peut en effet être sélectionnée, masquée, renommée, ou supprimée au clic de la souris, et ces actions se répercutent sur les calques effectifs contenus par le Workspace. 
 
 Ce système de gestion permet de fournir une vue des calques qui se maintient elle-même à jour, et ce quel que ce soit les changements apportés aux à la liste d'enfants de la zone de dessin.
+
+Le Workspace peut donc déléguer entièrement la gestion des calques à un objet de type LayerList. Les méthodes d'accès aux calques sélectionnés du Workspace font donc appel aux méthodes de la LayerList.
+
+\lstinputlisting[language=Java, caption=Exemple de gestion de la sélection des calques par la LayerList au sein du Workspace]{./src/gestion_calques.java}
 
 \subsection{Copier-coller}
 \label{sec:copiercoller}

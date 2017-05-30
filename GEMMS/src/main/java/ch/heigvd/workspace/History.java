@@ -70,6 +70,15 @@ public class History implements Observer {
 
             currentIndex = 0;
 
+            // If the history saturates the memory, remove old elements
+            Runtime runtime = Runtime.getRuntime();
+            while (history.size() > 0 && runtime.freeMemory() / runtime.totalMemory() > 0.9) {
+                Logger.getLogger(History.class.getName()).log(Level.INFO, "Freeing memoryi");
+                history.remove(history.size() - 1);
+                selectedHistory.remove(history.size() - 1);
+                imagesHistory.remove(history.size() - 1);
+            }
+
             try {
                 // Get the selected layers indexes
                 List<Integer> indexes = new LinkedList<>();

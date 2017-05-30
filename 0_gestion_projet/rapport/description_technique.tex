@@ -65,8 +65,24 @@ La zone d'affichage correspond à un masque appliqué à l'espace de travail pou
 
 Le Workspace détecte les mouvements de souris sur l'interface des outils et se charge d'appeler les méthodes correspondantes de l'objet Tool activé (se référer à la section \ref{section_outils}).
 
+\subsubsection{Types de calques}
+Dans GEMMS, les éléments d'un document sont gérés au moyen de calques. L'application utilise trois sortes de calques, qui sont en fait des types de Node proposés par JavaFX. La classe \gls{text} permet de représenter des textes, la classe \gls{canvas} permet de dessiner des éléments graphiques (lignes, formes, etc.) et la classe \gls{imageview} permet de représenter des images. 
+
+Pour les besoins de l'application, nous ne pouvions pas utiliser ces classes telles qu'elles sont proposées par l'API JavaFX. Nous avons donc créer des classes spécialisées (\gls{gemmstext}, \gls{gemmstext} et  \gls{gemmsimage}) de chacun de ces éléments afin de pouvoir ajouter les fonctionnalités nécessaires. La figure \ref{fig:layer_hierarchy} illustre cette spécialisation.
+
+\begin{figure}[H]
+	\caption{Spécialisation des classes JavaFX pour la gestion des calques}
+	\centering
+	\includegraphics[scale=0.55]{layer_hierarchy.png}
+	\label{fig:layer_hierarchy}
+\end{figure}
+
+
 \subsubsection{Gestion des calques}
-Dans GEMMS, les éléments d'un document sont gérés au moyen de calques. L'application utilise trois sortes de calques, qui sont en fait des types de Node proposés par JavaFX. La classe Text permet de représenter des textes, la classe Canvas permet de dessiner des éléments graphiques (lignes, formes, etc.), et la ImageView permet de représenter des images. 
+
+Une des fonctionnalités indispensables de GEMMS est de permettre à l'utilisateur de gérer les calques de son document au moyen d'une liste dans le panneau d'interface correspondant. Il s'agit d'une représentation visuelle de l'état du Scene Graph dans la branche de la zone de dessin dont nous parlons plus haut. Elle doit donc être en tout temps synchronisée avec l'état actuel du document et tout changement doit se répercuter dans ce listing de calques.
+
+La classe ListView de JavaFX propose cette fonctionnalité. Malheureusement, ce composant n'étant pas paramétrable comme nous le souhaitions pour les besoins ergonomiques de l'application, nous avons dû implémenter notre propre système de gestion de calques. Il est cependant fortement inspiré du fonctionnement de ListView.
 
 \subsection{Copier-coller}
 Deux façon d'aborder le copier-coller ont été implémentées : la première consiste à enregistrer dans le presse-papier un ou des calques sélectionnés, la seconde consiste à enregistrer uniquement la partie sélectionnée et visible à l'écran.

@@ -85,9 +85,11 @@ Une des fonctionnalités indispensables de GEMMS est de permettre à l'utilisate
 La classe ListView de JavaFX propose cette fonctionnalité. Malheureusement, ce composant n'étant pas paramétrable comme nous le souhaitions pour les besoins ergonomiques de l'application, nous avons dû implémenter notre propre système de gestion de calques. Il est cependant fortement inspiré du fonctionnement de ListView.
 
 \subsection{Copier-coller}
+\label{sec:copiercoller}
 Deux façon d'aborder le copier-coller ont été implémentées : la première consiste à enregistrer dans le presse-papier un ou des calques sélectionnés, la seconde consiste à enregistrer uniquement la partie sélectionnée et visible à l'écran.
 
 Trois procédés sont à l'origine de cette fonction de l'application : le snapshot, le viewport et la sérialisation.
+
 
 \subsubsection{Snapshot}
 Le snapshot est un outil proposé par JavaFX qui permet d'effectuer une «capture» d'un élément ou un groupe d'élément. C'est ce qui nous intéresse lorsque l'on fait une copie d'une zone sélectionnée de l'écran. L'image ainsi capturée est alors écrite sur un \texttt{GEMMSCanvas} qui est sérialisé et enregistré dans le presse-papier.
@@ -222,9 +224,11 @@ Plusieurs approchent possible pour le méchanisme de rotation mais nous avons fi
 Comme pour l'outil déplacement et l'outil rotation, plusieurs approchent ont été pensées mais celle qui a été retenue est très semblable à la rotation et au déplacement. On calcule un offset avec le déplacement de la souris, on a un certain facteur de grossissement que l'on multiplie à l'offset afin d'obtenir le nouveau grossissement que l'on va appliquer aux n\oe uds.
 \subsubsection{Sélection}
 \label{sec:selection}
-La sélection permet à l'utilisateur de sélectionner une zone du workspace à l'aide d'un rectangle. Ce dernier peut être déplacer ou recréer si la zone de sélection ne convient pas. Une fois la zone choisie, si le calque courant est un GEMMSCanvas, il possible de supprimer à l'aide de la touche DEL ou de copier à l'aide de la touche CTRL+C.
+La sélection permet à l'utilisateur de sélectionner une zone du Workspace à l'aide d'un rectangle. Ce dernier peut être déplacé ou recréé si la zone de sélection ne convient pas. Une fois la zone choisie, si le calque courant est un GEMMSCanvas, il possible de supprimer à l'aide de la touche DEL ou de copier à l'aide de la touche CTRL+C.
 
-Pour la suppression de la zone, la classe GraphicsContext qui s'occupe de la partie graphique d'un Canvas offre la méthode clearRect qui permet d'effacer une partie rectangulaire du Canvas. Pour cela, il faut
+Pour la suppression de la zone, la classe GraphicsContext qui s'occupe de la partie graphique d'un Canvas offre la méthode clearRect qui permet d'effacer une partie rectangulaire du Canvas (Remplace les pixels présents par des pixels de couleur transparent). Il suffit donc de récupérer la position, la largeur et la hauteur de la zone de sélection et d'utiliser clearRect.
+
+Et enfin pour le copier-coller, voir la section \ref{sec:copiercoller} pour plus d'informations sur son fonctionnement.
 
 \subsubsection{Rognage}
 \subsection{Effets}

@@ -51,8 +51,10 @@ La plupart des outils de l'application  fonctionnent grâce à ces trois événe
 \par
 Comme on peut le voir sur la figure \ref{fig:tool_hier}, les outils implémentent une interface Tool, possédant des méthodes correspondant à ces événements. Au long de l'exécution du programme, le Workspace garde une référence vers un outil considéré actif (qui peut aussi être référence nulle), et lorsqu'il détecte un des événements cités plus haut, il se charge d'appeler la ou les méthodes correspondantes de cet outil.
 \par
-D'autres outils plus simples, comme la symétrie horizontale ou verticale, ou les effets de couleurs sont implémentés en ajoutant un action à des éléments de bases de JavaFX comme des Button ou des Slider.
-
+Lorsque l'utilisateur clique sur un bouton pour activer un outil, le programme crée une nouvelle instance de ce type d'outil, et le Workspace utilise cet outil pour traiter les événement MousePressed, MouseDragged ou MouseReleased.
+\par
+D'autres outils plus simples, comme la symétrie horizontale ou verticale ou les effets de couleurs sont implémentés en ajoutant un action à des composants de bases de JavaFX comme des Button ou des Slider.
+	
 \begin{figure}[h]
 	\caption{Diagramme simplifié de la hiérarchie des outils}
 	\centering
@@ -63,11 +65,13 @@ D'autres outils plus simples, comme la symétrie horizontale ou verticale, ou le
 \subsubsection{Réglage des outils}
 Certains de ces outils nécessitent d'être paramétrés en temps réel en fonction des calques sélectionnés par l'utilisateur. Par exemple, la taille de la gomme est stockée dans l'objet représentant l'outil, et est utilisée pour déterminer la taille du rectangle à effacer. L'utilisateur peut la régler au moyen d'un Slider (il s'agit d'un composant JavaFX). Les même besoin concernent la gestion de la couleur du pinceau, de la taille et de la police de l'outil de modification de texte.
 \par
-TODO TODO TODO expliquer mieux les réglages d'outils
+Ces réglages doivent pouvoir s'adapter à un outil existant, comme par exemple récupérer la taille actuelle du pinceau et la garder en mémoire.
 
-Ces réglages sont gérés au moyen d'une hiérarchie de classes (se référer à la figure \ref{tool_settings}), qui sont en fait des spécialisations de composant JavaFX permettant à l'utilisateur de paramétrer les outils, et d'une série d'interfaces représentant des outils pouvant être paramétrés sur divers aspects (la taille, la couleur, la police et ainsi de suite).
+Pour ce faire, les réglages sont gérés au moyen d'une hiérarchie de classes (se référer à la figure \ref{tool_settings}), qui sont en fait des spécialisations de composants JavaFX permettant à l'utilisateur de paramétrer les outils, et d'une série d'interfaces représentant des outils pouvant être paramétrés sur divers aspects (la taille, la couleur, la police et ainsi de suite).
 \par
-
+Ainsi un objet ToolSizeSettings est un élément graphique de contrôle qui contient un Slider JavaFx, pour permettre à l'utilisateur de régler la taille du pinceau, et gardant trace d'un outil de type SizeConfigurableTool à paramétrer.
+\par 
+Lorsque l'utilisateur modifie la valeur du Slider contenu dans l'objet ToolSizeSettings, celui-ci met à jour le sa cible SizeConfigurableTool en temps réel (le pinceau par exemple).
 
 \begin{figure}[h]
 	\caption{Diagramme simplifié des réglages d'outils}

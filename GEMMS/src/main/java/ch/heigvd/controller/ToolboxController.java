@@ -477,6 +477,7 @@ public class ToolboxController {
         if (w != null) {
             w.addLayer(new GEMMSCanvas(w.width(), w.height()));
             toolbarController.displayToolSetting(null);
+            w.notifyHistory();
         }
     }
 
@@ -499,6 +500,7 @@ public class ToolboxController {
                         image.getHeight()));
                 w.addLayer(i);
                 toolbarController.displayToolSetting(null);
+                w.notifyHistory();
             }
         }
     }
@@ -522,6 +524,7 @@ public class ToolboxController {
                 t.setTranslateX(-t.getBoundsInParent().getWidth() / 2);
                 w.addLayer(t);
                 toolbarController.displayToolSetting(null);
+                w.notifyHistory();
             }
         }
     }

@@ -166,6 +166,8 @@ public class Workspace extends StackPane implements Serializable {
                 }
             }
         });
+        // Once the workspace is loaded, save it's state
+        notifyHistory();
     }
 
     @Override
@@ -212,8 +214,6 @@ public class Workspace extends StackPane implements Serializable {
         workspace.getChildren().add(node);
         layerList.clearSelection();
         layerList.selectTopLayer();
-
-        historyNotifier.notifyHistory();
 
         //layerList.getItems().add(node);
         //layerList.getSelectionModel().clearSelection();

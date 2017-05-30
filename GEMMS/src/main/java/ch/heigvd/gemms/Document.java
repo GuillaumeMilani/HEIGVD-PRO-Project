@@ -1,7 +1,8 @@
 package ch.heigvd.gemms;
 
 import ch.heigvd.workspace.Workspace;
-import java.awt.image.RenderedImage;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -167,19 +168,46 @@ public class Document {
         fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
         fileChooser.setTitle("Export");
-        fileChooser.getExtensionFilters().add(
-                new ExtensionFilter("png files (*.png)", "*.png"));
-        fileChooser.setInitialFileName("*.png");
-
-        // TODO : Add other image extensions and check file name
+        fileChooser.getExtensionFilters().addAll(
+                new ExtensionFilter("All Files", "*.*"));
 
         // Shows the dialog and waits for the user response
         File file = fileChooser.showSaveDialog(stage);
         if (file != null) {
+           
+            // Get name and extension
+            String fileName = file.getName();
+            String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
+            
+            // Take a snapshot
             WritableImage writableImage = new WritableImage((int) workspace.width(), (int) workspace.height());
             workspace.snapshot(null, writableImage);
-            RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
-            ImageIO.write(renderedImage, "png", file);
+            BufferedImage image = SwingFXUtils.fromFXImage(writableImage, null);
+            
+            // Write image
+            switch(ext) {
+               case "png":
+                  ImageIO.write(image, "png", file);
+               break;
+               
+               case "jpg":
+                  BufferedImage convertedImg = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+                  convertedImg.getGraphics().setColor(Color.white);
+                  convertedImg.getGraphics().fillRect(0, 0, image.getWidth(), image.getHeight());
+                  convertedImg.getGraphics().drawImage(image, 0, 0, null);
+
+                  ImageIO.write(convertedImg, "jpg", file);
+               break;
+               
+               case "gif":
+                  ImageIO.write(image, "gif", file);
+               break;
+               
+               default:
+                  // Manage exceptions
+                  System.out.println("This is not a supported extension");
+               break;
+            }
         }
     }
 

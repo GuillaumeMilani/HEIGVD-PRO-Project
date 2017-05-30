@@ -18,7 +18,6 @@ import ch.heigvd.tool.settings.ToolFontSettings;
 import ch.heigvd.tool.settings.ToolSettingsContainer;
 import ch.heigvd.tool.settings.ToolSizeSettings;
 import ch.heigvd.workspace.Workspace;
-import java.util.LinkedList;
 import java.util.Optional;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

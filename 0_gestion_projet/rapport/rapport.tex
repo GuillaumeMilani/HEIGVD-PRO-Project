@@ -36,6 +36,7 @@
 % Informations sur un document compilé en PDF et les liens externes / internes
 \usepackage{hyperref}
 
+
 % Mise en page des tableaux
 \usepackage{array}
 \usepackage{tabularx}
@@ -74,6 +75,9 @@
 %\usepackage{layout}
 %\layout
 
+% Ajouter un glossaire
+\usepackage[toc]{glossaries}
+\makeglossary
 
 
 % -----------------------------------------------------------------------
@@ -199,6 +203,7 @@
 \newpage
 
 %====================== INCLUSION DES PARTIES ======================
+\input{./glossaire.tex}
 
 \input{./intro_objectifs.tex}
 
@@ -208,6 +213,8 @@
 
 \input{./conclusion.tex}
 
+\glsaddall
+\printglossaries
 
 \newpage
 

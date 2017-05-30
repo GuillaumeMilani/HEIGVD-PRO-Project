@@ -77,7 +77,7 @@ public class ToolbarController {
          gc.setFill(color);
          gc.fillRect(0, 0, width, height);
 
-         mainController.updateRightPanelAndCreateTab(document);
+         mainController.createTab(document);
 
          // Set background
          w.addLayer(canvas);
@@ -102,7 +102,7 @@ public class ToolbarController {
             Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
          }
 
-         mainController.updateRightPanelAndCreateTab(document);
+         mainController.createTab(document);
 
          mainController.addDocument(document);
       }

@@ -187,7 +187,7 @@ Il existe de nombreuses implémentations de cet algorithme, et nous avons choisi
 \par
 La classe LineTool se charge donc d'implémenter cet algorithme et pour chaque pixel à colorer, elle appelle une méthode abstraite drawPixel que ses sous classes se chargent de définir. Ainsi, Brush dessiner un disque correspondant à la taille du pinceau, et Eraser efface un carré de pixel, correspondant à la taille de la gomme.
 \subsubsection{Pipette}
-Le rôle de l'outil pipette et de permettre à l'utilisateur de choisir une couleur en la prélevant sur un élément existant du document. Il s'agirait typiquement de récupérer la couleur d'un calque GEMMSText, GEMMSCanvas ou GEMMSImage.
+Le rôle de l'outil pipette est de permettre à l'utilisateur de choisir une couleur en la prélevant sur un élément existant du document. Il s'agirait typiquement de récupérer la couleur d'un calque GEMMSText, GEMMSCanvas ou GEMMSImage.
 \par
 Dans le cas d'un texte, la pipette retourne simplement la couleur de celui-ci. Dans le cas d'un objet de type GEMMSCanvas ou d'une GEMMSImage, l'outil lit le pixel exact cliqué par l'utilisateur, si celui-ci se trouve à l'intérieur des bornes du calque sélectionné.
 \subsubsection{Modification de texte}
@@ -200,6 +200,10 @@ Les réglages de couleur et de police de cet outils utilisent la structure expli
 \subsubsection{Redimensionnement}
 \subsubsection{Sélection}
 \label{sec:selection}
+La sélection permet à l'utilisateur de sélectionner une zone du workspace à l'aide d'un rectangle. Ce dernier peut être déplacer ou recréer si la zone de sélection ne convient pas. 
+
+Pour l'instant, seul le copier coller utilise l'outil de sélection afin de choisir la zone à copier.
+
 \subsubsection{Rognage}
 \subsection{Effets}
 La section \og Effet \fg{} permet d'appliquer des effets colorimétriques, régler la transparence et ajouter un flou à un ou plusieurs calques. Chaque calque qui doit être modifié passe par une vérification: s'il n'a aucun effet appliqué, on lui applique trois effets: un ColorAdjust, un SepiaTone et un GaussianBlur permettant d'effectuer respectivement des ajustements de la couleur, un effet sépia, et un flou. Ces effets sont initialiement tous réglés pour n'effectuer aucun changement visuel. Ceci permet, lors d'un futur changement des effets, de simplement devoir faire varier les paramètres de ces effets.

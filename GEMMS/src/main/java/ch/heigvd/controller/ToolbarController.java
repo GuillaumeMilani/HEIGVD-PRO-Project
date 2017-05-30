@@ -33,21 +33,31 @@ public class ToolbarController {
       mainController = c;
    }
 
-   public void addToolSettings(HBox toolBox) {
-      toolSettingsContainer.getChildren().add(toolBox);
-   }
-
+   /**
+    * Clear tool settings
+    */
    public void clearToolSettings() {
       toolSettingsContainer.getChildren().clear();
    }
 
+   /**
+    * Add and display tool settings
+    * 
+    * @param toolBox tool settings to add
+    */
    public void displayToolSetting(HBox toolBox) {
       clearToolSettings();
       if (toolBox != null) {
-         addToolSettings(toolBox);
+         toolSettingsContainer.getChildren().add(toolBox);
       }
    }
 
+   /**
+    * Action when clicked on new button. Create a new document and a workspace.
+    * And create a new tab with the workspace.
+    * 
+    * @param e 
+    */
    @FXML
    protected void newButtonAction(ActionEvent e) {
 
@@ -86,6 +96,12 @@ public class ToolbarController {
       }
    }
 
+   /**
+    * Action when clicked on open button. Open a document.
+    * And create a new tab with the workspace contained in the document.
+    * 
+    * @param e 
+    */
    @FXML
    protected void openButtonAction(ActionEvent e) {
 
@@ -108,6 +124,11 @@ public class ToolbarController {
       }
    }
 
+   /**
+    * Action when clicked on save button. Save the current workspace document.
+    * 
+    * @param e 
+    */
    @FXML
    protected void saveButtonAction(ActionEvent e) {
       Workspace w = mainController.getCurrentWorkspace();
@@ -132,6 +153,12 @@ public class ToolbarController {
       }
    }
 
+   /**
+    * Action when clicked on export button. Export the current workspace as
+    * an image. PNG format.
+    * 
+    * @param e 
+    */
    @FXML
    protected void exportButtonAction(ActionEvent e) {
       Workspace w = mainController.getCurrentWorkspace();
@@ -150,6 +177,12 @@ public class ToolbarController {
       }
    }
 
+   /**
+    * Action when clicked on resize button. Resize the current workspace.
+    * an image. PNG format
+    * 
+    * @param e 
+    */
    @FXML
    protected void resizeButtonAction(ActionEvent e) {
       Workspace w = mainController.getCurrentWorkspace();
@@ -168,5 +201,4 @@ public class ToolbarController {
          }
       }
    }
-
 }

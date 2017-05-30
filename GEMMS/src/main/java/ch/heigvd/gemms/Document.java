@@ -1,8 +1,8 @@
 package ch.heigvd.gemms;
 
 import ch.heigvd.workspace.Workspace;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -192,6 +192,8 @@ public class Document {
                
                case "jpg":
                   BufferedImage convertedImg = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+                  convertedImg.getGraphics().setColor(Color.white);
+                  convertedImg.getGraphics().fillRect(0, 0, image.getWidth(), image.getHeight());
                   convertedImg.getGraphics().drawImage(image, 0, 0, null);
 
                   ImageIO.write(convertedImg, "jpg", file);

@@ -37,6 +37,7 @@ public class ImportImageDialog {
         
         fileChooser.setTitle("Open image");
         fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("All Files", "*.*"),
                 new FileChooser.ExtensionFilter("png files (*.png)", "*.png"),
                 new FileChooser.ExtensionFilter("jpg files (*.jpg)", "*.jpg"));
     }
@@ -49,10 +50,14 @@ public class ImportImageDialog {
     public Image showAndWait() {
         File file = fileChooser.showOpenDialog(stage);
         
+        // Get name and extension
+        String fileName = file.getName();
+        String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
+        
         Image image = null;
         
         // Convert loaded file to image
-        if(file != null) {
+        if(file != null && (ext.equals("jpg") || ext.equals("png") || ext.equals("gif"))) {
             try {
                 BufferedImage bufferedImage = ImageIO.read(file);
                 image = SwingFXUtils.toFXImage(bufferedImage, null);

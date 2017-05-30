@@ -1,0 +1,36 @@
+\section{Journal de travail - Guillaume Milani}
+
+\subsection{Semaine 1: 20 février - 24 février}
+Constitution des gruopes et choix du sujet. Le choix du sujet n'est pas facile, plusieurs idées sont proposées et un vote doit avoir lieu. Au final nous proposerons un projet de résolution de graphe et un éditeur d'images.
+\subsection{Semaine 2: 27 février - 3 mars}
+Les sujets sont attribués, le projet d'éditeur d'image est préféré car un autre groupe est aussi intéressé par l'éditeur de graphe. Nous commençons la liste des fonctionnalités à proposer et l'écriture du cahier des charges.
+\subsection{Semaine 3: 6 mars - 10 mars}
+Nous fixons la liste des fonctionnalités que nous souhaitons voir apparaître dans notre programme. Nous rédigeons le cahier des charges ainsi que la planification Gantt (très importante car notre projet sera basé presque entièrement sur une seule et unique vue, interface).
+\subsection{Semaine 4: 13 mars - 17 mars}
+À la demande de M. Rentsch, nous remplissons une planification au format Excel, plus claire que le Gantt précédemment. Nous commençons l'étude de JavaFX chacun de notre côté, il s'agit pour nous d'une première expérience avec ce Framework.
+\subsection{Semaine 5: 20 mars - 24 mars}
+Étude de JavaFX et création des issues sur Github que nous utiliserons par la suite. Je reproduis la planification sous forme de Milestones et attribue chaque issue aux personnes concernées.
+\subsection{Semaine 6: 27 mars - 31 mars}
+Début de la création de l'interface de l'application à l'aide de l'outil Scene Builder en essayant de reproduire à l'identique la maquette présentée dans le cahier des charges.
+\subsection{Semaine 7: 3 avril - 7 avril}
+Edward et moi-même mettons en place le contrôleur Java qui interagira avec la vue au formal FXML.
+\subsection{Semaine 8: 10 avril - 14 avril}
+Commentaire du contrôleur et mise en place d'un fonction pour générer dynamiquement les boutons des outils afin de faciliter le travail des autres membres de l'équipe.
+\subsection{Semaine 9: 24 avril - 28 avril}
+Documentation sur les Popups, implémentation d'un popup qui permettra de modifier la taille et la couleur d'un outil. Ce popup sera finalement abandonné par la suite pour simplifier l'interface.
+\subsection{Semaine 10: 1 mai - 5 mai}
+Réflexion sur la manière d'effectuer le copier / coller. Je dois d'abord parcourir et comprendre le code de Sathiya qui a mis en place la sélection d'une zone de l'espace de travail ainsi que la sérialisation des calques.
+
+Je rencontre des problèmes pour enregistrer une capture de l'espace de travail, je ne comprend pas bien comment les couleurs sont gérées lors de la création d'une image.
+\subsection{Semaine 11: 8 mai - 12 mai}
+Une première version du copier / coller est implémentée et fonctionne avec quelques problèmes (le calque collé ne se place pas au bon endroit). J'ai résolu les problèmes de couleur et de copie d'image en copiant les pixels un à un et en ne copiant pas les pixels transparents, pour éviter une conversion en blanc.
+\subsection{Semaine 12: 15 mai - 19 mai}
+Les problèmes de placement du calque collé sont résolus. Il faut être attentif au système de coordonnées que l'on utilise lorsqu'on exécute un snapshot et ne pas oublier de convertir les coordonnées au besoin.
+
+La fonction copier / coller est fonctionnelle, commentée et nettoyée au mieux.
+\subsection{Semaine 13: 22 mai - 26 mai}
+Implémentation de la fonction d'historique. Malgré une réflexion sur le sujet depuis le début de la phase d'implémentation en mars, je n'aurai pas le temps d'implémenter la version «efficace» qui consisterait à enregistrer chaque action et une fonction permettant de l'inverser. J'opte donc pour la solution plus facile à mettre en place qui consiste à enregistrer l'état de l'espace de travail après chaque action de l'utilisateur.
+
+En milieu de semaine l'historique fonctionne et je commence à implémenter la partie «visuelle» qui permettra d'afficher les miniatures dans l'interface de l'application.
+\subsection{Semaine 14: 29 mai - 2 juin}
+Fin de la partie visuelle de l'historique et rédaction du rapport.

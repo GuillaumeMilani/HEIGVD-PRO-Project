@@ -49,8 +49,9 @@ JavaFX offre (entre autres) les événements MousePressed, MouseDragged et Mouse
 \par
 La plupart des outils de l'application  fonctionnent grâce à ces trois événements. On pensera notamment au pinceau qui doit dessiner un trait en suivant la souris lors d'un MouseDragged. 
 \par
-Comme on peut le voir sur la figure \ref{fig:tool_hier}, les outils implémentent donc une interface Tool, possédant des méthodes correspondant à ces événements. Au long de l'exécution du programme, le Workspace garde une référence vers un outil considéré actif (qui peut aussi être référence nulle), et lorsqu'il détecte un des événements cités plus haut, il se charge d'appeler la ou les méthodes correspondantes de cet outil.
+Comme on peut le voir sur la figure \ref{fig:tool_hier}, les outils implémentent une interface Tool, possédant des méthodes correspondant à ces événements. Au long de l'exécution du programme, le Workspace garde une référence vers un outil considéré actif (qui peut aussi être référence nulle), et lorsqu'il détecte un des événements cités plus haut, il se charge d'appeler la ou les méthodes correspondantes de cet outil.
 \par
+D'autres outils plus simples, comme la symétrie horizontale ou verticale, ou les effets de couleurs sont implémentés en ajoutant un action à des éléments de bases de JavaFX comme des Button ou des Slider.
 
 \begin{figure}[h]
 	\caption{Diagramme simplifié de la hiérarchie des outils}

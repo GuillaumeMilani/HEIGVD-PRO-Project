@@ -1,2 +1,4 @@
 \section{Problèmes connus dans le programme final}
+\subsection{Mise-à-jour de l'historique}
+Certaines actions ne peuvent pas être détectées par l'historique et donc ne peuvent pas être annulées avec une Ctrl + Z. Notemment, supprimer un calque ou changer son ordre dans la liste des calques. Vu que ces actions sont effectuées directement sur des éléments de la liste observable de JavaFX, situés à plus bas niveau que nos espaces de travail (qui gèrent l'historique), on ne peut pas notifier l'historique après ces actions sans changer notre implémentation.
 \subsection{Dessin après redimensionnement et effaçage d'une sélection}

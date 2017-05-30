@@ -39,7 +39,8 @@ public class ImportImageDialog {
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("All Files", "*.*"),
                 new FileChooser.ExtensionFilter("png files (*.png)", "*.png"),
-                new FileChooser.ExtensionFilter("jpg files (*.jpg)", "*.jpg"));
+                new FileChooser.ExtensionFilter("jpg files (*.jpg)", "*.jpg"),
+                new FileChooser.ExtensionFilter("gif files (*.gif)", "*.gif"));
     }
     
     /**
@@ -57,14 +58,16 @@ public class ImportImageDialog {
         Image image = null;
         
         // Convert loaded file to image
-        if(file != null && (ext.equals("jpg") || ext.equals("png") || ext.equals("gif"))) {
-            try {
-                BufferedImage bufferedImage = ImageIO.read(file);
-                image = SwingFXUtils.toFXImage(bufferedImage, null);
-            } catch (IOException ex) {
-                // TODO : manage exceptions
-                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        if(file != null) {
+           if(ext.equals("jpg") || ext.equals("png") || ext.equals("gif")) {
+               try {
+                   BufferedImage bufferedImage = ImageIO.read(file);
+                   image = SwingFXUtils.toFXImage(bufferedImage, null);
+               } catch (IOException ex) {
+                   // TODO : manage exceptions
+                   Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+               }
+           }
         }
 
         return image;

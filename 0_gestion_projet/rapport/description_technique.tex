@@ -14,7 +14,7 @@ Le Scene Graph est une structure en arbre qui garde une représentation interne 
 	\includegraphics[scale=0.6]{scene_graphe_1.png}
 	\label{fig:scene_graphe_1}
 \end{figure}
-Comme on peut le voir sur la figure \ref{fig:scene_graphe_1}, chaque n\oe ud de l'arbre du Scene Graph appartient à la hiérarchie de la classe Node. De plus, chacun de ces n\oe uds est soit une feuille (ne pouvant pas contenir d'enfants), soit une branche (pouvant alors contenir des enfants).
+Comme on peut le voir sur la figure \ref{fig:scene_graphe_1}, chaque n\oe ud de l'arbre du Scene Graph appartient à la hiérarchie de la classe \gls{node}. De plus, chacun de ces n\oe uds est soit une feuille (ne pouvant pas contenir d'enfants), soit une branche (pouvant alors contenir des enfants).
 \par
 Cette structure particulière permet donc de créer facilement des interfaces graphiques, car il suffit que chaque élément visuel de notre application soit un objet (spécialisé ou non) d'une classe héritant de Node pour que l'affichage de cet élément soit géré automatiquement par JavaFX.
 \par
@@ -46,20 +46,20 @@ Bien que la sérialisation soit possible, ceci engendre des contraintes et des p
 La sauvegarde d'un document utilise la sérialisation des objets. Comme mentionné précédemment, la sérialisation de certaines classes peut être volumineux. Ainsi, les données sont compressées dans le format GZIP.
 
 \subsection{Workspace et liste des calques}
-Le \gls{workspace} correspond à l'espace de travail d'un Document GEMMS. Workspace est une classe personnalisée héritant de la classe StackPane de JavaFX. Il s'insère donc dans le graphe de scène de JavaFX. 
+Le \gls{workspace} correspond à l'espace de travail d'un Document GEMMS. Workspace est une classe personnalisée héritant de la classe StackPane de JavaFX. 
 
 \subsubsection{Structure d'un Workspace}
-Chaque document ouvert possède un objet Workspace permettant à l'utilisateur de manipuler le contenu du fichier. Il est constitué de couches comme représenté sur la figure \ref{fig:workspace_representation}.
+Chaque document ouvert possède un objet Workspace permettant à l'utilisateur de manipuler le contenu du fichier. Il est constitué de plusieurs couches de composants, comme représenté sur la figure \ref{fig:workspace_representation}.
 
 
 \begin{figure}[H]
 	\caption{Représentation des couches du Workspace}
 	\centering
-	\includegraphics[scale=0.5]{workspace_schema.png}
+	\includegraphics[scale=0.4]{workspace_schema.png}
 	\label{fig:workspace_representation}
 \end{figure}
 
-L'espace de travail (Workspace) est un container contenant deux enfants (au sens de l'arbre de JavaFX): une zone de dessin (une branche du graphe de scène) ou seront ajoutés tous les calques créés et modifiés par l'utilisateur, et une interface des outils permettant de dessiner les retours visuels des outils (comme le curseur du pinceau par exemple). Tous deux sont de type AnchorPane, car cela permet de positionner leurs enfants selon des coordonnées (x, y).
+L'espace de travail (Workspace) est un container contenant deux enfants (au sens de l'arbre de JavaFX): une zone de dessin (une branche du Scene Graph) où sont ajoutés tous les calques créés et modifiés par l'utilisateur, et une interface des outils permettant de dessiner les retours visuels des outils (comme le curseur du pinceau par exemple). Tous deux sont de type \gls{anchorpane}, un type spécifique de container JavaFX, car cette classe permet de positionner leurs enfants selon des coordonnées (x, y).
 \par
 La zone d'affichage correspond à un masque appliqué à l'espace
 

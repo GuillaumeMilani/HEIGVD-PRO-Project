@@ -57,6 +57,9 @@ public class MainController implements Initializable {
    
    @FXML
    private ToolboxController toolboxController;
+   
+   @FXML
+   private RightController rightController;
 
     // Stage from main
     private Stage stage;
@@ -64,26 +67,13 @@ public class MainController implements Initializable {
     @FXML
     private AnchorPane mainAnchorPane;
 
-    /**
-     * GridPanes containing the tools buttons
-     */
-
-
-
     
     // Contains all workspace (tab)
     @FXML
     private TabPane workspaces;
     
     
-    @FXML
-    private VBox layerController;
 
-    @FXML
-    private VBox historyViewer;
-    
-    @FXML
-    private AnchorPane colorController;
     
 
 
@@ -201,10 +191,12 @@ public class MainController implements Initializable {
         workspaces.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> ov, Tab t, Tab t1) -> {
            Workspace w = getCurrentWorkspace();
            if(w != null) {
-                layerController.getChildren().clear();
-                layerController.getChildren().add(w.getWorkspaceController());
-                historyViewer.getChildren().clear();
-                historyViewer.getChildren().add(w.getHistoryList());
+                rightController.clearLayerBox();
+                rightController.addLayerController(w.getWorkspaceController());
+
+                rightController.clearHistoryBox();
+                rightController.addHistoryController(w.getHistoryList());
+
                 w.setCurrentTool(null);
             }
             // Suppress tab
@@ -221,15 +213,15 @@ public class MainController implements Initializable {
                 // TODO : save when close ?
                 
                 // Clear
-                layerController.getChildren().clear();
-                historyViewer.getChildren().clear();
+                rightController.clearLayerBox();
+                rightController.clearHistoryBox();
               }
               toolboxController.clearSelectedButtons();
         });
         
         
         
-        colorController.getChildren().add(ColorSet.getInstance().getColorController());
+        
 
         
         
@@ -367,6 +359,7 @@ public class MainController implements Initializable {
         
       toolbarController.init(this);
       toolboxController.init(this, toolbarController);
+      rightController.init(this);
     }
 
     

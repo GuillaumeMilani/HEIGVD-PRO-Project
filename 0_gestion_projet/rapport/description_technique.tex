@@ -1,6 +1,6 @@
 \section{Description technique}
 
-Comme cité précédemment, notre application a été codé à l'aide de la librairie JavaFX. Ainsi, toute notre implémentation technique est basée sur cette dernière.
+Comme cité précédemment, notre application a été codée à l'aide de la librairie JavaFX. Ainsi, toute notre implémentation technique est basée sur cette dernière.
 
 \subsection{Structure}
 \subsubsection{Structure de JavaFX}
@@ -8,7 +8,7 @@ Notre application se base sur la structure officielle d'une application JavaFX, 
 \par
 Les trois point-clés sont la notion de \gls{stage}, de \gls{scene} et de \gls{scene_graphe}. Le Stage est le container haut-niveau d'une application JavaFX \cite{javadoc_stage}. Il doit contenir tout le contenu d'une fenêtre. La Scene est le container pour un Scene Graph. Chaque scène doit avoir un et un seul n\oe ud racine du Scene Graph \cite{javadoc_scene}.
 \par
-Le Scene Graph est une structure en arbre qui garde une représentation interne des éléments graphiques de l'application. En tout temps, il sait quels éléments afficher, quels zones de l'écrans doivent être rafraîchies, et comment le faire de la manière la plus efficace \cite{javadoc_scene_graphe}. 	
+Le Scene Graph est une structure en arbre qui garde une représentation interne des éléments graphiques de l'application. En tout temps, il sait quels éléments afficher, quelles zones de l'écran doivent être rafraîchies, et comment le faire de la manière la plus efficace \cite{javadoc_scene_graphe}. 	
 
 \begin{figure}[H]
 	\caption{Représentation du Scene Graph de JavaFX. Source: documentation Oracle \cite{javadoc_scene_graphe}}
@@ -16,18 +16,18 @@ Le Scene Graph est une structure en arbre qui garde une représentation interne 
 	\includegraphics[scale=0.6]{scene_graphe_1.png}
 	\label{fig:scene_graphe_1}
 \end{figure}
-Comme ont peut le voir sur la figure \ref{fig:scene_graphe_1}, chaque nœud de l'arbre du Scene Graph appartient à la hiérarchie de la classe Node. De plus chacun de ces nœuds est soit une feuille (ne pouvant pas contenir d'enfants), soit une branche (pouvant alors contenir des enfants).
+Comme on peut le voir sur la figure \ref{fig:scene_graphe_1}, chaque n\oe ud de l'arbre du Scene Graph appartient à la hiérarchie de la classe Node. De plus, chacun de ces n\oe uds est soit une feuille (ne pouvant pas contenir d'enfants), soit une branche (pouvant alors contenir des enfants).
 \par
-Cette structure particulière permet donc de créer facilement des interfaces graphiques, car il suffit que chaque élément visuel de notre application soit un objet (spécialisé ou non) d'une classe héritant de Node pour l'affichage de cet élément soit géré automatiquement par JavaFX.
+Cette structure particulière permet donc de créer facilement des interfaces graphiques, car il suffit que chaque élément visuel de notre application soit un objet (spécialisé ou non) d'une classe héritant de Node pour que l'affichage de cet élément soit géré automatiquement par JavaFX.
 \par
-Pour beaucoup de nos composants, nous avons donc spécialisé une des classes offertes par JavaFx proposant la fonctionnalité recherchée, en y ajoutant les comportements dont nous avions besoin. Il sont ensuite ajouté au Scene Graph de la scène principale, et nous pouvons ainsi construire notre application.
-
+Pour beaucoup de nos composants, nous avons donc spécialisé une des classes offertes par JavaFx proposant la fonctionnalité recherchée, en y ajoutant les comportements dont nous avions besoin. Ils sont ensuite ajoutés au Scene Graph de la scène principale, et nous pouvons ainsi construire notre application.
 
 \subsection{Serialisation}
 \label{sec:serialisation}
-En Java, la sérialisation s'effectue à l'aide de l'interface \og Serializable \fg{}. Par conséquent, chaque classe de Java implémentant cette dernière telle que \og String \fg{}, peut être sérialisé et désérialisé à volonté. Cependant, la majorité des classes JavaFX n'implémente pas cette interface. En effet, cette librairie utilise grandement des mécanismes et des liaisons dynamiques tel que les listeners qui sont pour l'instant des sous-systèmes non-sérialisable. C'est pourquoi, JavaFX contient peu d'objet sérialisable.
 
-Pour combler ce manque, nous devons nous même implémenter la sérialisation des classes JavaFX que nous sommes susceptible d'utiliser.
+En Java, la sérialisation s'effectue à l'aide de l'interface \og Serializable \fg{}. Par conséquent, chaque classe de Java implémentant cette dernière telle que \og String \fg{}, peut être sérialisée et désérialisée à volonté. Cependant, la majorité des classes JavaFX n'implémente pas cette interface. En effet, cette librairie utilise grandement des mécanismes et des liaisons dynamiques tel que les listeners qui sont pour l'instant des sous-systèmes non-sérialisables. C'est pourquoi JavaFX contient très peu d'objets sérialisables.
+
+Pour combler ce manque, nous devons nous-mêmes implémenter la sérialisation des classes JavaFX que nous sommes susceptibles d'utiliser.
 
 \begin{figure}[h]
     \caption{Diagramme de la sérialisation simplifié}
@@ -36,7 +36,7 @@ Pour combler ce manque, nous devons nous même implémenter la sérialisation de
     \label{fig:seri_diag}
 \end{figure}
 
-Sur la figure \ref{fig:seri_diag}, nous pouvons voir un diagramme simplifié de l'implémentation de la sérialisation. Dans notre application, nous allons utilisé des classes de base telles que ImageView, Text, Canvas, Color, etc. Nous devons donc spécialiser ces classes afin qu'elles puissent implémenter l'interface \og Serializable \fg{}. Toutefois, certaines classes comme \og Color \fg{} ne sont malheureusement pas spécialisable. Il faut donc sérialiser les paramètres un par un à l'aide des accesseurs et mutateurs de cette dernière.
+Sur la figure \ref{fig:seri_diag}, nous pouvons voir un diagramme simplifié de l'implémentation de la sérialisation. Dans notre application, nous allons utiliser des classes de base telles que ImageView, Text, Canvas, Color, etc. Nous devons donc spécialiser ces classes afin qu'elles puissent implémenter l'interface \og Serializable \fg{}. Toutefois, certaines classes comme \og Color \fg{} ne sont malheureusement pas spécialisables. Il faut donc sérialiser les paramètres un par un à l'aide des accesseurs et mutateurs de cette dernière.
 
 Étant donné que les classes JavaFX possèdent énormément de fonctionnalités, sérialiser l'entier de celles-ci nous demanderait beaucoup trop de temps. C'est pourquoi nous nous contentons uniquement des paramètres utilisés au sein du projet tel que la largeur, la hauteur, la position, etc.
 

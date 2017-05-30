@@ -189,6 +189,9 @@ L'outil de modification de texte permet à l'utilisateur de modifier les propri�
 \par
 Les réglages de couleur et de police de cet outils utilisent la structure expliquée à la section \ref{reglage-outils} en utilisant des objets de type ToolColorSettings et ToolFontSettings.
 \subsubsection{Symétries}
+Les symétries, horizontale et verticale, s'effectuent non pas grâce à un outil qui implémente une interface \textit{Tool} mais grâce à des transformations JavaFX sur les n\oe uds selectionnés. Cela est principalement dû au fait que les outils implémentant cette interface sont pratiques pour une utilisation avec la souris alors que pour une symétrie, il n'y en a pas besoin. Une symétrie effectue donc une transformation de rotation d'un angle de 180 degrées avec un pivot centré au milieu du n\oe ud et un axe de rotation correspondant à la symétrie. Par exemple, pour la symétrie horizontale, on applique la rotation sur l'axe Y.
+
+Concernant la sérialisation de cette transformation, comme il s'agit de la transformation d'un n\oe ud et que les transformations de JavaFX ne sont pas sérialisable, il faut enregistrer tous les paramètres de la rotation (angle, pivot et axe) afin de pouvoir reappliquer cette transformation lors de la désérialisation.
 \subsubsection{Déplacement}
 \subsubsection{Rotation}
 \subsubsection{Redimensionnement}

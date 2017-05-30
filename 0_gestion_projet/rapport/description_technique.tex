@@ -40,7 +40,7 @@ TODO TODO TODO
 Pour garder un historique de chaque action effectuée, on utilise la sérialisation des composants présentée précédemment. A la fin de chaque action modifiant l'espace de travail, une fonction va être appelée permettant de sauvegarder intégralement l'espace de travail courant et le placer sur une pile. A chaque détection de la commande Ctrl + Z, la sauvegarde sera chargée et la modification sera donc effacée. De même, à la détection de la commande Ctrl + Y, on va charger un espace de travail plus récent (s'il y en à un, c'est-à-dire si le Ctrl + Y était précédé d'un Ctrl + Z).
 
 \subsection{Positionnement}
-TODO TODO TODO
+TODO TODO TODO 
 
 \subsection{Outils}
 \subsubsection{Pinceau}
@@ -53,6 +53,21 @@ TODO TODO TODO
 \subsubsection{Redimensionnement}
 \subsubsection{Sélection}
 \subsubsection{Rognage}
+
+\subsection{Effets}
+La section \og Effet \fg{} permet d'appliquer des effets colorimétriques, régler la transparence et ajouter un flou à un ou plusieurs calques. Chaque calque qui doit être modifié passe par une vérification: s'il n'a aucun effet appliqué, on lui applique trois effets: un ColorAdjust, un SepiaTone et un GaussianBlur permettant d'effectuer respectivement des ajustements de la couleur, un effet sépia, et un flou. Ces effets sont initialiement tous réglés pour n'effectuer aucun changement visuel. Ceci permet, lors d'un futur changement des effets, de simplement devoir faire varier les paramètres de ces effets. 
+
+\subsubsection{Noir et blanc}
+Le bouton \og B&W \fg{} à pour effet de régler la saturation de l'image à sa valeur minimale, donnant pour effet une image en nuances de gris.
+
+\subsubsection{Tint}
+Applique une teinture de la couleur sélectionnée à l'image. Ceci est fait en calculant une valeur de la teinte et en l'appliquant à l'effet ColorAdjust.
+
+\subsubsection{Barres glissantes}
+Les barres glissantes (\og Sliders \fg{} JavaFX) permettent d'ajuster tous les autres effets implémentés. La transparence règle directement un attribut \og Opacity \fg{} d'un noeud. La saturation, le contraste et la luminosité peuvent être ajustés en modifiant l'effet ColorAdjust. L'effet sépia et le flou ajustent respectivement l'effet SepiaTone et GaussianBlur.
+
+\subsection{Remise à zéro}
+Le bouton \og Reset \fg{} permet de remettre à zéro tous les effets sur tous les calques sélectionnés, les restaurant à leur état visuel initial.
 
 
 

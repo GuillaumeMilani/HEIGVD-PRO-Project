@@ -1,3 +1,13 @@
+/**
+ * Fichier: GEMMSText.java
+ * Date: 31.05.2017
+ *
+ * @author Guillaume Milani
+ * @author Edward Ransome
+ * @author Mathieu Monteverde
+ * @author Michael Spierer
+ * @author Sathiya Kirushnapillai
+ */
 package ch.heigvd.layer;
 
 import ch.heigvd.gemms.CSSIcons;
@@ -21,13 +31,14 @@ import javafx.scene.transform.Transform;
 
 /**
  * <h1>GEMMSText</h1>
- * 
+ *
  * This class was created to implement Serializable
  */
-public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, LayerListable {
-   
-   private static int layerCount = 0;
-   private String name = "Text " + ++layerCount;
+public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode,
+        LayerListable {
+
+    private static int layerCount = 0;
+    private String name = "Text " + ++layerCount;
     public static final int DEFAULT_SIZE = 12;
 
     /**
@@ -49,8 +60,8 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
     /**
      * Constructor
      *
-     * @param x    the horizontal position of the text
-     * @param y    the vertical position of the text
+     * @param x the horizontal position of the text
+     * @param y the vertical position of the text
      * @param text text to be contained in the instance
      */
     public GEMMSText(double x, double y, String text) {
@@ -61,9 +72,9 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
 
     /**
      * Write all informations for serialization
-     * 
+     *
      * @param s output stream
-     * @throws IOException 
+     * @throws IOException
      */
     private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
@@ -74,10 +85,10 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
         // Write the position
         s.writeDouble(getX());
         s.writeDouble(getY());
-        
+
         // Write align property
         s.writeObject(getTextOrigin());
-        s.writeObject(getTextAlignment());        
+        s.writeObject(getTextAlignment());
 
         // Write font
         s.writeObject(getFont().getFamily());
@@ -101,10 +112,10 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
         s.writeDouble(getRotationAxis().getX());
         s.writeDouble(getRotationAxis().getY());
         s.writeDouble(getRotationAxis().getZ());
-        
+
         //Write effect info
         ColorAdjust c;
-        if(getEffect() instanceof ColorAdjust){
+        if (getEffect() instanceof ColorAdjust) {
             s.writeBoolean(true);
             c = ((ColorAdjust) getEffect());
             s.writeDouble(c.getContrast());
@@ -112,11 +123,11 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
             s.writeDouble(c.getSaturation());
             s.writeDouble(c.getBrightness());
             s.writeDouble(((SepiaTone) c.getInput()).getLevel());
-            s.writeDouble(((GaussianBlur) ((SepiaTone) c.getInput()).getInput()).getRadius());
-        }else{
+            s.writeDouble(((GaussianBlur) ((SepiaTone) c.getInput()).getInput())
+                    .getRadius());
+        } else {
             s.writeBoolean(false);
         }
-
 
         // Write Transformation
         s.writeInt(getTransforms().size());
@@ -138,23 +149,24 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
 
     /**
      * Read all informations for serialization
-     * 
+     *
      * @param s input stream
-     * @throws IOException 
+     * @throws IOException
      */
-    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
-       s.defaultReadObject();
-       
+    private void readObject(ObjectInputStream s) throws IOException,
+            ClassNotFoundException {
+        s.defaultReadObject();
+
         // Set the test
         setText((String) s.readObject());
 
         // Set the position
         setX(s.readDouble());
         setY(s.readDouble());
-        
+
         // Set align
-        setTextOrigin((VPos)s.readObject());
-        setTextAlignment((TextAlignment)s.readObject());
+        setTextOrigin((VPos) s.readObject());
+        setTextAlignment((TextAlignment) s.readObject());
 
         // Set the font
         setFont(Font.font((String) s.readObject(), s.readDouble()));
@@ -177,7 +189,7 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
         setRotationAxis(new Point3D(s.readDouble(), s.readDouble(), s.readDouble()));
 
         //Boolean to notify if effects are on their way, if so read them and apply
-        if(s.readBoolean()){
+        if (s.readBoolean()) {
             ColorAdjust c = new ColorAdjust();
             c.setContrast(s.readDouble());
             c.setHue(s.readDouble());
@@ -203,8 +215,9 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
                     double pAxisY = s.readDouble();
                     double pAxisZ = s.readDouble();
                     Point3D axis = new Point3D(pAxisX, pAxisY, pAxisZ);
-                    getTransforms().add(new Rotate(angle, pivotX, pivotY, pivotZ, axis));
-                break;
+                    getTransforms().add(new Rotate(angle, pivotX, pivotY,
+                            pivotZ, axis));
+                    break;
             }
         }
 
@@ -212,7 +225,7 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
 
     @Override
     public String getLayerName() {
-       return name;
+        return name;
     }
 
     @Override
@@ -225,8 +238,8 @@ public class GEMMSText extends javafx.scene.text.Text implements IGEMMSNode, Lay
         return null;
     }
 
-   @Override
-   public void setLayerName(String name) {
-      this.name = name;
-   }
+    @Override
+    public void setLayerName(String name) {
+        this.name = name;
+    }
 }

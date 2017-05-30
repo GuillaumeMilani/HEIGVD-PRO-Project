@@ -416,20 +416,18 @@ public class MainController implements Initializable {
 
     
     
+   /**
+    * Create a new tab
+    * 
+    * @param document that containt name and workspace
+    */
+   public void createTab(Document document) {
+      Workspace w = document.workspace();
 
-   public void updateRightPanelAndCreateTab(Document document) {
-       Workspace w = document.workspace();
-
-       // Clear
-       layerController.getChildren().clear();
-       layerController.getChildren().add(w.getWorkspaceController());
-       historyViewer.getChildren().clear();
-       historyViewer.getChildren().add(w.getHistoryList());
-
-       // Create tab
-       Tab tab = new Tab(document.name() != "" ? document.name() : "untitled", w);
-       workspaces.getTabs().add(tab);
-       workspaces.getSelectionModel().select(tab);
+      // Create tab
+      Tab tab = new Tab(document.name(), w);
+      workspaces.getTabs().add(tab);
+      workspaces.getSelectionModel().select(tab);
    }
     
     

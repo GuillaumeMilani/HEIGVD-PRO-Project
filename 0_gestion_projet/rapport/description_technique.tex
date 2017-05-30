@@ -58,7 +58,7 @@ Chaque document ouvert possède un objet Workspace permettant à l'utilisateur d
 	\label{fig:workspace_representation}
 \end{figure}
 
-L'espace de travail (Workspace) est un container contenant deux enfants (au sens de l'arbre de JavaFX): un attribut workspace correspondant à la zone de dessin, et un attribut layerTool, permettant de dessiner les interfaces des outils (comme par exemple le curseur du pinceau). Tous deux sont de type AnchorPane, car cela permet de positionner leurs enfants selon des coordonnées (x, y).
+L'espace de travail (Workspace) est un container contenant deux enfants (au sens de l'arbre de JavaFX): une zone de dessin (une branche du graphe de scène) ou seront ajoutés tous les calques créés et modifiés par l'utilisateur, et une interface des outils permettant de dessiner les retours visuels des outils (comme le curseur à la taille du pinceau par exemple). Tous deux sont de type AnchorPane, car cela permet de positionner leurs enfants selon des coordonnées (x, y).
 \par
 
 

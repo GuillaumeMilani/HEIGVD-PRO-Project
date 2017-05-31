@@ -93,7 +93,7 @@ La classe \texttt{\gls{listview}} de JavaFX propose cette fonctionnalité. Malhe
 	\label{fig:layer_management}
 \end{figure}
 
-\texttt{\gls{layerlist}} est une classe générique implémentée pour ce projet qui permet d'afficher sous forme de liste de cellules le contenu d'une \texttt{\gls{observablelist}}. La figure \ref{fig:layer_management} illustre la structure du \texttt{Workspace} et de sa \texttt{LayerList}. Dans cette représentation, toutes les classes sont instanciées avec \texttt{Node} comme paramètre générique pour une meilleure compréhension. Les enfants d'un \texttt{Node} de type parent étant représentés sous la forme d'une \texttt{ObservableList<Node>} dans JavaFX, \texttt{Layerlist} peut ainsi gérer les calques du \texttt{Workspace}.
+\texttt{\gls{layerlist}} est une classe générique implémentée pour ce projet qui permet d'afficher sous forme de liste de cellules le contenu d'une \texttt{\gls{observablelist}	}. La figure \ref{fig:layer_management} illustre la structure du \texttt{Workspace} et de sa \texttt{LayerList}. Dans cette représentation, toutes les classes sont instanciées avec \texttt{Node} comme paramètre générique pour une meilleure compréhension. Les enfants d'un \texttt{Node} de type parent étant représentés sous la forme d'une \texttt{ObservableList<Node>} dans JavaFX, \texttt{Layerlist} peut ainsi gérer les calques du \texttt{Workspace}.
 
 \texttt{\gls{layerlist}} hérite du composant \texttt{VBox} de JavaFX, ce qui permet de l'ajouter au Scene Graph. Dans GEMMS, elle observe les enfants de la zone de dessin du \texttt{Workspace} et est notifiée lorsqu'il y a un changement. Pour tout nouveau calque (\texttt{Node}) ajouté dans la liste, elle crée une nouvelle \texttt{Cell} (cellule) en utilisant le patron de conception de fabrication abstraite. Elle ajoute ces cellules dans un composant interne qui les affiche en colonne.
 
@@ -106,7 +106,7 @@ Le \texttt{Workspace} peut donc déléguer entièrement la gestion des calques �
 \lstinputlisting[language=Java, caption=Exemple de gestion de la sélection des calques par la \texttt{LayerList} au sein du \texttt{Workspace}]{./src/gestion_calques.java}
 
 \subsubsection{Systèmes de coordonnées et transformations}
-Comme n'importe quel outil graphique, JavaFX utilise un système de coordonnées standard. Un axe x qui incrémente vers la droite et un axe y qui incrémente vers le bas. La position de référence à un \texttt{Node} est en haut à gauche. Ainsi un \texttt{Node} qui se trouve à la position (0, 0) se trouvera dans le coin en haut à gauche. Cependant, chaque transformation utilise sa propre référence.
+Comme n'importe quel outil graphique, JavaFX utilise un système de coordonnées standard. Un axe x qui incrémente vers la droite et un axe y qui incrémente vers le bas. La position de référence à un \texttt{Node} est en haut à gauche. Ainsi un \texttt{Node} qui se trouve à la position (0, 0) se trouvera dans le coin en haut à gauche. Cependant, chaque transformation utilise sa propre référence \cite{javadoc_node}.
 
 \begin{figure}[!ht]
     \caption{Positionnement des claques}

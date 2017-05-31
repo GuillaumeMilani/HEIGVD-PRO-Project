@@ -18,9 +18,9 @@ Comme on peut le voir sur la figure \ref{fig:scene_graphe_1}, chaque n\oe ud de 
 \par
 Cette structure particulière permet donc de créer facilement des interfaces graphiques, car il suffit que chaque élément visuel de notre application soit un objet (spécialisé ou non) d'une classe héritant de \texttt{Node} pour que l'affichage de cet élément soit géré automatiquement par JavaFX.
 \par
-Pour beaucoup de nos composants, nous avons donc spécialisé une des classes offertes par JavaFx proposant la fonctionnalité recherchée, en y ajoutant les comportements dont nous avions besoin. Ils sont ensuite ajoutés au Scene Graph de la scène principale, et nous pouvons ainsi construire notre application.
+Pour beaucoup de nos composants, nous avons donc spécialisé une des classes offertes par JavaFX proposant la fonctionnalité recherchée, en y ajoutant les comportements dont nous avions besoin. Ils sont ensuite ajoutés au Scene Graph de la scène principale, et nous pouvons ainsi construire notre application.
 
-\subsection{Serialisation}
+\subsection{Sérialisation}
 \label{sec:serialisation}
 
 En Java, la sérialisation s'effectue à l'aide de l'interface \texttt{Serializable}. Par conséquent, chaque classe de Java implémentant cette dernière telle que \texttt{String}, peut être sérialisée et désérialisée à volonté. Cependant, la majorité des classes JavaFX n'implémentent pas cette interface. En effet, cette librairie utilise grandement des mécanismes et des liaisons dynamiques tel que les listeners qui sont pour l'instant des sous-systèmes non-sérialisables. C'est pourquoi JavaFX contient très peu d'objets sérialisables.
@@ -34,22 +34,23 @@ Pour combler ce manque, nous devons nous-mêmes implémenter la sérialisation d
     \label{fig:seri_diag}
 \end{figure}
 
-Sur la figure \ref{fig:seri_diag}, nous pouvons voir un diagramme simplifié de l'implémentation de la sérialisation. Dans notre application, nous allons utiliser des classes de base telles que \texttt{\gls{imageview}}, \texttt{\gls{text}}, \texttt{\gls{canvas}}, \texttt{Color}, etc. Nous devons donc spécialiser ces classes afin qu'elles puissent implémenter l'interface \texttt{Serializable}. Toutefois, certaines classes comme \texttt{Color} ne sont malheureusement pas spécialisables. Il faut donc sérialiser les paramètres un par un à l'aide des accesseurs et mutateurs de cette dernière.
+Sur la figure \ref{fig:seri_diag}, nous pouvons voir un diagramme simplifié de l'implémentation de la sérialisation. Dans notre application, nous allons utiliser des classes de base telles que \texttt{\gls{imageview}}, \texttt{\gls{text}}, \texttt{\gls{canvas}}, \texttt{Color}, etc. Nous devons donc spécialiser ces classes afin qu'elles puissent implémenter l'interface \texttt{Serializable}. Toutefois, certaines classes comme \texttt{Color} ne sont malheureusement pas spécialisables. Il faut donc sérialiser les paramètres un par un à l'aide des accesseurs et mutateurs de la classe.
 
 Étant donné que les classes JavaFX possèdent énormément de fonctionnalités, sérialiser l'entier de celles-ci nous demanderait beaucoup trop de temps. C'est pourquoi nous nous contentons uniquement des paramètres utilisés au sein du projet tel que la largeur, la hauteur, la position, etc.
 
+\newpage
 \lstinputlisting[language=Java, caption=Exemple de sérialisation]{./src/serialisation.java}
 
-Bien que la sérialisation soit possible, celle-ci engendre des contraintes et des pertes de performances. Par exemple, les classes spécialisées ne peuvent plus étendre d'une classe commune et bénéficier de ses méthodes. De plus, les objets comme \texttt{Canvas} et \texttt{ImageView} devront sérialiser pixel par pixel, ce qui peut être long et volumineux selon la taille.
+Bien que la sérialisation soit possible, celle-ci engendre des contraintes et des pertes de performances. Par exemple, les classes spécialisées ne peuvent plus étendre d'une classe commune et bénéficier de ses méthodes. De plus, les objets comme \texttt{Canvas} et \texttt{ImageView} devront être sérialisés pixel par pixel, ce qui peut être long et volumineux selon la taille de l'objet.
 
 \subsection{Sauvegarde}
-La sauvegarde d'un document utilise la sérialisation des objets. Comme mentionné précédemment, la sérialisation de certaines classes peut être volumineux. Ainsi, les données sont compressées dans le format GZIP.
+La sauvegarde d'un document utilise la sérialisation des objets. Comme mentionné précédemment, la sérialisation de certaines classes peut être volumineuse, aussi les données sont compressées dans le format GZIP.
 
 \subsection{Workspace et liste des calques}
 Le \texttt{\gls{workspace}} correspond à l'espace de travail d'un Document GEMMS. \texttt{Workspace} est une classe personnalisée héritant de la classe \texttt{StackPane} de JavaFX. 
 
 \subsubsection{Structure d'un Workspace}
-+\label{sec:structure_workspace}
+\label{sec:structure_workspace}
 Chaque document ouvert possède un objet \texttt{Workspace} permettant à l'utilisateur de manipuler le contenu du fichier. Il est constitué de plusieurs couches de composants, comme représenté sur la figure \ref{fig:workspace_representation}.
 
 
@@ -60,7 +61,7 @@ Chaque document ouvert possède un objet \texttt{Workspace} permettant à l'util
 	\label{fig:workspace_representation}
 \end{figure}
 
-L'espace de travail (\texttt{Workspace}) est un container contenant deux enfants (au sens de l'arbre de JavaFX): une zone de dessin (une branche du Scene Graph) où sont ajoutés tous les calques créés et modifiés par l'utilisateur, et une interface des outils permettant de dessiner les retours visuels des outils (comme le curseur du pinceau par exemple). Tous deux sont de type \texttt{\gls{anchorpane}}, un type spécifique de container JavaFX, car cette classe permet de positionner leurs enfants selon des coordonnées (x, y).
+L'espace de travail (\texttt{Workspace}) est un container contenant deux enfants (au sens de l'arbre de JavaFX): une zone de dessin (une branche du Scene Graph) où sont ajoutés tous les calques créés et modifiés par l'utilisateur, et une interface des outils permettant de dessiner les retours visuels des outils (comme le curseur du pinceau par exemple). Tous deux sont de type \texttt{\gls{anchorpane}}, un type spécifique de container JavaFX, car cette classe permet de positionner ses enfants selon des coordonnées (x, y).
 
 La zone d'affichage correspond à un masque appliqué à l'espace de travail pour éviter que les calques ne dépassent de la zone de dessin. En effet les parents de type \texttt{AnchorPane} ne cachent pas leur éléments enfants sortant de leurs frontières.
 
@@ -69,7 +70,7 @@ Le \texttt{Workspace} détecte les mouvements de souris sur l'interface des outi
 \subsubsection{Types de calques}
 Dans GEMMS, les éléments d'un document sont gérés au moyen de calques. L'application utilise trois sortes de calques, qui sont en fait des types de \texttt{Node} proposés par JavaFX. La classe \texttt{\gls{text}} permet de représenter des textes, la classe \texttt{\gls{canvas}} permet de dessiner des éléments graphiques (lignes, formes, etc.) et la classe \texttt{\gls{imageview}} permet de représenter des images. 
 
-Pour les besoins de l'application, nous ne pouvions pas utiliser ces classes telles qu'elles sont proposées par l'API JavaFX. Nous avons donc créer des classes spécialisées (\texttt{\gls{gemmstext}}, \texttt{\gls{gemmstext}} et  \texttt{\gls{gemmsimage}}) de chacun de ces éléments afin de pouvoir ajouter les fonctionnalités nécessaires. La figure \ref{fig:layer_hierarchy} illustre cette spécialisation.
+Pour les besoins de l'application, nous ne pouvions pas utiliser ces classes telles qu'elles sont proposées par l'API JavaFX. Nous avons donc créé des classes spécialisées (\texttt{\gls{gemmstext}}, \texttt{\gls{gemmstext}} et  \texttt{\gls{gemmsimage}}) de chacun de ces éléments afin de pouvoir ajouter les fonctionnalités nécessaires. La figure \ref{fig:layer_hierarchy} illustre cette spécialisation.
 
 \begin{figure}[!ht]
 	\caption{Spécialisation des classes JavaFX pour la gestion des calques}
@@ -94,11 +95,11 @@ La classe \texttt{ListView} de JavaFX propose cette fonctionnalité. Malheureuse
 
 \texttt{LayerList} est une classe générique implémentée pour ce projet qui permet d'afficher sous forme de liste de cellules le contenu d'une \texttt{ObservableList}. La figure \ref{fig:layer_management} illustre la structure du \texttt{Workspace} et de sa \texttt{LayerList}. Dans cette représentation, toutes les classes sont instanciées avec \texttt{Node} comme paramètre générique pour une meilleure compréhension. Les enfants d'un \texttt{Node} de type parent étant représentés sous la forme d'une \texttt{ObservableList<Node>} dans JavaFX, \texttt{Layerlist} peut ainsi gérer les calques du \texttt{Workspace}.
 
-\texttt{LayerList} hérite du composant \texttt{VBox} de JavaFX, ce qui permet de l'ajouter au Scene Graph. Dans GEMMS, elle observe les enfants de la zone de dessin du \texttt{Workspace} et est notifiée lorsqu'il y a un changement. Pour tout nouveau calque (\texttt{Node}) ajouté dans la liste, elle crée une nouvelle \texttt{Cell} (cellule) en utilisant le pattern de fabrication abstraite. Elle ajoute ces cellules dans un composant interne qui les affiche en colonne.
+\texttt{LayerList} hérite du composant \texttt{VBox} de JavaFX, ce qui permet de l'ajouter au Scene Graph. Dans GEMMS, elle observe les enfants de la zone de dessin du \texttt{Workspace} et est notifiée lorsqu'il y a un changement. Pour tout nouveau calque (\texttt{Node}) ajouté dans la liste, elle crée une nouvelle \texttt{Cell} (cellule) en utilisant le patron de conception de fabrication abstraite. Elle ajoute ces cellules dans un composant interne qui les affiche en colonne.
 
 Une \texttt{Cell} (cellule) est un élément \texttt{HBox} JavaFX spécialisé, qui garde trace d'un \texttt{Node} (calque du document) et qui permet de contrôler et d'afficher des information concernant ce \texttt{Node}. Chaque \texttt{Cell} peut en effet être sélectionnée, masquée, renommée, ou supprimée au clic de la souris, et ces actions se répercutent sur les calques effectifs contenus par le \texttt{Workspace}. 
 
-Ce système de gestion permet de fournir une vue des calques qui se maintient elle-même à jour, et ce quel que ce soit les changements apportés aux à la liste d'enfants de la zone de dessin.
+Ce système de gestion permet de fournir une vue des calques qui se maintient elle-même à jour, et ce quels que soient les changements apportés à la liste d'enfants de la zone de dessin.
 
 Le \texttt{Workspace} peut donc déléguer entièrement la gestion des calques à un objet de type \texttt{LayerList}. Les méthodes d'accès aux calques sélectionnés du \texttt{Workspace} font donc appel aux méthodes de la \texttt{LayerList}.
 
@@ -114,7 +115,7 @@ Comme n'importe quel outil graphique, JavaFX utilise un système de coordonnées
     \label{fig:calque_positionnement}
 \end{figure}
 
-Sur la figure \ref{fig:calque_positionnement} nous pouvons observer deux cadres respectivement rouge et bleu qui représentent la position de deux calques. A l'ajout d'un calque dans le \texttt{Workspace}, ce dernier est automatiquement centré dans l'espace de travail (voir \ref{sec:structure_workspace}). Nous pouvons donc observer que le calque bleu a été déplacé en bas à droite et le calque rouge a été déplacé en haut à gauche et une rotation de 45 degré a été effectué.
+Sur la figure \ref{fig:calque_positionnement} nous pouvons observer deux cadres respectivement rouge et bleu qui représentent la position de deux calques. À l'ajout d'un calque dans le \texttt{Workspace}, ce dernier est automatiquement centré dans l'espace de travail (voir \ref{sec:structure_workspace}). Nous pouvons donc observer que le calque bleu a été déplacé en bas à droite et le calque rouge a été déplacé en haut à gauche et une rotation de 45 degré a été effectué.
 
 Le déplacement s'effectue à l'aide de la méthode setTranslate() de \texttt{Node}. Cette méthode ajoute la valeur de déplacement à la position fixe du \texttt{Node}. Il existe également la classe \texttt{Translate} qui permet de reproduire le même comportement mais dans ce cas, il faut utiliser getTransforms().
 
@@ -122,7 +123,7 @@ La rotation se réalise à l'aide de la méthode setRotate() qui a comme point d
 
 Le redimensionnement utilise setScaleX() ou setScaleY() et sa classe identique est \texttt{Scale}. Les points de références sont identiques à la rotation. Il existe d'autres transformations mais nous n'allons pas les utiliser dans le cadre de ce projet.
 
-Toutes ces transformations et points de référence, différents selon la transformation, posent un problème lorsque que nous devons effectuer des actions à l'aide de la souris. C'est typiquement le cas du pinceau et de la gomme. Comme nous avons vu précédemment, la détection de la souris s'effectue sur l'interface d'outils. Or la position récupérée ne sera plus valable pour un calque qui a été transformé. Nous devons donc pour chaque calque appliquer les transformations inverses afin d'avoir les bonnes coordonnées peu importe où nous sommes avec la souris.
+Toutes ces transformations et points de référence, différents selon la transformation, posent un problème lorsque que nous devons effectuer des actions à l'aide de la souris. C'est typiquement le cas du pinceau et de la gomme. Comme nous avons vu précédemment, la détection de la souris s'effectue sur l'interface d'outils. Or la position récupérée ne sera plus valable pour un calque qui a été transformé. Nous devons donc pour chaque calque appliquer les transformations inverses afin d'avoir les bonnes coordonnées peu importe où nous se trouve la souris.
 
 \subsection{Copier-coller}
 \label{sec:copiercoller}
@@ -183,7 +184,7 @@ On notera finalement que si l'utilisateur effectue une modification après avoir
 JavaFX offre (entre autres) les événements \texttt{MousePressed}, \texttt{MouseDragged} et \texttt{MouseReleased}. Ils correspondent respectivement à l'action de presser la souris, de la déplacer en gardant le clic gauche enfoncé ou de relâcher le clic gauche de la souris.
 \subsubsection{Hiérarchie des outils}
 \label{section_outils}
-La plupart des outils de l'application fonctionnent grâce à ces trois événements. On pensera notamment au pinceau qui doit dessiner un trait en suivant la souris lors d'un \texttt{MouseDragged}. Un quatrième événement, \texttt{MouseMouved} est également traité, mais il n'est utilisé que pour afficher des retours visuels (curseur du pinceau par exemple). Son utilisation n'est donc pas détaillée dans cette section.
+La plupart des outils de l'application fonctionnent grâce à ces trois événements. On pensera notamment au pinceau qui doit dessiner un trait en suivant la souris lors d'un \texttt{MouseDragged}. Un quatrième événement, \texttt{MouseMoved} est également traité, mais il n'est utilisé que pour afficher des retours visuels (curseur du pinceau par exemple). Son utilisation n'est donc pas détaillée dans cette section.
 \par
 Comme on peut le voir sur la figure \ref{fig:tool_hier}, les outils implémentent une interface \texttt{Tool}, possédant des méthodes correspondant à ces événements. Au long de l'exécution du programme, le \texttt{Workspace} garde une référence vers un outil considéré actif (qui peut aussi être référence nulle), et lorsqu'il détecte un des événements cités plus haut, il se charge d'appeler la ou les méthodes correspondantes de cet outil.
 \par
@@ -194,9 +195,10 @@ D'autres outils plus simples, comme la symétrie horizontale ou verticale ou les
 \begin{figure}[!ht]
 	\caption{Diagramme simplifié de la hiérarchie des outils}
 	\centering
-	\includegraphics[scale=0.6]{tool_hierarchy.png}
+	\includegraphics[scale=0.55]{tool_hierarchy.png}
 	\label{fig:tool_hier}
 \end{figure}
+\newpage
 
 \subsubsection{Réglage des outils} \label{reglage-outils}
 Certains de ces outils nécessitent d'être paramétrés en temps réel en fonction des calques sélectionnés par l'utilisateur. Par exemple, la taille de la gomme est stockée dans l'objet représentant l'outil, et est utilisée pour déterminer la taille du rectangle à effacer. L'utilisateur peut la régler au moyen d'un \texttt{Slider} (il s'agit d'un composant JavaFX). Les mêmes besoins concernent la gestion de la couleur du pinceau, de la taille et de la police de l'outil de modification de texte. La figure \ref{fig:text_settings} illustre l'apparence des réglages de l'outil de modification de texte.

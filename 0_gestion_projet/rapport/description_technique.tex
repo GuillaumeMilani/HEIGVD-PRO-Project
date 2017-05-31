@@ -23,7 +23,7 @@ Pour beaucoup de nos composants, nous avons donc spécialisé une des classes of
 \subsection{Serialisation}
 \label{sec:serialisation}
 
-En Java, la sérialisation s'effectue à l'aide de l'interface \texttt{Serializable}. Par conséquent, chaque classe de Java implémentant cette dernière telle que \texttt{String}, peut être sérialisée et désérialisée à volonté. Cependant, la majorité des classes JavaFX n'implémentent pas cette interface. En effet, cette librairie utilise grandement des mécanismes et des liaisons dynamiques tel que les listeners qui sont pour l'instant des sous-systèmes non-sérialisables. C'est pourquoi JavaFX contient très peu d'objets sérialisables.
+En Java, la \texttt{\gls{serialisation}} s'effectue à l'aide de l'interface \texttt{Serializable}. Par conséquent, chaque classe de Java implémentant cette dernière telle que \texttt{String}, peut être sérialisée et désérialisée à volonté. Cependant, la majorité des classes JavaFX n'implémentent pas cette interface. En effet, cette librairie utilise grandement des mécanismes et des liaisons dynamiques tel que les listeners qui sont pour l'instant des sous-systèmes non-sérialisables \cite{javadoc_scene_graphe}.  C'est pourquoi JavaFX contient très peu d'objets sérialisables.
 
 Pour combler ce manque, nous devons nous-mêmes implémenter la sérialisation des classes JavaFX que nous sommes susceptibles d'utiliser.
 

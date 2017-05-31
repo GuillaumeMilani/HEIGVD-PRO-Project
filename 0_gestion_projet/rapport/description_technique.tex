@@ -41,7 +41,7 @@ Sur la figure \ref{fig:seri_diag}, nous pouvons voir un diagramme simplifié de 
 \newpage
 \lstinputlisting[language=Java, caption=Exemple de sérialisation]{./src/serialisation.java}
 
-Bien que la sérialisation soit possible, ceci engendre des contraintes et des pertes de performances. Par exemple, les classes spécialisées ne peuvent plus étendre d'une classe commune et bénéficier de ses méthodes. De plus, les objets comme \texttt{Canvas} et \texttt{ImageView} devront être sérialisés pixel par pixel, ce qui peut être long et volumineux selon la taille de l'objet.
+Bien que la sérialisation soit possible, celle-ci engendre des contraintes et des pertes de performances. Par exemple, les classes spécialisées ne peuvent plus étendre d'une classe commune et bénéficier de ses méthodes. De plus, les objets comme \texttt{Canvas} et \texttt{ImageView} devront être sérialisés pixel par pixel, ce qui peut être long et volumineux selon la taille de l'objet.
 
 \subsection{Sauvegarde}
 La sauvegarde d'un document utilise la sérialisation des objets. Comme mentionné précédemment, la sérialisation de certaines classes peut être volumineuse, aussi les données sont compressées dans le format GZIP.
@@ -63,7 +63,7 @@ Chaque document ouvert possède un objet \texttt{Workspace} permettant à l'util
 
 L'espace de travail (\texttt{Workspace}) est un container contenant deux enfants (au sens de l'arbre de JavaFX): une zone de dessin (une branche du Scene Graph) où sont ajoutés tous les calques créés et modifiés par l'utilisateur, et une interface des outils permettant de dessiner les retours visuels des outils (comme le curseur du pinceau par exemple). Tous deux sont de type \texttt{\gls{anchorpane}}, un type spécifique de container JavaFX, car cette classe permet de positionner ses enfants selon des coordonnées (x, y).
 
-La zone d'affichage correspond à un masque appliqué à l'espace de travail pour éviter que les calques ne dépassent de la zone dessin. En effet les parents de type \texttt{AnchorPane} ne cachent pas leur éléments enfants sortant de leurs frontières.
+La zone d'affichage correspond à un masque appliqué à l'espace de travail pour éviter que les calques ne dépassent de la zone de dessin. En effet les parents de type \texttt{AnchorPane} ne cachent pas leur éléments enfants sortant de leurs frontières.
 
 Le \texttt{Workspace} détecte les mouvements de souris sur l'interface des outils et se charge d'appeler les méthodes correspondantes de l'objet \texttt{Tool} activé (se référer à la section \ref{section_outils}).
 
@@ -121,9 +121,9 @@ Le déplacement s'effectue à l'aide de la méthode setTranslate() de \texttt{No
 
 La rotation se réalise à l'aide de la méthode setRotate() qui a comme point de pivot par défaut le centre du \texttt{Node}. Alors que sa classe équivalente \texttt{Rotate} a comme pivot par défaut (0, 0).
 
-Le redimensionnement utilise setScaleX() ou setScaleY() et sa classe identique est \texttt{Scale}. Les points de référence sont identiques à la rotation. Il existe d'autres transformations, mais nous n'allons pas les utiliser dans le cadre de ce projet.
+Le redimensionnement utilise setScaleX() ou setScaleY() et sa classe identique est \texttt{Scale}. Les points de références sont identiques à la rotation. Il existe d'autres transformations mais nous n'allons pas les utiliser dans le cadre de ce projet.
 
-Toutes ces transformations et points de référence différents selon la transformation posent un problème lorsque que nous devons effectuer des actions à l'aide de la souris. C'est typiquement le cas du pinceau et de la gomme. Comme nous avons vu précédemment, la détection de la souris s'effectue sur l'interface d'outils. Or la position récupérée ne sera plus valable pour un calque qui a été transformé. Nous devons donc pour chaque calque appliquer les transformations inverses afin d'avoir les bonnes coordonnées peu importe où nous se trouve la souris.
+Toutes ces transformations et points de référence, différents selon la transformation, posent un problème lorsque que nous devons effectuer des actions à l'aide de la souris. C'est typiquement le cas du pinceau et de la gomme. Comme nous avons vu précédemment, la détection de la souris s'effectue sur l'interface d'outils. Or la position récupérée ne sera plus valable pour un calque qui a été transformé. Nous devons donc pour chaque calque appliquer les transformations inverses afin d'avoir les bonnes coordonnées peu importe où nous se trouve la souris.
 
 \subsection{Copier-coller}
 \label{sec:copiercoller}
@@ -148,7 +148,7 @@ Il reste ensuite à écrire l'image capturée sur un \texttt{GEMMSCanvas} qui se
 Le presse-papier ne permet d'enregistrer que des données textuelles, il faut donc sérialiser le ou les calques qui seront stockés dans le presse-papier. Pour plus de détails sur la sérialisation, voir la section \ref{sec:serialisation}.
 
 \subsubsection{Coller le contenu du presse-papier}
-Le collage consiste à désérialiser le contenu du presse-papier et à insérer dans le \texttt{Workspace} courant le ou l'ensemble de calques désérialisés.
+Le collage consiste à désérialiser le contenu du presse-papier et à insérer dans le \texttt{Workspace} courant  l'ensemble de calques désérialisés.
 
 \subsection{Historique}
 L'historique des actions effectuées se base principalement sur deux concepts : la sérialisation et le patron de conception \texttt{Observable} comme l'indique la figure \ref{fig:hist_uml}.
@@ -160,7 +160,7 @@ L'historique des actions effectuées se base principalement sur deux concepts : 
     \label{fig:hist_uml}
 \end{figure}
 
-Après chaque action que l'on souhaite pouvoir annuler, on notifie l'instance de la classe \texttt{History} liée au \texttt{Workspace} en cours d'utilisation. \texttt{History} implémente donc \texttt{Observer} et observe les outils ainsi que le \texttt{HistoryNotifier}. Lorsqu'il reçoit une notification, l'historique sauvegarde l'entier du \texttt{Workspace}. C'est à ce moment qu'intervient la sérialisation. Il aurait été possible d'utiliser l'interface \texttt{Cloneable} pour les différents \texttt{GEMMSNode} et sauvegarder systématiquement des copies des objets, cependant le code aurait été très similaire à celui de la sérialisation. Nous avons donc décidé de sérialiser les calques de l'espace de travail et d'enregistrer la chaîne de caractères en résultant. Note : l'utilisation de \texttt{HistoryNotifier} se justifie par le fait que \texttt{Workspace} étend la classe \texttt{StackPane} et ne pouvait donc pas être lui-même \texttt{Observable}.
+Après chaque action que l'on souhaite pouvoir annuler, on notifie l'instance de la classe \texttt{History} liée au \texttt{Workspace} en cours d'utilisation. \texttt{History} implémente donc \texttt{Observer} et observe les outils ainsi que le \texttt{HistoryNotifier}. Lorsqu'il reçoit une notification, l'historique sauvegarde l'entier du \texttt{Workspace}. C'est à ce moment qu'intervient la sérialisation. En effet, il aurait été possible d'utiliser l'interface \texttt{Cloneable} pour les différents \texttt{GEMMSNode} et de sauvegarder systématiquement des copies d'objets, cependant le code aurait été très similaire à celui de la sérialisation. Nous avons donc décidé de sérialiser les calques de l'espace de travail et d'enregistrer la chaîne de caractères en résultant. Note : l'utilisation de \texttt{HistoryNotifier} se justifie par le fait que \texttt{Workspace} étend la classe \texttt{StackPane} et ne pouvait donc pas être lui-même \texttt{Observable}.
 
 Lorsque les méthodes \texttt{undo()} et \texttt{redo()} sont appelées (notamment par les commandes Ctrl + Z et Ctrl + Y), l'historique restaure (désérialise) la sauvegarde faite dans la liste d'éléments sérialisés correspondant à l'action demandée.
 
@@ -169,7 +169,7 @@ De la même manière que pour les calques, la liste des calques sélectionnés a
 \subsubsection{Historique visuel}
 L'affichage de l'historique visuel utilise le même mécanisme que décrit ci-dessus. À chaque action de l'utilisateur, on effectue une capture («snapshot») miniature de l'espace de travail qui sera stockée dans une liste. Cette liste est observable et alimente une \texttt{ListView} qui affiche les images dans l'interface de GEMMS.
 
-Lorsque l'utilisateur clique sur un élément de la \texttt{ListView}, la méthode \texttt{restoreToIndex(index)} de l'historique est appelée. Elle restaure l'espace de travaille non pas à l'état précédent, mais à l'état indiqué par le paramètre entier positif \texttt{index}.
+Lorsque l'utilisateur clique sur un élément de la \texttt{ListView}, la méthode \texttt{restoreToIndex(index)} de l'historique est appelée. Elle restaure l'espace de travail non pas à l'état précédent, mais à l'état indiqué par le paramètre entier positif \texttt{index}.
 
 On notera finalement que si l'utilisateur effectue une modification après avoir restauré un état précédent, il se trouvera sur une nouvelle «branche» et il ne pourra plus «revenir en avant», comme sur pratiquement tous les logiciels que l'on connaît, voir figure \ref{fig:hist_branches}.
 
@@ -201,7 +201,7 @@ D'autres outils plus simples, comme la symétrie horizontale ou verticale ou les
 \newpage
 
 \subsubsection{Réglage des outils} \label{reglage-outils}
-Certains de ces outils nécessitent d'être paramétrés en temps réel en fonction des calques sélectionnés par l'utilisateur. Par exemple, la taille de la gomme est stockée dans l'objet représentant l'outil, et est utilisée pour déterminer la taille du rectangle à effacer. L'utilisateur peut la régler au moyen d'un \texttt{Slider} (il s'agit d'un composant JavaFX). Les même besoin concernent la gestion de la couleur du pinceau, de la taille et de la police de l'outil de modification de texte. La figure \ref{fig:text_settings} illustre l'apparence des réglages de l'outil de modification de texte.
+Certains de ces outils nécessitent d'être paramétrés en temps réel en fonction des calques sélectionnés par l'utilisateur. Par exemple, la taille de la gomme est stockée dans l'objet représentant l'outil, et est utilisée pour déterminer la taille du rectangle à effacer. L'utilisateur peut la régler au moyen d'un \texttt{Slider} (il s'agit d'un composant JavaFX). Les mêmes besoins concernent la gestion de la couleur du pinceau, de la taille et de la police de l'outil de modification de texte. La figure \ref{fig:text_settings} illustre l'apparence des réglages de l'outil de modification de texte.
 
 \begin{figure}[!ht]
 	\caption{Composant de réglages de l'outil de modification texte}
@@ -215,7 +215,7 @@ Ces réglages doivent pouvoir s'adapter à un outil existant, comme par exemple 
 
 Pour ce faire, les réglages sont gérés au moyen d'une hiérarchie de classes (se référer à la figure \ref{fig:tool_settings}), qui sont en fait des spécialisations de composants JavaFX permettant à l'utilisateur de paramétrer les outils, et d'une série d'interfaces représentant des outils pouvant être paramétrés sur divers aspects (la taille, la couleur, la police et ainsi de suite).
 \par
-Ainsi un objet \texttt{ToolFontSettings} permet de paramétrer la Font (les paramètres de police d'écriture) d'un objet implémentant l'interface \texttt{FontConfigruableTool}. Dans le cas de l'outil texte, qui implémente cette interface, les réglages doivent s'adapter aux paramètres d'un calque texte et ainsi se mettre à jour en temps réel.
+Ainsi un objet \texttt{ToolFontSettings} permet de paramétrer la \texttt{Font} (les paramètres de police d'écriture) d'un objet implémentant l'interface \texttt{FontConfigruableTool}. Dans le cas de l'outil texte, qui implémente cette interface, les réglages doivent s'adapter aux paramètres d'un calque texte et ainsi se mettre à jour en temps réel.
 \par
 Lorsque l'utilisateur modifie la valeur du \texttt{Slider} contenu dans l'objet \texttt{ToolFontSettings}, celui-ci met à jour sa cible \texttt{SizeConfigurableTool} en temps réel (ici, l'outil de modification de texte).
 
@@ -250,15 +250,15 @@ L'outil de modification de texte permet à l'utilisateur de modifier les propri�
 Les réglages de couleur et de police de cet outils utilisent la structure expliquée à la section \ref{reglage-outils} en utilisant des objets de type \texttt{ToolColorSettings} et \texttt{ToolFontSettings}.
 \subsubsection{Symétries}
 
-Les deux symétries, horizontale et verticale, s'effectuent non pas grâce à un outil qui implémente une interface \textit{Tool} mais grâce à des transformations JavaFX sur les n\oe uds sélectionnes. Cela est principalement dû au fait que les outils implémentant cette interface sont pratiques pour une utilisation avec la souris alors que pour une symétrie, il n'y en a pas besoin. Une symétrie effectue donc une transformation de rotation d'un angle de 180 degrés avec un pivot centré au milieu du n\oe ud et un axe de rotation correspondant à la symétrie. Par exemple, pour la symétrie horizontale, on applique la rotation sur l'axe Y.
+Les deux symétries, horizontale et verticale, s'effectuent non pas grâce à un outil qui implémente une interface \textit{Tool} mais grâce à des transformations JavaFX sur les n\oe uds sélectionnés. Cela est principalement dû au fait que les outils implémentant cette interface sont pratiques pour une utilisation avec la souris alors que pour une symétrie, il n'y en a pas besoin. Une symétrie effectue donc une transformation de rotation d'un angle de 180 degrés avec un pivot centré au milieu du n\oe ud et un axe de rotation correspondant à la symétrie. Par exemple, pour la symétrie horizontale, on applique la rotation sur l'axe Y.
 
 Concernant la sérialisation de cette transformation, comme il s'agit de la transformation d'un n\oe ud et que les transformations de JavaFX ne sont pas sérialisables, il faut enregistrer tous les paramètres de la rotation (angle, pivot et axe) afin de pouvoir réappliquer cette transformation lors de la désérialisation.
 \subsubsection{Déplacement}
 Le rôle de l'outil de déplacement est de pouvoir déplacer un ou des n\oe uds. Pour se faire, il implémente l'interface \textit{Tool} afin de pouvoir déplacer les n\oe uds avec la souris. Il retient la position de la souris lors du clic, calcule un offset lors du déplacement de celle-ci et applique une translation pour chaque n\oe ud selectionné qui consiste à rajouter l'offset aux coordonnées du n\oe ud.
 
- Il y a deux types de déplacement: celui avec l'alignement automatique et celui sans. Ce dernier, activable via un bouton, permet d'afficher des repères qui traversent le centre du workspace et qui permettent d'aligner un n\oe ud sur ceux-ci. De plus, avec ces repères, il y a un mechanisme d'aimant qui permet, lorsque la souris est assez proche d'un repère d'alignement, d'attirer le n\oe ud selectionné sur lui. Ce mechanisme d'attraction ne marche que s'il n'y a qu'un n\oe ud de selectionné.
+ Il y a deux types de déplacement: celui avec l'alignement automatique et celui sans. Ce dernier, activable via un bouton, permet d'afficher des repères qui traversent le centre du workspace et qui permettent d'aligner un n\oe ud sur ceux-ci. De plus, avec ces repères, il y a un mechanisme d'aimant qui permet, lorsque la souris est assez proche d'un repère d'alignement, d'attirer le n\oe ud sélectionné sur lui. Ce mechanisme d'attraction ne marche que s'il n'y a qu'un n\oe ud de sélectionné.
 \subsubsection{Rotation}
-Plusieurs approchent possible pour le méchanisme de rotation mais nous avons finalement opté pour un méchanisme très similaire a l'outil de déplacement : on calcule un offset via la position de la souris et on applique une rotation sur les n\oe uds selectionnés.
+Plusieurs approchent possible pour le méchanisme de rotation mais nous avons finalement opté pour un méchanisme très similaire à l'outil de déplacement : on calcule un offset via la position de la souris et on applique une rotation sur les n\oe uds selectionnés.
 \subsubsection{Redimensionnement}
 Comme pour l'outil déplacement et l'outil rotation, plusieurs approchent ont été pensées mais celle qui a été retenue est très semblable à la rotation et au déplacement. On calcule un offset avec le déplacement de la souris, on a un certain facteur de grossissement que l'on multiplie à l'offset afin d'obtenir le nouveau grossissement que l'on va appliquer aux n\oe uds.
 \subsubsection{Sélection}

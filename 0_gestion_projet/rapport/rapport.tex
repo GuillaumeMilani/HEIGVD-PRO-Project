@@ -74,6 +74,14 @@
 \makeglossary
 \loadglsentries{glossaire}
 
+% Ne pas supprimer, permet d'afficher le numéro de sections
+\usepackage{etoolbox}
+
+\makeatletter
+\patchcmd{\ttlh@hang}{\parindent\z@}{\parindent\z@\leavevmode}{}{}
+\patchcmd{\ttlh@hang}{\noindent}{}{}{}
+\makeatother
+
 
 % -----------------------------------------------------------------------
 % --- Couleurs définies
@@ -215,7 +223,8 @@
 \nocite{*}
 
 %choix du style de la biblio
-\bibliographystyle{plain}
+\
+style{plain}
 %inclusion de la biblio
 \bibliography{bibliographie.bib}
 %voir wiki pour plus d'information sur la syntaxe des entrées d'une bibliographie

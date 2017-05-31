@@ -103,6 +103,26 @@ Le \texttt{Workspace} peut donc déléguer entièrement la gestion des calques �
 
 \lstinputlisting[language=Java, caption=Exemple de gestion de la sélection des calques par la \texttt{LayerList} au sein du \texttt{Workspace}]{./src/gestion_calques.java}
 
+\subsubsection{Systèmes de coordonnées et transformations}
+Comme n'importe quel outil graphique, JavaFX utilise un système de coordonnées standard. Un axe x qui incrémente vers la droite et un axe y qui incrémente vers le bas. La position de référence à un \texttt{Node} est en haut à gauche. Ainsi un \texttt{Node} qui se trouve à la position (0, 0) se trouvera dans le coin en haut à gauche. Cependant, chaque transformation utilise sa propre référence.
+
+\begin{figure}[H]
+    \caption{Positionnement des claques}
+    \centering
+    \includegraphics[scale=0.4]{positionnement.png}
+    \label{fig:calque_positionnement}
+\end{figure}
+
+Sur la figure \ref{fig:calque_positionnement} nous pouvons observer deux cadres respectivement rouge et bleu qui représentent la position de deux calques. A l'ajout d'un calque dans le \texttt{Workspace}, ce dernier est automatiquement centré dans l'espace de travail (voir \ref{sec:structure_workspace}). Nous pouvons donc observer que le calque bleu a été déplacé en bas à droite et le calque rouge a été déplacé en haut à gauche et une rotation de 45 degré a été effectué.
+
+Le déplacement s'effectue à l'aide de la méthode setTranslate() de \texttt{Node}. Cette méthode ajoute la valeur de déplacement à la position fixe du \texttt{Node}. Il existe également la classe \texttt{Translate} qui permet de reproduire le même comportement mais dans ce cas, il faut utiliser getTransforms().
+
+La rotation se réalise à l'aide de la méthode setRotate() qui a comme point de pivot par défaut le centre du \texttt{Node}. Alors que sa classe équivalente \texttt{Rotate} a comme pivot par défaut (0, 0).
+
+Le redimensionnement utilise setScaleX() ou setScaleY et sa classe identique est \texttt{Scale}. Les points de références sont identiques à la rotation. Il existe d'autres transformations, mais nous n'allons pas les utiliser dans le cadre de ce projet.
+
+Toutes ces transformations et points de référence différents selon la transformation posent un problème lorsque que nous devons effectuer des actions à l'aide de la souris. C'est typiquement le cas du pinceau et de la gomme. Comme nous avons vu précédemment, la détection de la souris s'effectue sur l'interface d'outils. Or la position récupérée ne sera plus valable pour un calque qui a été transformé. Nous devons donc pour chaque calque appliquer les transformations inverses afin d'avoir les bonnes coordonnées peu importe où nous sommes avec la souris.
+
 \subsection{Copier-coller}
 \label{sec:copiercoller}
 Deux façon d'aborder le copier-coller ont été implémentées : la première consiste à enregistrer dans le presse-papier un ou des calques sélectionnés, la seconde consiste à enregistrer uniquement la partie sélectionnée et visible à l'écran.
@@ -157,9 +177,6 @@ On notera finalement que si l'utilisateur effectue une modification après avoir
     \includegraphics[scale=0.6]{history_branches.pdf}
     \label{fig:hist_branches}
 \end{figure}
-
-\subsection{Positionnement}
-TODO TODO TODO
 
 \subsection{Outils}
 \par

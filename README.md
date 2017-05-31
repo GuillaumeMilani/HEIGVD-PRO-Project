@@ -7,7 +7,7 @@ GEMMS est une application d'édition d'images réalisée entièrement en Java av
 * Le fichier `pom.xml` contient les informations utilisées par Maven pour compiler le projet. La commande `mvn clean install` permet de compiler le projet avec le fichier `pom.xml` du répertoire courrant.
 * Le programme exécutable est `/target/GEMMS-1.0-SNAPSHOT.jar`.
 
-##Lancement de l'exécutable
+## Lancement de l'exécutable
 Pour lancer l'exécutable compilé, utiliser la commande `java -jar <nom de l'executable>.jar`
 
 

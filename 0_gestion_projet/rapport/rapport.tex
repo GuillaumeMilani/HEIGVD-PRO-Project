@@ -77,6 +77,9 @@
 % Ne pas supprimer, permet d'afficher le numéro de sections
 \usepackage{etoolbox}
 
+\usepackage{pdfpages}
+
+
 \makeatletter
 \patchcmd{\ttlh@hang}{\parindent\z@}{\parindent\z@\leavevmode}{}{}
 \patchcmd{\ttlh@hang}{\noindent}{}{}{}
@@ -234,6 +237,9 @@
 
 \section{Annexes}
 \appendix
+\newpage~
 \input{./journal_travail.tex}
-
+\pagestyle{empty}
+\newpage~
+\includepdf[pages=1-]{../cahierdescharges.pdf}
 \end{document}

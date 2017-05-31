@@ -8,7 +8,7 @@ Les trois point-clés sont la notion de \texttt{\gls{stage}}, de \texttt{\gls{sc
 \par
 Le Scene Graph est une structure en arbre qui garde une représentation interne des éléments graphiques de l'application. En tout temps, il sait quels éléments afficher, quelles zones de l'écran doivent être rafraîchies, et comment le faire de la manière la plus efficace \cite{javadoc_scene_graphe}. 	
 
-\begin{figure}[H]
+\begin{figure}[!ht]
 	\caption{Représentation du Scene Graph de JavaFX. Source: documentation Oracle \cite{javadoc_scene_graphe}}
 	\centering
 	\includegraphics[scale=0.6]{scene_graphe_1.png}
@@ -27,7 +27,7 @@ En Java, la sérialisation s'effectue à l'aide de l'interface \texttt{Serializa
 
 Pour combler ce manque, nous devons nous-mêmes implémenter la sérialisation des classes JavaFX que nous sommes susceptibles d'utiliser.
 
-\begin{figure}[h]
+\begin{figure}[!ht]
     \caption{Diagramme de la sérialisation simplifié}
     \centering
     \includegraphics[scale=0.6]{serialisation_diagram.png}
@@ -53,7 +53,7 @@ Le \texttt{\gls{workspace}} correspond à l'espace de travail d'un Document GEMM
 Chaque document ouvert possède un objet \texttt{Workspace} permettant à l'utilisateur de manipuler le contenu du fichier. Il est constitué de plusieurs couches de composants, comme représenté sur la figure \ref{fig:workspace_representation}.
 
 
-\begin{figure}[H]
+\begin{figure}[!ht]
 	\caption{Représentation des couches du \texttt{Workspace}}
 	\centering
 	\includegraphics[scale=0.4]{workspace_schema.png}
@@ -71,7 +71,7 @@ Dans GEMMS, les éléments d'un document sont gérés au moyen de calques. L'app
 
 Pour les besoins de l'application, nous ne pouvions pas utiliser ces classes telles qu'elles sont proposées par l'API JavaFX. Nous avons donc créer des classes spécialisées (\texttt{\gls{gemmstext}}, \texttt{\gls{gemmstext}} et  \texttt{\gls{gemmsimage}}) de chacun de ces éléments afin de pouvoir ajouter les fonctionnalités nécessaires. La figure \ref{fig:layer_hierarchy} illustre cette spécialisation.
 
-\begin{figure}[H]
+\begin{figure}[!ht]
 	\caption{Spécialisation des classes JavaFX pour la gestion des calques}
 	\centering
 	\includegraphics[scale=0.55]{layer_hierarchy.png}
@@ -85,7 +85,7 @@ Une des fonctionnalités indispensables de GEMMS est de permettre à l'utilisate
 
 La classe \texttt{ListView} de JavaFX propose cette fonctionnalité. Malheureusement, ce composant n'étant pas paramétrable comme nous le souhaitions pour les besoins ergonomiques de l'application, nous avons dû implémenter notre propre système de gestion de calques. Il est cependant fortement inspiré du fonctionnement de \texttt{ListView}.
 
-\begin{figure}[H]
+\begin{figure}[!ht]
 	\caption{Implémentation du composant \texttt{LayerList}. Structure simplifiée.}
 	\centering
 	\includegraphics[scale=0.6]{layer_management.png}
@@ -107,7 +107,7 @@ Le \texttt{Workspace} peut donc déléguer entièrement la gestion des calques �
 \subsubsection{Systèmes de coordonnées et transformations}
 Comme n'importe quel outil graphique, JavaFX utilise un système de coordonnées standard. Un axe x qui incrémente vers la droite et un axe y qui incrémente vers le bas. La position de référence à un \texttt{Node} est en haut à gauche. Ainsi un \texttt{Node} qui se trouve à la position (0, 0) se trouvera dans le coin en haut à gauche. Cependant, chaque transformation utilise sa propre référence.
 
-\begin{figure}[H]
+\begin{figure}[!ht]
     \caption{Positionnement des claques}
     \centering
     \includegraphics[scale=0.4]{positionnement.png}
@@ -128,7 +128,7 @@ Toutes ces transformations et points de référence différents selon la transfo
 \label{sec:copiercoller}
 Deux façon d'aborder le copier-coller ont été implémentées : la première consiste à enregistrer dans le presse-papier un ou des calques sélectionnés, la seconde consiste à enregistrer uniquement la partie sélectionnée et visible à l'écran.
 
-Trois procédés sont à l'origine de cette fonction de l'application : le snapshot, le viewport et la sérialisation.
+Trois procédés sont à l'origine de cette fonction de l'application : le snapshot, le Viewport et la sérialisation.
 
 
 \subsubsection{Snapshot}
@@ -137,9 +137,9 @@ Le snapshot est un outil proposé par JavaFX qui permet d'effectuer une «captur
 \subsubsection{Viewport}
 La notion de Viewport intervient dans le cas d'un snapshot. Elle permet de définir une «fenêtre» de capture rectangulaire à laquelle se restreindra le snapshot, on la passe en paramètre au moment d'effectuer ce dernier.
 
-Ce mécanisme est utilisé quand on copie une zone sélectionnée de l'espace de travail (voir \ref{sec:selection} pour la sélection). Les coordonnées de la sélection (position et taille) sont récupérées et utilisées pour créer un viewport. Le défi principal a été de gérer le système de coordonnées de JavaFX. En effet, chaque n\oe ud possède son propre système de coordonnées et un point de ce n\oe ud peut être exprimé selon le système de coordonnées local au n\oe ud, selon le système du parent direct du n\oe ud ou encore selon le système de la fenêtre, de l'écran etc.
+Ce mécanisme est utilisé quand on copie une zone sélectionnée de l'espace de travail (voir \ref{sec:selection} pour la sélection). Les coordonnées de la sélection (position et taille) sont récupérées et utilisées pour créer un Viewport. Le défi principal a été de gérer le système de coordonnées de JavaFX. En effet, chaque n\oe ud possède son propre système de coordonnées et un point de ce n\oe ud peut être exprimé selon le système de coordonnées local au n\oe ud, selon le système du parent direct du n\oe ud ou encore selon le système de la fenêtre, de l'écran etc.
 
-La notion a maîtriser ici est d'exprimer au viewport ses dimensions dans le système de coordonnées du parent du n\oe ud sur lequel on effectue le snapshot. Une fois cette notion comprise, le snapshot est restreint au viewport (et donc à la sélection) et le comportement voulu est adopté.
+La notion a maîtriser ici est d'exprimer au Viewport ses dimensions dans le système de coordonnées du parent du n\oe ud sur lequel on effectue le snapshot. Une fois cette notion comprise, le snapshot est restreint au Viewport (et donc à la sélection) et le comportement voulu est adopté.
 
 Il reste ensuite à écrire l'image capturée sur un \texttt{GEMMSCanvas} qui sera affiché par la suite dans l'espace de travail.
 
@@ -152,7 +152,7 @@ Le collage consiste à désérialiser le contenu du presse-papier et à insérer
 \subsection{Historique}
 L'historique des actions effectuées se base principalement sur deux concepts : la sérialisation et le patron de conception «Observable» comme l'indique la figure \ref{fig:hist_uml}.
 
-\begin{figure}[h]
+\begin{figure}[!ht]
     \caption{Diagramme de l'historique simplifié}
     \centering
     \includegraphics[scale=0.6]{history_uml.png}
@@ -172,7 +172,7 @@ Lorsque l'utilisateur clique sur un élément de la \texttt{ListView}, la métho
 
 On notera finalement que si l'utilisateur effectue une modification après avoir restauré un état précédent, il se trouvera sur une nouvelle «branche» et il ne pourra plus «revenir en avant», comme sur pratiquement tous les logiciels que l'on connaît, voir figure \ref{fig:hist_branches}.
 
-\begin{figure}[h]
+\begin{figure}[!ht]
     \caption{Fonctionnement de l'historique}
     \centering
     \includegraphics[scale=0.6]{history_branches.pdf}
@@ -180,12 +180,10 @@ On notera finalement que si l'utilisateur effectue une modification après avoir
 \end{figure}
 
 \subsection{Outils}
-\par
 JavaFX offre (entre autres) les événements \texttt{MousePressed}, \texttt{MouseDragged} et \texttt{MouseReleased}. Ils correspondent respectivement à l'action de presser la souris, de la déplacer en gardant le clic gauche enfoncé ou de relâcher le clic gauche de la souris.
 \subsubsection{Hiérarchie des outils}
 \label{section_outils}
-\par
-La plupart des outils de l'application  fonctionnent grâce à ces trois événements. On pensera notamment au pinceau qui doit dessiner un trait en suivant la souris lors d'un \texttt{MouseDragged}. Un quatrième événement, \texttt{MouseMouved} est également traité, mais il n'est utilisé que pour afficher des retours visuels (curseur du pinceau par exemple). Son utilisation n'est donc pas détaillée dans cette section.
+La plupart des outils de l'application fonctionnent grâce à ces trois événements. On pensera notamment au pinceau qui doit dessiner un trait en suivant la souris lors d'un \texttt{MouseDragged}. Un quatrième événement, \texttt{MouseMouved} est également traité, mais il n'est utilisé que pour afficher des retours visuels (curseur du pinceau par exemple). Son utilisation n'est donc pas détaillée dans cette section.
 \par
 Comme on peut le voir sur la figure \ref{fig:tool_hier}, les outils implémentent une interface \texttt{Tool}, possédant des méthodes correspondant à ces événements. Au long de l'exécution du programme, le \texttt{Workspace} garde une référence vers un outil considéré actif (qui peut aussi être référence nulle), et lorsqu'il détecte un des événements cités plus haut, il se charge d'appeler la ou les méthodes correspondantes de cet outil.
 \par
@@ -193,7 +191,7 @@ Lorsque l'utilisateur clique sur un bouton pour activer un outil, le programme c
 \par
 D'autres outils plus simples, comme la symétrie horizontale ou verticale ou les effets de couleurs sont implémentés en ajoutant un action à des composants de bases de JavaFX comme des \texttt{Button} ou des \texttt{Slider}.
 
-\begin{figure}[H]
+\begin{figure}[!ht]
 	\caption{Diagramme simplifié de la hiérarchie des outils}
 	\centering
 	\includegraphics[scale=0.6]{tool_hierarchy.png}
@@ -203,7 +201,7 @@ D'autres outils plus simples, comme la symétrie horizontale ou verticale ou les
 \subsubsection{Réglage des outils} \label{reglage-outils}
 Certains de ces outils nécessitent d'être paramétrés en temps réel en fonction des calques sélectionnés par l'utilisateur. Par exemple, la taille de la gomme est stockée dans l'objet représentant l'outil, et est utilisée pour déterminer la taille du rectangle à effacer. L'utilisateur peut la régler au moyen d'un \texttt{Slider} (il s'agit d'un composant JavaFX). Les même besoin concernent la gestion de la couleur du pinceau, de la taille et de la police de l'outil de modification de texte. La figure \ref{fig:text_settings} illustre l'apparence des réglages de l'outil de modification de texte.
 
-\begin{figure}[H]
+\begin{figure}[!ht]
 	\caption{Composant de réglages de l'outil de modification texte}
 	\centering
 	\includegraphics[scale=0.6]{toolSettings.png}
@@ -219,12 +217,14 @@ Ainsi un objet \texttt{ToolFontSettings} permet de paramétrer la Font (les para
 \par
 Lorsque l'utilisateur modifie la valeur du \texttt{Slider} contenu dans l'objet \texttt{ToolFontSettings}, celui-ci met à jour sa cible \texttt{SizeConfigurableTool} en temps réel (ici, l'outil de modification de texte).
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 	\caption{Diagramme simplifié des réglages d'outils}
 	\centering
 	\includegraphics[scale=0.6]{tool_settings.png}
 	\label{fig:tool_settings}
 \end{figure}
+
+\newpage
 
 \subsubsection{Pinceau et gomme}
 Le pinceau et la gomme ont un comportement et une implémentation quasiment identiques. Dans le programme GEMMS, ce sont les classes \texttt{Brush} et \texttt{Eraser} qui se chargent d'implémenter ces fonctionnalités. Toutes deux héritent d'une classe parente commune: \texttt{LineTool}.

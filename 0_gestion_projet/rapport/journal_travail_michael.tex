@@ -1,30 +1,31 @@
 \section{Journal de travail - Michael Spierer}
 
 \subsection{Semaine 1: 20 février - 24 février}
-Nous avons fait un brainstorming afin de trouver des idées, retenu les deux meilleures afin de les proposer pour le projet.
+Nous avons constitué notre groupe et fait un brainstorming afin de trouver des idées. Nous retenons les deux meilleures afin de les proposer pour le projet.
 \subsection{Semaine 2: 27 février - 3 mars}
-Notre idée de faire un éditeur d'images a été accepté et nous avons pu commencer à trouver quelles fonctionnalités nous voulons avoir et à commencer à les planifier. 
+Notre idée de faire un éditeur d'images a été accepté et nous avons pu commencer à écrire le cahier des charges et à trouver quelles fonctionnalités nous voulons avoir.
 \subsection{Semaine 3: 6 mars - 10 mars}
-Cahier des charges et planification Gant.
+Cahier des charges final et planification Gantt. Cette dernière prend pas mal de temps car un editeur d'image, d'après les conseils de Mr Rentsch aux vues des dernières années, amène beaucoup d'interdépendance au sein d'un groupe.
 \subsection{Semaine 4: 13 mars - 17 mars}
-Planification dans un format Excel.
+Notre Gantt étant trop complexe niveau compréhension, on nous demande de le refaire sur Excel afin de le rendre plus claire. 
 \subsection{Semaine 5: 20 mars - 24 mars}
-Étude de JavaFX, tests de certaines fonctionnalitées de JavaFX, tutoriels de JavaFX.
+Étude de JavaFX, tests de certaines fonctionnalitées de JavaFX, tutoriels de base de JavaFX.
 \subsection{Semaine 6: 27 mars - 31 mars}
-Étude de JavaFX, tests de certaines fonctionnalitées afin de jeter un coup d'oeil aux fonctionnalitées que je vais devoir implémenter.
+Étude de JavaFX, tests de certaines fonctionnalitées afin de jeter un coup d'oeil aux fonctionnalitées que je vais devoir implémenter par la suite.
 \subsection{Semaine 7: 3 avril - 7 avril}
 Début d'implémentation du Workspace.
 \subsection{Semaine 8: 10 avril - 14 avril}
 Recherche de la gestion de calques avec Mathieu, on rencontre déjà des problèmes qui vont nous faire nous poser pas mal de questions, par exemple, un Node n'est pas sérialisable, donc on essaie de trouver des solutions à ce problème.
 \subsection{Semaine 9: 24 avril - 28 avril}
-Gestions de calques avec Mathieu. On a fait en sorte de rendre les calques sérialisables (on a ajouté des méthodes pour sérialiser et desérialiser avec l'aide de Sathiya car il avait déjà bosser sur la question de la sérialisation). On peut ajouter les calques au workspace.
+Gestions de calques avec Mathieu. On a fait en sorte de rendre les calques ( n\oe uds) sérialisables (on a ajouté des méthodes pour sérialiser et desérialiser avec l'aide de Sathiya car il avait déjà bossé sur la question de la sérialisation). On peut ajouter nos calques personnels (GEMMSImage par exemple) au workspace.
 \subsection{Semaine 10: 1 mai - 5 mai}
-Implémentation des claques de texte.
+Implémentation des calques de texte (GEMMSText) et leurs outils de modifications,(taille, etc.).
 \subsection{Semaine 11: 8 mai - 12 mai} 
 Redimensionnement des calques, pivotement, deplacement d'un ou plusieurs calques. Il y a plusieurs manières d'aboutir aux effets escomptés, plusieurs choses rentrent en compte : vu que quasiment rien n'est sérialisable, il faut trouver comment sérialiser les transformations, en plus de sérialiser les calques qui sont de base non-sérialisable.
 \subsection{Semaine 12: 15 mai - 19 mai}
-Toujours sur les redimensionnement de calques. Il y a de nouveau soucis : le mappage de coordonnées des tools (pas juste les transformations que j'implémente mais aussi brush etc) ne se fait pas bien --> On parvient à regler le soucis. De plus, les symetries m'ont donné du fil à retordre mais marchent parfaitement en fin de compte.
+Toujours sur les outils de transformations de n\oe uds. Il y a de nouveau soucis : le mappage de coordonnées des tools (pas juste les transformations que j'implémente mais aussi brush etc) ne se fait pas bien. Pour finir, on parvient à regler le soucis. De plus, les symetries m'ont donné du fil à retordre mais marchent parfaitement en fin de compte. Ces symetries ne sont pas extremement dure niveau code mais on amené pas mal de problème interne, par exemple niveau sérialisation ou transformation.
 \subsection{Semaine 13: 22 mai - 26 mai}
+Implémentation de l'alignement automatique avec effet aimant d'un calque lors de son déplacement.
 Essaie de faire un bonus qui n'est pas dans le cahier des charges pour la réalisation d'un bucket (afin de remplir une zone d'une couleur en un clique). Le prototype marche bien sauf à partir du moment où il y a une transformation sur le calque. Je reévalue la situation, pas de temps à perdre sur cette fonctionnalité non demandée, je passe à la suite. Implémentation de l'alignement automatique d'un calque lors du drag.
 \subsection{Semaine 14: 29 mai - 2 juin}
 Rapport et journal de bord.

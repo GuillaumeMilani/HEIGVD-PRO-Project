@@ -128,7 +128,7 @@ Toutes ces transformations et points de référence différents selon la transfo
 \label{sec:copiercoller}
 Deux façon d'aborder le copier-coller ont été implémentées : la première consiste à enregistrer dans le presse-papier un ou des calques sélectionnés, la seconde consiste à enregistrer uniquement la partie sélectionnée et visible à l'écran.
 
-Trois procédés sont à l'origine de cette fonction de l'application : le snapshot, le viewport et la sérialisation.
+Trois procédés sont à l'origine de cette fonction de l'application : le snapshot, le Viewport et la sérialisation.
 
 
 \subsubsection{Snapshot}
@@ -137,9 +137,9 @@ Le snapshot est un outil proposé par JavaFX qui permet d'effectuer une «captur
 \subsubsection{Viewport}
 La notion de Viewport intervient dans le cas d'un snapshot. Elle permet de définir une «fenêtre» de capture rectangulaire à laquelle se restreindra le snapshot, on la passe en paramètre au moment d'effectuer ce dernier.
 
-Ce mécanisme est utilisé quand on copie une zone sélectionnée de l'espace de travail (voir \ref{sec:selection} pour la sélection). Les coordonnées de la sélection (position et taille) sont récupérées et utilisées pour créer un viewport. Le défi principal a été de gérer le système de coordonnées de JavaFX. En effet, chaque n\oe ud possède son propre système de coordonnées et un point de ce n\oe ud peut être exprimé selon le système de coordonnées local au n\oe ud, selon le système du parent direct du n\oe ud ou encore selon le système de la fenêtre, de l'écran etc.
+Ce mécanisme est utilisé quand on copie une zone sélectionnée de l'espace de travail (voir \ref{sec:selection} pour la sélection). Les coordonnées de la sélection (position et taille) sont récupérées et utilisées pour créer un Viewport. Le défi principal a été de gérer le système de coordonnées de JavaFX. En effet, chaque n\oe ud possède son propre système de coordonnées et un point de ce n\oe ud peut être exprimé selon le système de coordonnées local au n\oe ud, selon le système du parent direct du n\oe ud ou encore selon le système de la fenêtre, de l'écran etc.
 
-La notion a maîtriser ici est d'exprimer au viewport ses dimensions dans le système de coordonnées du parent du n\oe ud sur lequel on effectue le snapshot. Une fois cette notion comprise, le snapshot est restreint au viewport (et donc à la sélection) et le comportement voulu est adopté.
+La notion a maîtriser ici est d'exprimer au Viewport ses dimensions dans le système de coordonnées du parent du n\oe ud sur lequel on effectue le snapshot. Une fois cette notion comprise, le snapshot est restreint au Viewport (et donc à la sélection) et le comportement voulu est adopté.
 
 Il reste ensuite à écrire l'image capturée sur un \texttt{GEMMSCanvas} qui sera affiché par la suite dans l'espace de travail.
 
@@ -183,7 +183,7 @@ On notera finalement que si l'utilisateur effectue une modification après avoir
 JavaFX offre (entre autres) les événements \texttt{MousePressed}, \texttt{MouseDragged} et \texttt{MouseReleased}. Ils correspondent respectivement à l'action de presser la souris, de la déplacer en gardant le clic gauche enfoncé ou de relâcher le clic gauche de la souris.
 \subsubsection{Hiérarchie des outils}
 \label{section_outils}
-La plupart des outils de l'application  fonctionnent grâce à ces trois événements. On pensera notamment au pinceau qui doit dessiner un trait en suivant la souris lors d'un \texttt{MouseDragged}. Un quatrième événement, \texttt{MouseMouved} est également traité, mais il n'est utilisé que pour afficher des retours visuels (curseur du pinceau par exemple). Son utilisation n'est donc pas détaillée dans cette section.
+La plupart des outils de l'application fonctionnent grâce à ces trois événements. On pensera notamment au pinceau qui doit dessiner un trait en suivant la souris lors d'un \texttt{MouseDragged}. Un quatrième événement, \texttt{MouseMouved} est également traité, mais il n'est utilisé que pour afficher des retours visuels (curseur du pinceau par exemple). Son utilisation n'est donc pas détaillée dans cette section.
 \par
 Comme on peut le voir sur la figure \ref{fig:tool_hier}, les outils implémentent une interface \texttt{Tool}, possédant des méthodes correspondant à ces événements. Au long de l'exécution du programme, le \texttt{Workspace} garde une référence vers un outil considéré actif (qui peut aussi être référence nulle), et lorsqu'il détecte un des événements cités plus haut, il se charge d'appeler la ou les méthodes correspondantes de cet outil.
 \par

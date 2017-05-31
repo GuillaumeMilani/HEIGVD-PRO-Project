@@ -34,7 +34,7 @@ Pour combler ce manque, nous devons nous-mêmes implémenter la sérialisation d
     \label{fig:seri_diag}
 \end{figure}
 
-Sur la figure \ref{fig:seri_diag}, nous pouvons voir un diagramme simplifié de l'implémentation de la sérialisation. Dans notre application, nous allons utiliser des classes de base telles que \texttt{\gls{imageview}}, \texttt{\gls{text}}, \texttt{\gls{canvas}}, \texttt{Color}, etc. Nous devons donc spécialiser ces classes afin qu'elles puissent implémenter l'interface \texttt{Serializable}. Toutefois, certaines classes comme \texttt{Color} ne sont malheureusement pas spécialisables. Il faut donc sérialiser les paramètres un par un à l'aide des accesseurs et mutateurs de la classe.
+Sur la figure \ref{fig:seri_diag}, nous pouvons voir un diagramme simplifié de l'implémentation de la sérialisation. Dans notre application, nous allons utiliser des classes de base telles que \texttt{\gls{imageview}}, \texttt{\gls{text}}, \texttt{\gls{canvas}}, \texttt{\gls{color}}, etc. Nous devons donc spécialiser ces classes afin qu'elles puissent implémenter l'interface \texttt{Serializable}. Toutefois, certaines classes comme \texttt{Color} ne sont malheureusement pas spécialisables. Il faut donc sérialiser les paramètres un par un à l'aide des accesseurs et mutateurs de la classe.
 
 Étant donné que les classes JavaFX possèdent énormément de fonctionnalités, sérialiser l'entier de celles-ci nous demanderait beaucoup trop de temps. C'est pourquoi nous nous contentons uniquement des paramètres utilisés au sein du projet tel que la largeur, la hauteur, la position, etc.
 
@@ -47,7 +47,7 @@ Bien que la sérialisation soit possible, celle-ci engendre des contraintes et d
 La sauvegarde d'un document utilise la sérialisation des objets. Comme mentionné précédemment, la sérialisation de certaines classes peut être volumineuse, aussi les données sont compressées dans le format GZIP.
 
 \subsection{Workspace et liste des calques}
-Le \texttt{\gls{workspace}} correspond à l'espace de travail d'un Document GEMMS. \texttt{Workspace} est une classe personnalisée héritant de la classe \texttt{StackPane} de JavaFX. 
+Le \texttt{\gls{workspace}} correspond à l'espace de travail d'un Document GEMMS. \texttt{Workspace} est une classe personnalisée héritant de la classe \texttt{\gls{stackpane}} de JavaFX. 
 
 \subsubsection{Structure d'un Workspace}
 \label{sec:structure_workspace}
@@ -84,7 +84,7 @@ Pour les besoins de l'application, nous ne pouvions pas utiliser ces classes tel
 
 Une des fonctionnalités indispensables de GEMMS est de permettre à l'utilisateur de gérer les calques de son document au moyen d'une liste dans un panneau de l'interface. Il s'agit d'une représentation visuelle de l'état du Scene Graph dans la branche de la zone de dessin dont nous parlons plus haut. Elle doit donc être en tout temps synchronisée avec l'état actuel du document et tout changement doit se répercuter dans cet affichage de calques.
 
-La classe \texttt{ListView} de JavaFX propose cette fonctionnalité. Malheureusement, ce composant n'étant pas paramétrable comme nous le souhaitions pour les besoins ergonomiques de l'application, nous avons dû implémenter notre propre système de gestion de calques. Il est cependant fortement inspiré du fonctionnement de \texttt{ListView}.
+La classe \texttt{\gls{listview}} de JavaFX propose cette fonctionnalité. Malheureusement, ce composant n'étant pas paramétrable comme nous le souhaitions pour les besoins ergonomiques de l'application, nous avons dû implémenter notre propre système de gestion de calques. Il est cependant fortement inspiré du fonctionnement de \texttt{ListView}.
 
 \begin{figure}[!ht]
 	\caption{Implémentation du composant \texttt{LayerList}. Structure simplifiée.}
@@ -93,9 +93,9 @@ La classe \texttt{ListView} de JavaFX propose cette fonctionnalité. Malheureuse
 	\label{fig:layer_management}
 \end{figure}
 
-\texttt{LayerList} est une classe générique implémentée pour ce projet qui permet d'afficher sous forme de liste de cellules le contenu d'une \texttt{ObservableList}. La figure \ref{fig:layer_management} illustre la structure du \texttt{Workspace} et de sa \texttt{LayerList}. Dans cette représentation, toutes les classes sont instanciées avec \texttt{Node} comme paramètre générique pour une meilleure compréhension. Les enfants d'un \texttt{Node} de type parent étant représentés sous la forme d'une \texttt{ObservableList<Node>} dans JavaFX, \texttt{Layerlist} peut ainsi gérer les calques du \texttt{Workspace}.
+\texttt{\gls{layerlist}} est une classe générique implémentée pour ce projet qui permet d'afficher sous forme de liste de cellules le contenu d'une \texttt{\gls{observablelist}	}. La figure \ref{fig:layer_management} illustre la structure du \texttt{Workspace} et de sa \texttt{LayerList}. Dans cette représentation, toutes les classes sont instanciées avec \texttt{Node} comme paramètre générique pour une meilleure compréhension. Les enfants d'un \texttt{Node} de type parent étant représentés sous la forme d'une \texttt{ObservableList<Node>} dans JavaFX, \texttt{Layerlist} peut ainsi gérer les calques du \texttt{Workspace}.
 
-\texttt{LayerList} hérite du composant \texttt{VBox} de JavaFX, ce qui permet de l'ajouter au Scene Graph. Dans GEMMS, elle observe les enfants de la zone de dessin du \texttt{Workspace} et est notifiée lorsqu'il y a un changement. Pour tout nouveau calque (\texttt{Node}) ajouté dans la liste, elle crée une nouvelle \texttt{Cell} (cellule) en utilisant le patron de conception de fabrication abstraite. Elle ajoute ces cellules dans un composant interne qui les affiche en colonne.
+\texttt{\gls{layerlist}} hérite du composant \texttt{VBox} de JavaFX, ce qui permet de l'ajouter au Scene Graph. Dans GEMMS, elle observe les enfants de la zone de dessin du \texttt{Workspace} et est notifiée lorsqu'il y a un changement. Pour tout nouveau calque (\texttt{Node}) ajouté dans la liste, elle crée une nouvelle \texttt{Cell} (cellule) en utilisant le patron de conception de fabrication abstraite. Elle ajoute ces cellules dans un composant interne qui les affiche en colonne.
 
 Une \texttt{Cell} (cellule) est un élément \texttt{HBox} JavaFX spécialisé, qui garde trace d'un \texttt{Node} (calque du document) et qui permet de contrôler et d'afficher des information concernant ce \texttt{Node}. Chaque \texttt{Cell} peut en effet être sélectionnée, masquée, renommée, ou supprimée au clic de la souris, et ces actions se répercutent sur les calques effectifs contenus par le \texttt{Workspace}. 
 
@@ -106,7 +106,7 @@ Le \texttt{Workspace} peut donc déléguer entièrement la gestion des calques �
 \lstinputlisting[language=Java, caption=Exemple de gestion de la sélection des calques par la \texttt{LayerList} au sein du \texttt{Workspace}]{./src/gestion_calques.java}
 
 \subsubsection{Systèmes de coordonnées et transformations}
-Comme n'importe quel outil graphique, JavaFX utilise un système de coordonnées standard. Un axe x qui incrémente vers la droite et un axe y qui incrémente vers le bas. La position de référence à un \texttt{Node} est en haut à gauche. Ainsi un \texttt{Node} qui se trouve à la position (0, 0) se trouvera dans le coin en haut à gauche. Cependant, chaque transformation utilise sa propre référence.
+Comme n'importe quel outil graphique, JavaFX utilise un système de coordonnées standard. Un axe x qui incrémente vers la droite et un axe y qui incrémente vers le bas. La position de référence à un \texttt{Node} est en haut à gauche. Ainsi un \texttt{Node} qui se trouve à la position (0, 0) se trouvera dans le coin en haut à gauche. Cependant, chaque transformation utilise sa propre référence \cite{javadoc_node}.
 
 \begin{figure}[!ht]
     \caption{Positionnement des claques}

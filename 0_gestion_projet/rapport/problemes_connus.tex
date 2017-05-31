@@ -2,3 +2,8 @@
 \subsection{Mise-à-jour de l'historique}
 Certaines actions ne peuvent pas être détectées par l'historique et donc ne peuvent pas être annulées avec une Ctrl + Z. Notemment, supprimer un calque ou changer son ordre dans la liste des calques. Vu que ces actions sont effectuées directement sur des éléments de la liste observable de JavaFX, situés à plus bas niveau que nos espaces de travail (qui gèrent l'historique), on ne peut pas notifier l'historique après ces actions sans changer notre implémentation.
 \subsection{Dessin après redimensionnement et effaçage d'une sélection}
+
+\subsection{Exportation d'une image}
+A l'exportation du \texttt{Workspace}, le choix du format de l'image (jpg, png, gif) s'effectue à l'écriture du nom du fichier. Cependant, il n'est pas possible d'afficher des paramètres spécifiques à un format choisi tel que la compression pour le format JPG.
+
+En effet, la classe \texttt{FileChooser} n'est pas spécialisable. Il faudrait donc créer un dialogue \og Exportation d'image \fg{} qui permet gérer tous les formats d'image possible et leurs paramètres. Ceci n'a pas été réalisé par manque de temps et qu'il nous faudrait encore 2 jours pour implémenter cette fonctionnalité. 

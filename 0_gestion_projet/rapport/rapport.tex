@@ -2,7 +2,7 @@
 % --- DOCUMENT ---
 % -----------------------------------------------------------------------
 
-\documentclass[11pt, a4paper, french]{article}
+\documentclass[11pt, a4paper, french, twoside]{article}
 
 
 
@@ -74,6 +74,14 @@
 \makeglossary
 \loadglsentries{glossaire}
 
+% Ne pas supprimer, permet d'afficher le numéro de sections
+\usepackage{etoolbox}
+
+\makeatletter
+\patchcmd{\ttlh@hang}{\parindent\z@}{\parindent\z@\leavevmode}{}{}
+\patchcmd{\ttlh@hang}{\noindent}{}{}{}
+\makeatother
+
 
 % -----------------------------------------------------------------------
 % --- Couleurs définies
@@ -89,6 +97,7 @@
 % --- Listing de code
 % -----------------------------------------------------------------------
 \lstset{language=Java,
+    basicstyle=\tiny,
     backgroundcolor=\color{backcolour},
     showspaces=false,
     showtabs=false,
@@ -122,7 +131,7 @@
         Mathieu Monteverde,
         Michael Spierer,
         Sathiya Kirushnapillai},                    % Auteurs
-    pdftitle = {GEMMS - Edtieur d'image},           % Titre du document
+    pdftitle = {GEMMS - Editeur d'image},           % Titre du document
     pdfsubject = {Mémoire de Projet},               % Sujet
     pdfkeywords = {Tag1, Tag2, Tag3, ...},          % Mots-clefs
     pdfstartview={FitH}}                            % ajuste la page à la largueur de l'écran
@@ -137,13 +146,15 @@
 \pagestyle{fancy}
 \fancyhf{} % Supprime les entetes et pieds de page existants
 
-\fancyhead[L]{Projet de semestre\\}
-\fancyhead[R]{IL - TIC - HEIG-VD \\ Printemps 2017}
-\fancyfoot[L]{G. Milani, E. Ransome, M. Monteverde, M. Spierer, S. Kirushnapillai}
-\fancyfoot[R]{\thepage{}}
+\fancyhead[LE,RO]{Projet de semestre\\}
+\fancyhead[RE,LO]{IL - TIC - HEIG-VD \\ Printemps 2017}
+\fancyfoot[LE,RO]{\thepage{}}
+\fancyfoot[RE]{G. Milani, E. Ransome, M. Monteverde, M. Spierer, S. Kirushnapillai}
+\fancyfoot[LO]{Éditeur d'images GEMMS}
+\renewcommand{\footrulewidth}{1pt}
 
 
-\title{Éditeur d'images GEMMS \\ Cahier des charges}
+\title{Éditeur d'images GEMMS \\ Rapport}
 \author{G. Milani, E. Ransome, M.Monteverde, M. Spierer, S. Kirushnapillai}
 \date{Mars 2017}
 
@@ -203,6 +214,7 @@
 
 \input{./conclusion.tex}
 
+\newpage
 \glsaddall
 \printglossaries
 
@@ -212,7 +224,8 @@
 \nocite{*}
 
 %choix du style de la biblio
-\bibliographystyle{plain}
+\
+style{plain}
 %inclusion de la biblio
 \bibliography{bibliographie.bib}
 %voir wiki pour plus d'information sur la syntaxe des entrées d'une bibliographie

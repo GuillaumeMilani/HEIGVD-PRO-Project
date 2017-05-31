@@ -185,7 +185,7 @@ JavaFX offre (entre autres) les événements \texttt{MousePressed}, \texttt{Mous
 \subsubsection{Hiérarchie des outils}
 \label{section_outils}
 \par
-La plupart des outils de l'application  fonctionnent grâce à ces trois événements. On pensera notamment au pinceau qui doit dessiner un trait en suivant la souris lors d'un \texttt{MouseDragged}. Un quatrième événement, \texttt{MouseMouved} est également traité, mais il n'est utilisé que pour afficher des retours visuels (curseur du pinceau par exemple). Son utilisation n'est donc pas détaillée dans cette section.
+La plupart des outils de l'application fonctionnent grâce à ces trois événements. On pensera notamment au pinceau qui doit dessiner un trait en suivant la souris lors d'un \texttt{MouseDragged}. Un quatrième événement, \texttt{MouseMouved} est également traité, mais il n'est utilisé que pour afficher des retours visuels (curseur du pinceau par exemple). Son utilisation n'est donc pas détaillée dans cette section.
 \par
 Comme on peut le voir sur la figure \ref{fig:tool_hier}, les outils implémentent une interface \texttt{Tool}, possédant des méthodes correspondant à ces événements. Au long de l'exécution du programme, le \texttt{Workspace} garde une référence vers un outil considéré actif (qui peut aussi être référence nulle), et lorsqu'il détecte un des événements cités plus haut, il se charge d'appeler la ou les méthodes correspondantes de cet outil.
 \par

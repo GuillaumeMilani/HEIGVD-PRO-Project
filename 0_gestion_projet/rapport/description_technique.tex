@@ -34,7 +34,7 @@ Pour combler ce manque, nous devons nous-mêmes implémenter la sérialisation d
     \label{fig:seri_diag}
 \end{figure}
 
-Sur la figure \ref{fig:seri_diag}, nous pouvons voir un diagramme simplifié de l'implémentation de la sérialisation. Dans notre application, nous allons utiliser des classes de base telles que \texttt{\gls{imageview}}, \texttt{\gls{text}}, \texttt{\gls{canvas}}, \texttt{Color}, etc. Nous devons donc spécialiser ces classes afin qu'elles puissent implémenter l'interface \texttt{Serializable}. Toutefois, certaines classes comme \texttt{Color} ne sont malheureusement pas spécialisables. Il faut donc sérialiser les paramètres un par un à l'aide des accesseurs et mutateurs de la classe.
+Sur la figure \ref{fig:seri_diag}, nous pouvons voir un diagramme simplifié de l'implémentation de la sérialisation. Dans notre application, nous allons utiliser des classes de base telles que \texttt{\gls{imageview}}, \texttt{\gls{text}}, \texttt{\gls{canvas}}, \texttt{\gls{color}}, etc. Nous devons donc spécialiser ces classes afin qu'elles puissent implémenter l'interface \texttt{Serializable}. Toutefois, certaines classes comme \texttt{Color} ne sont malheureusement pas spécialisables. Il faut donc sérialiser les paramètres un par un à l'aide des accesseurs et mutateurs de la classe.
 
 Étant donné que les classes JavaFX possèdent énormément de fonctionnalités, sérialiser l'entier de celles-ci nous demanderait beaucoup trop de temps. C'est pourquoi nous nous contentons uniquement des paramètres utilisés au sein du projet tel que la largeur, la hauteur, la position, etc.
 
@@ -47,7 +47,7 @@ Bien que la sérialisation soit possible, celle-ci engendre des contraintes et d
 La sauvegarde d'un document utilise la sérialisation des objets. Comme mentionné précédemment, la sérialisation de certaines classes peut être volumineuse, aussi les données sont compressées dans le format GZIP.
 
 \subsection{Workspace et liste des calques}
-Le \texttt{\gls{workspace}} correspond à l'espace de travail d'un Document GEMMS. \texttt{Workspace} est une classe personnalisée héritant de la classe \texttt{StackPane} de JavaFX. 
+Le \texttt{\gls{workspace}} correspond à l'espace de travail d'un Document GEMMS. \texttt{Workspace} est une classe personnalisée héritant de la classe \texttt{\gls{stackpane}} de JavaFX. 
 
 \subsubsection{Structure d'un Workspace}
 \label{sec:structure_workspace}
